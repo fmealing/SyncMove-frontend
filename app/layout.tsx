@@ -1,6 +1,7 @@
 import "./styles/globals.scss";
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -8,9 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <body className="bg-gray-100">
         <Navbar />
         <main>{children}</main>
-        <footer className="bg-secondary p-4 text-center text-white">
-          <p>© 2024 SyncMove. All rights reserved.</p>
-        </footer>
+        <Footer />
       </body>
     </html>
   );
