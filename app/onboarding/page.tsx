@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import Step1 from "../components/Step1";
-import Step2 from "../components/Step2";
-import Step3 from "../components/Step3";
+import Step1 from "../components/onboarding/Step1";
+import Step2 from "../components/onboarding/Step2";
+import Step3 from "../components/onboarding/Step3";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 
 const Onboarding: React.FC = () => {
