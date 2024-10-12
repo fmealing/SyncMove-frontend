@@ -34,7 +34,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ setDate }) => {
   return (
     <div className="form-control w-full max-w-xs mx-auto">
       <label htmlFor="datepicker" className="label">
-        <span className="label-text text-gray-700 font-semibold">
+        <span className="label-text text-textPrimary font-semibold font-primary text-[20px]">
           Select Date
         </span>
       </label>
