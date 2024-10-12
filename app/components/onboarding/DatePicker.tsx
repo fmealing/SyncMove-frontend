@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
-import "../styles/flatpickr-custom.scss";
+import "../../styles/flatpickr-custom.scss";
 
 interface DatePickerProps {
   setDate: (date: string) => void;

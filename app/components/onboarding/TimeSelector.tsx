@@ -16,19 +16,21 @@ const TimeSelector: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full space-y-4 space-x-4">
+    <div className="flex flex-col items-center w-full space-y-4 space-x-4 max-w-72">
       {times.map((time) => (
         <button
           key={time.value}
           onClick={() => handleTimeClick(time.value)}
-          className={`h-12 px-4 flex items-center rounded-full border-2 gap-2 ${
+          className={`h-12 w-full px-4 flex items-center rounded-full border-2 gap-2 ${
             selectedTime === time.value
               ? "bg-primary text-white"
               : "border-secondary text-secondary"
           }`}
         >
           <FaClock className="w-5 h-5" />
-          <span className="text-xl font-medium font-primary">{time.label}</span>
+          <span className="text-xl font-semibold font-primary">
+            {time.label}
+          </span>
         </button>
       ))}
     </div>

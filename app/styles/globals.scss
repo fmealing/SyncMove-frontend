@@ -83,3 +83,42 @@ button {
   background-size: cover;
   background-position: center;
 }
+
+// Scheduling Page
+.schedule-workout-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+
+  // Background Image Styles
+  background-image: url("/bg-schedule.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); // Adjust overlay color and opacity
+    z-index: 1;
+  }
+
+  // Content wrapper for page elements
+  .content-wrapper {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.85); // Semi-transparent for contrast
+    border-radius: 8px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  }
+}
