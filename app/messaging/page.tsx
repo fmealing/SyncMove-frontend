@@ -13,10 +13,20 @@
 import React, { useState } from "react";
 import { FaPaperPlane, FaUserCircle } from "react-icons/fa";
 
-const MessagingPage = () => {
-  const [selectedUser, setSelectedUser] = useState(null);
+interface Conversation {
+  id: number;
+  name: string;
+  lastMessage: string;
+  time: string;
+  img: string;
+}
 
-  const conversations = [
+const MessagingPage: React.FC = () => {
+  // Define state with a type for selectedUser
+  const [selectedUser, setSelectedUser] = useState<number | null>(null);
+
+  // Dummy Data for static version TODO: Replace with API call
+  const conversations: Conversation[] = [
     {
       id: 1,
       name: "Alice Johnson",
@@ -80,7 +90,7 @@ const MessagingPage = () => {
         <h1 className="text-h2 font-primary font-semibold text-center text-textPrimary">
           {selectedUser
             ? "Chat with " +
-              conversations.find((c) => c.id === selectedUser).name
+              conversations.find((c) => c.id === selectedUser)?.name
             : "Start Chatting Now!"}
         </h1>
 
