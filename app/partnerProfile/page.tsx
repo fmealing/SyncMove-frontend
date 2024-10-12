@@ -28,7 +28,7 @@ const PartnerProfile = () => {
           <img
             src="/avatars/avatar-1.jpg"
             alt="Profile"
-            className="w-80 h-80 rounded-full object-cover"
+            className="w-80 h-80 rounded-full object-cover border-2 border-textPrimary"
           />
           <div className="text-center">
             <h2 className="text-2xl font-bold text-textPrimary font-primary">
