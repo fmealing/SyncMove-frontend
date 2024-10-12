@@ -6,7 +6,7 @@ import Footer from "./components/Footer";
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-gray-100">
+      <body className="bg-lightGray">
         <Navbar />
         <main>{children}</main>
         <Footer />
