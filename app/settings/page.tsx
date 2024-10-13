@@ -1,24 +1,3 @@
-// TO IMPLEMENT using DaisyUI and TailwindCSS and typescript
-// Left Side: buttons that quickly get you to the different sections of the SettingsPage (Profile, Preferences, Notification, Privacy) with a gear Icon
-// Vertical divider
-// Right Side:
-// - Heading that says "Settings"
-// - Profile Section with heading
-//    - 3 input fields (Full Name, Email, Password) with an edit button (ghost with icon)
-//     Small Profile picture (120x120px fully rounded) with textPrimary border. Next to that an upload image button with icon
-// - Fitness Preferences Section with heading
-//    - selection of 4 fitness goals (Lose Weight, Gain Muscle, General Health, Other)
-//    - rounded checkbox for preferred activities (Weightlifting, Running, Yoga, Other)
-//    - rounded checkbox for preferred times (Morning, Afternoon, Evening) for each activity selected
-// - Notification Preferences Section with heading
-//    - 3 toggles for Notifications, Messages and Activity Reminders
-//    - primary button that say "Email Notifications" and "Push Notifications" with icons separated by an "or" text
-// - Privacy Section with heading
-//    - Visibility select from (Public, Friends, Private)
-//    - rounded checkbox for Share Location and Share Activity
-// - Button that says delete account in error color with icon
-// - Button that says save changes in primary color with icon
-
 "use client";
 import React, { useState } from "react";
 import {
@@ -32,12 +11,53 @@ import {
 } from "react-icons/fa";
 
 const SettingsPage: React.FC = () => {
+  // State to manage fitness preferences
+  const [fitnessGoals, setFitnessGoals] = useState<string[]>([]);
+  const [preferredActivities, setPreferredActivities] = useState<string[]>([]);
+  const [preferredTime, setPreferredTime] = useState<Record<string, string[]>>({
+    Weightlifting: [],
+    Running: [],
+    Yoga: [],
+    Other: [],
+  });
+
   // State to manage toggles
   const [notificationSettings, setNotificationSettings] = useState({
     notifications: true,
     messages: false,
     reminders: true,
   });
+
+  // State to manage privacy settings
+  const [visibility, setVisibility] = useState("Public");
+  const [shareLocation, setShareLocation] = useState(false);
+  const [shareActivity, setShareActivity] = useState(false);
+
+  // Handler for selecting fitness goals
+  const toggleGoal = (goal: string) => {
+    setFitnessGoals((prev) =>
+      prev.includes(goal) ? prev.filter((g) => g !== goal) : [...prev, goal]
+    );
+  };
+
+  // Handler for selecting preferred activities
+  const toggleActivity = (activity: string) => {
+    setPreferredActivities((prev) =>
+      prev.includes(activity)
+        ? prev.filter((a) => a !== activity)
+        : [...prev, activity]
+    );
+  };
+
+  // Handler for selecting times per activity
+  const toggleTime = (activity: string, time: string) => {
+    setPreferredTime((prev) => ({
+      ...prev,
+      [activity]: prev[activity].includes(time)
+        ? prev[activity].filter((t) => t !== time)
+        : [...prev[activity], time],
+    }));
+  };
 
   // Handler to toggle preferences
   const toggleSetting = (setting: string) => {
@@ -117,7 +137,75 @@ const SettingsPage: React.FC = () => {
           <h2 className="text-h2 font-semibold text-textPrimary font-primary">
             Fitness Preferences
           </h2>
-          {/* TODO: Implement the fitness preferences section */}
+
+          <div>
+            <p className="text-lg text-textPrimary font-semibold mb-2 font-primary">
+              Select Your Fitness Goals
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {["Lose Weight", "Gain Muscle", "General Health", "Other"].map(
+                (goal) => (
+                  <button
+                    key={goal}
+                    className={`px-4 py-2 rounded-full border font-primary ${
+                      fitnessGoals.includes(goal)
+                        ? "bg-primary text-white"
+                        : "border-secondary border-2 text-textPrimary"
+                    }`}
+                    onClick={() => toggleGoal(goal)}
+                  >
+                    {goal}
+                  </button>
+                )
+              )}
+            </div>
+          </div>
+
+          {/* Preferred Activities */}
+          <div>
+            <p className="text-lg text-textPrimary font-semibold mb-2 font-primary">
+              Select Your Preferred Activities
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {["Weightlifting", "Running", "Yoga", "Other"].map((activity) => (
+                <button
+                  key={activity}
+                  className={`px-4 py-2 rounded-full border font-primary ${
+                    preferredActivities.includes(activity)
+                      ? "bg-primary text-white"
+                      : "border-secondary border-2 text-textPrimary"
+                  }`}
+                  onClick={() => toggleActivity(activity)}
+                >
+                  {activity}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Preferred Times */}
+          {preferredActivities.map((activity) => (
+            <div key={activity} className="space-y-2 mt-4">
+              <p className="text-lg text-textSecondary font-medium mb-2 font-primary">
+                Preferred Times for {activity}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {["Morning", "Afternoon", "Evening"].map((time) => (
+                  <button
+                    key={time}
+                    className={`px-4 py-2 rounded-full border ${
+                      preferredTime[activity]?.includes(time)
+                        ? "bg-primary text-white"
+                        : "border-secondary border-2 text-textPrimary"
+                    }`}
+                    onClick={() => toggleTime(activity, time)}
+                  >
+                    {time}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
         </section>
 
         {/* Notification Preferences Section */}
@@ -178,7 +266,51 @@ const SettingsPage: React.FC = () => {
           <h2 className="text-h2 font-semibold text-textPrimary font-primary">
             Privacy Preferences
           </h2>
-          {/* TODO: Implement Privacy preferences section */}
+
+          {/* Visibility */}
+          <div className="space-y-2">
+            <label className="text-lg text-textPrimary font-primary font-semibold">
+              Visibility
+            </label>
+            <select
+              className="w-full py-2 px-4 rounded-full border border-gray-300 focus:outline-none focus:border-primary text-textPrimary font-primary"
+              value={visibility}
+              onChange={(e) => setVisibility(e.target.value)}
+            >
+              <option value="Public">Public</option>
+              <option value="Friends">Friends</option>
+              <option value="Private">Private</option>
+            </select>
+          </div>
+
+          {/* Share Location and Share Activity Checkboxes */}
+          <div className="space-y-2">
+            {[
+              {
+                label: "Share Location",
+                checked: shareLocation,
+                onChange: setShareLocation,
+              },
+              {
+                label: "Share Activity",
+                checked: shareActivity,
+                onChange: setShareActivity,
+              },
+            ].map(({ label, checked, onChange }) => (
+              <label
+                key={label}
+                className="flex items-center gap-2 cursor-pointer text-textPrimary"
+              >
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-primary rounded-full"
+                  checked={checked}
+                  onChange={(e) => onChange(e.target.checked)}
+                />
+                {label}
+              </label>
+            ))}
+          </div>
         </section>
 
         {/* Save and Delete Buttons */}
