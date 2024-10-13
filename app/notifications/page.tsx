@@ -66,7 +66,9 @@ const NotificationsPage = () => {
               alt="No Notifications"
               className="w-1/2 md:w-1/3"
             />
-            <p className="text-lg text-textPrimary">No Notifications</p>
+            <p className="text-lg text-textPrimary font-primary">
+              No Notifications
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
