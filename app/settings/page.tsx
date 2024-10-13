@@ -10,6 +10,15 @@ import {
   FaBell,
 } from "react-icons/fa";
 
+// Types declaration
+type NotificationSettings = {
+  notifications: boolean;
+  messages: boolean;
+  reminders: boolean;
+};
+
+type NotificationSettingKey = "notifications" | "messages" | "reminders";
+
 const SettingsPage: React.FC = () => {
   // State to manage fitness preferences
   const [fitnessGoals, setFitnessGoals] = useState<string[]>([]);
@@ -22,11 +31,12 @@ const SettingsPage: React.FC = () => {
   });
 
   // State to manage toggles
-  const [notificationSettings, setNotificationSettings] = useState({
-    notifications: true,
-    messages: false,
-    reminders: true,
-  });
+  const [notificationSettings, setNotificationSettings] =
+    useState<NotificationSettings>({
+      notifications: true,
+      messages: false,
+      reminders: true,
+    });
 
   // State to manage privacy settings
   const [visibility, setVisibility] = useState("Public");
@@ -60,7 +70,7 @@ const SettingsPage: React.FC = () => {
   };
 
   // Handler to toggle preferences
-  const toggleSetting = (setting: string) => {
+  const toggleSetting = (setting: NotificationSettingKey) => {
     setNotificationSettings((prev) => ({
       ...prev,
       [setting]: !prev[setting],
@@ -220,17 +230,17 @@ const SettingsPage: React.FC = () => {
               {
                 label: "Notifications",
                 state: notificationSettings.notifications,
-                key: "notifications",
+                key: "notifications" as NotificationSettingKey,
               },
               {
                 label: "Messages",
                 state: notificationSettings.messages,
-                key: "messages",
+                key: "messages" as NotificationSettingKey,
               },
               {
                 label: "Activity Reminders",
                 state: notificationSettings.reminders,
-                key: "reminders",
+                key: "reminders" as NotificationSettingKey,
               },
             ].map(({ label, state, key }) => (
               <div key={key} className="flex items-center justify-between">
