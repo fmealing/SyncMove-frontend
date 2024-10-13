@@ -1,15 +1,3 @@
-// TO IMPLEMENT
-// Using DaisyUI and TailwindCSS
-// H2 with text "Find Your Workout Partner"
-// 2 Filters
-//  - Filter by: Default, Distance, Activity Type, Availability
-//  - Sort by: Nearest, Most Active, Recently Joined
-// 2 x 2 cards grid
-//  - Left Hand Side Image
-//  - Right Hand Side Name main heading, age and distance subheading, description
-//  - bottom left Connect button
-// Under Cards pagination buttons centered vertically
-
 import React from "react";
 import { FaMessage } from "react-icons/fa6";
 
@@ -82,7 +70,7 @@ const MatchingPage = () => {
               <img
                 src={partner.image}
                 alt={partner.name}
-                className="object-cover h-[200px] w-[200px] rounded-full m-4"
+                className="object-cover h-[200px] w-[200px] rounded-full m-4 border-2 border-textPrimary"
               />
             </figure>
             <div className="card-body w-2/3">
@@ -91,7 +79,7 @@ const MatchingPage = () => {
                 {partner.age} years old • {partner.distance}
               </p>
               <p className="py-2 text-textPrimary">{partner.description}</p>
-              <button className="flex gap-2 rounded-full bg-primary text-lightGray w-1/2 h-12 text-[20px] justify-center items-center">
+              <button className="flex gap-2 rounded-full bg-primary text-lightGray w-1/2 h-12 text-[20px] justify-center items-center hover:bg-primaryDark transition">
                 <FaMessage />
                 Connect
               </button>

@@ -14,8 +14,8 @@ const ScheduleWorkoutPage = () => {
   };
 
   return (
-    <div className="schedule-workout-page">
-      <div className="content-wrapper">
+    <div className="scheduling-background min-h-screen">
+      <div className="scheduling-content">
         <h1 className="text-textPrimary text-h2 font-primary font-semibold p-4">
           Schedule a Workout
         </h1>

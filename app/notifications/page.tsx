@@ -51,8 +51,8 @@ const NotificationsPage = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center p-6 bg-lightGray">
-      <div className="max-w-4xl w-full space-y-6 bg-white rounded-lg shadow-lg p-6">
+    <div className="notification-background w-full min-h-screen flex flex-col items-center p-6 bg-lightGray">
+      <div className="notification-content max-w-4xl w-full space-y-6 bg-white rounded-lg shadow-lg p-6">
         {/* Heading */}
         <h1 className="text-h2 font-semibold font-primary text-textPrimary">
           Notifications

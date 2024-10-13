@@ -19,13 +19,13 @@ const Login: React.FC = () => {
           </p>
 
           {/* Google Login Button */}
-          <button className="w-full max-w-md h-12 px-4 rounded-full border border-textPrimary flex justify-center items-center gap-2 mb-4">
+          <button className="w-full max-w-md h-12 px-4 rounded-full border-2 border-textPrimary flex justify-center items-center gap-2 mb-4 hover:bg-actionAmber/5 transition">
             <img
               src="/svg/google-logo.svg"
               alt="Google Logo"
               className="w-12 h-12"
             />
-            <span className="font-primary text-center text-textPrimary text-base font-medium leading-tight">
+            <span className="font-primary text-center text-textPrimary text-base font-medium leading-tight hover:text-lg transition duration-500">
               Login with Google
             </span>
           </button>
@@ -47,7 +47,7 @@ const Login: React.FC = () => {
             <input
               type="email"
               placeholder="example@email.com"
-              className="w-full h-11 px-3 py-[11px] bg-white rounded-2xl border border-[#cbd2e0] text-[#333333] text-base font-normal font-primary"
+              className="w-full h-11 px-3 py-[11px] bg-white rounded-full border border-[#cbd2e0] text-[#333333] text-base font-normal font-primary"
             />
           </div>
 
@@ -68,7 +68,7 @@ const Login: React.FC = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="min 8 chars"
-                className="w-full h-11 px-3 py-[11px] bg-white rounded-2xl border border-[#cbd2e0] text-[#333333] text-base font-normal font-primary"
+                className="w-full h-11 px-3 py-[11px] bg-white rounded-full border border-[#cbd2e0] text-[#333333] text-base font-normal font-primary"
               />
               <button
                 type="button"
@@ -81,7 +81,7 @@ const Login: React.FC = () => {
           </div>
 
           {/* Sign In Button */}
-          <button className="w-full max-w-md h-12 px-4 bg-[#007bff] rounded-md flex justify-center items-center gap-2 text-white text-base font-medium font-primary leading-tight">
+          <button className="w-full max-w-md h-12 px-4 bg-primary rounded-btn flex justify-center items-center gap-2 text-white text-base font-medium font-primary leading-tight hover:bg-primaryDark transition">
             <FaSignInAlt className="w-5 h-5 text-white" /> Sign In
           </button>
         </div>

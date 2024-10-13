@@ -14,9 +14,9 @@ const Navbar: React.FC = () => {
         {["Help/FAQ", "Contact", "Pricing", "Features", "Home"].map((text) => (
           <div
             key={text}
-            className="h-9 px-2 rounded-full border-2 border-secondary justify-center items-center gap-2 inline-flex"
+            className="h-9 px-2 rounded-full border-2 border-secondary justify-center items-center gap-2 inline-flex hover:border-secondaryDark transition"
           >
-            <div className="text-center text-secondary text-lg font-bold font-primary leading-[17.50px]">
+            <div className="text-center text-secondary text-lg font-bold font-primary leading-[17.50px] hover:text-secondaryDark transition">
               {text}
             </div>
           </div>
@@ -25,10 +25,10 @@ const Navbar: React.FC = () => {
 
       {/* Login/Sign Up Buttons */}
       <div className="flex space-x-2">
-        <button className="flex items-center px-4 py-2 bg-primary text-lightGray rounded-full font-bold font-secondary text-lg">
+        <button className="flex items-center px-4 py-2 bg-primary text-lightGray rounded-full font-bold font-secondary text-lg hover:bg-primaryDark transition">
           <FaUser className="mr-2" /> Login
         </button>
-        <button className="flex items-center px-4 py-2 bg-primary text-lightGray rounded-full font-bold font-secondary text-lg">
+        <button className="flex items-center px-4 py-2 bg-primary text-lightGray rounded-full font-bold font-secondary text-lg hover:bg-primaryDark transition">
           <FaUserPlus className="mr-2" /> Signup
         </button>
       </div>
