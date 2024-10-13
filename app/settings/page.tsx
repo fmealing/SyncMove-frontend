@@ -20,10 +20,33 @@
 // - Button that says save changes in primary color with icon
 
 "use client";
-import React from "react";
-import { FaCog, FaEdit, FaTrashAlt, FaSave, FaUpload } from "react-icons/fa";
+import React, { useState } from "react";
+import {
+  FaCog,
+  FaEdit,
+  FaTrashAlt,
+  FaSave,
+  FaUpload,
+  FaEnvelope,
+  FaBell,
+} from "react-icons/fa";
 
 const SettingsPage: React.FC = () => {
+  // State to manage toggles
+  const [notificationSettings, setNotificationSettings] = useState({
+    notifications: true,
+    messages: false,
+    reminders: true,
+  });
+
+  // Handler to toggle preferences
+  const toggleSetting = (setting: string) => {
+    setNotificationSettings((prev) => ({
+      ...prev,
+      [setting]: !prev[setting],
+    }));
+  };
+
   return (
     <div className="flex w-full min-h-screen p-6 bg-lightGray">
       {/* Left Navigation Panel */}
@@ -98,11 +121,56 @@ const SettingsPage: React.FC = () => {
         </section>
 
         {/* Notification Preferences Section */}
-        <section className="space-y-4">
+        <section className="space-y-4 py-6">
           <h2 className="text-h2 font-semibold text-textPrimary font-primary">
             Notification Preferences
           </h2>
-          {/* TODO: Implement notification preferences section */}
+
+          {/* Toggle Switches */}
+          <div className="space-y-4">
+            {[
+              {
+                label: "Notifications",
+                state: notificationSettings.notifications,
+                key: "notifications",
+              },
+              {
+                label: "Messages",
+                state: notificationSettings.messages,
+                key: "messages",
+              },
+              {
+                label: "Activity Reminders",
+                state: notificationSettings.reminders,
+                key: "reminders",
+              },
+            ].map(({ label, state, key }) => (
+              <div key={key} className="flex items-center justify-between">
+                <span className="text-lg text-textPrimary font-primary">
+                  {label}
+                </span>
+                <input
+                  type="checkbox"
+                  className="toggle toggle-primary"
+                  checked={state}
+                  onChange={() => toggleSetting(key)}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Email and Push Notifications */}
+          <div className="flex items-center gap-2 mt-4">
+            <button className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full hover:bg-primaryDark transition">
+              <FaEnvelope />
+              Email Notifications
+            </button>
+            <span className="text-textSecondary font-primary">or</span>
+            <button className="flex items-center gap-2 bg-secondary text-white px-4 py-2 rounded-full hover:bg-secondaryDark transition">
+              <FaBell />
+              Push Notifications
+            </button>
+          </div>
         </section>
 
         {/* Privacy Preferences Section */}

@@ -8,6 +8,7 @@ const config: Config = {
         primary: "#007BFF",
         primaryDark: "#0056b3",
         secondary: "#FFA500",
+        secondaryDark: "#b37300",
         lightGray: "#F7F7F7",
         mediumGray: "#B0B0B0",
         actionAmber: "#FFBF00",
