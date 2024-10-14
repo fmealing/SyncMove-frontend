@@ -17,7 +17,7 @@ const Onboarding: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full mx-auto p-4">
+    <div className="flex flex-col items-center w-full mx-auto p-4 min-h-screen">
       {/* Progress Bar */}
       <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
         <div
