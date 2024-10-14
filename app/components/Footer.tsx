@@ -9,28 +9,28 @@ const Footer: React.FC = () => {
         {/* Social Media Icons */}
         <div className="flex space-x-8">
           <Link
-            href="https://www.linkedin.com"
+            href="https://www.linkedin.com/in/florian-mealing"
             target="_blank"
             rel="noopener noreferrer"
           >
             <FaLinkedin className="w-12 h-12 hover:text-opacity-80 transition" />
           </Link>
           <Link
-            href="https://twitter.com"
+            href="https://www.linkedin.com/in/florian-mealing"
             target="_blank"
             rel="noopener noreferrer"
           >
             <FaTwitter className="w-12 h-12 hover:text-opacity-80 transition" />
           </Link>
           <Link
-            href="https://www.facebook.com"
+            href="https://www.linkedin.com/in/florian-mealing"
             target="_blank"
             rel="noopener noreferrer"
           >
             <FaFacebook className="w-12 h-12 hover:text-opacity-80 transition" />
           </Link>
           <Link
-            href="https://www.instagram.com"
+            href="https://www.linkedin.com/in/florian-mealing"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -40,19 +40,22 @@ const Footer: React.FC = () => {
 
         {/* Navigation Links */}
         <div className="flex space-x-6 text-sm font-medium">
-          <Link href="#home" className="hover:underline text-lg">
+          <Link href="/" className="hover:underline text-lg">
             Home
           </Link>
           <Link href="#features" className="hover:underline text-lg">
+            {/* TODO: Implement Features page */}
             Features
           </Link>
           <Link href="#pricing" className="hover:underline text-lg">
+            {/* TODO: Implement Pricing page  */}
             Pricing
           </Link>
           <Link href="#about" className="hover:underline text-lg">
+            {/* TODO: Implement About Us page */}
             About Us
           </Link>
-          <Link href="#faq" className="hover:underline text-lg">
+          <Link href="/FAQ" className="hover:underline text-lg">
             FAQ
           </Link>
         </div>
