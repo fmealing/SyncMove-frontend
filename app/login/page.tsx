@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState } from "react";
 import React from "react";
 import { FaEye, FaEyeSlash, FaSignInAlt } from "react-icons/fa";
@@ -81,9 +82,11 @@ const Login: React.FC = () => {
           </div>
 
           {/* Sign In Button */}
-          <button className="w-full max-w-md h-12 px-4 bg-primary rounded-btn flex justify-center items-center gap-2 text-white text-base font-medium font-primary leading-tight hover:bg-primaryDark transition">
-            <FaSignInAlt className="w-5 h-5 text-white" /> Sign In
-          </button>
+          <Link href="/dashboard">
+            <button className="w-full max-w-md h-12 px-4 bg-primary rounded-btn flex justify-center items-center gap-2 text-white text-base font-medium font-primary leading-tight hover:bg-primaryDark transition">
+              <FaSignInAlt className="w-5 h-5 text-white" /> Sign In
+            </button>
+          </Link>
         </div>
       </div>
 

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import DatePicker from "../components/onboarding/DatePicker";
 import TimeSelector from "../components/onboarding/TimeSelector";
 import { FaCheckCircle } from "react-icons/fa";
+import Link from "next/link";
 
 const ScheduleWorkoutPage = () => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -46,9 +47,11 @@ const ScheduleWorkoutPage = () => {
           </div>
         </div>
 
-        <button className="flex gap-2 items-center justify-center bg-primary text-white text-xl font-primary px-6 py-3 rounded-full mt-6">
-          <FaCheckCircle /> Confirm Activity
-        </button>
+        <Link href="/dashboard">
+          <button className="flex gap-2 items-center justify-center bg-primary text-white text-xl font-primary px-6 py-3 rounded-full mt-6">
+            <FaCheckCircle /> Confirm Activity
+          </button>
+        </Link>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import React, { useState } from "react";
 import {
   FaCog,
@@ -329,10 +330,12 @@ const SettingsPage: React.FC = () => {
             <FaTrashAlt />
             Delete Account
           </button>
-          <button className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full hover:bg-primaryDark transition">
-            <FaSave />
-            Save Changes
-          </button>
+          <Link href="/dashboard">
+            <button className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full hover:bg-primaryDark transition">
+              <FaSave />
+              Save Changes
+            </button>
+          </Link>
         </div>
       </div>
     </div>

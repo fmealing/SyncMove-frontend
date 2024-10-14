@@ -55,9 +55,21 @@ const Dashboard = () => {
 
       {/* Navigation Buttons */}
       <div className="flex flex-col gap-4 max-w-56">
-        <NavigationButton label="Notifications" Icon={FaBell} />
-        <NavigationButton label="Messages" Icon={FaEnvelope} />
-        <NavigationButton label="Profile Settings" Icon={FaUser} />
+        <NavigationButton
+          label="Notifications"
+          Icon={FaBell}
+          href="/notifications"
+        />
+        <NavigationButton
+          label="Messages"
+          Icon={FaEnvelope}
+          href="/messaging"
+        />
+        <NavigationButton
+          label="Profile Settings"
+          Icon={FaUser}
+          href="/settings"
+        />
       </div>
 
       <Section title="Suggested Partners">
