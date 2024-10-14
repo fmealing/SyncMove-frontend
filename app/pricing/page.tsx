@@ -1,6 +1,9 @@
+// Make the background a bit better. A bit plain right now.
+
 "use client";
+import Link from "next/link";
 import React from "react";
-import { FaCheck, FaCheckCircle, FaStar } from "react-icons/fa";
+import { FaCheck, FaStar } from "react-icons/fa";
 
 const PricingPage: React.FC = () => {
   const freeFeatures = [
@@ -45,9 +48,11 @@ const PricingPage: React.FC = () => {
             </li>
           ))}
         </ul>
-        <button className="bg-primary text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-primaryDark transition">
-          Get Started for Free
-        </button>
+        <Link href="/signup">
+          <button className="bg-primary text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-primaryDark transition mt-6">
+            Get Started for Free
+          </button>
+        </Link>
       </section>
 
       {/* Future Premium Section */}

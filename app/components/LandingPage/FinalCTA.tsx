@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 import { FaArrowRight } from "react-icons/fa";
 
@@ -11,8 +12,10 @@ const FinalCTA: React.FC = () => {
 
       {/* Sign Up Button */}
       <button className="flex items-center px-8 py-4 bg-primary text-white rounded-full text-lg font-bold font-secondary transition duration-300 hover:bg-opacity-90">
-        <span className="mr-3">Sign Up Now</span>
-        <FaArrowRight className="w-5 h-5" />
+        <Link href="/signup" className="flex items-center justify-center">
+          <span className="mr-3">Sign Up Now</span>
+          <FaArrowRight className="w-5 h-5" />
+        </Link>
       </button>
     </div>
   );
