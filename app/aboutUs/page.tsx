@@ -102,8 +102,10 @@ const AboutUsPage: React.FC = () => {
           community!
         </p>
         <button className="mt-4 flex items-center justify-center gap-2 bg-primary text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-primaryDark transition">
-          <FaHandshake size={24} />
-          Connect with Us
+          <Link href="/FAQ" className="flex items-center justify-center gap-2">
+            <FaHandshake size={24} />
+            Connect with Us
+          </Link>
         </button>
       </section>
     </div>

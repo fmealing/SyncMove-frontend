@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
-import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 
 const SignupPage = () => {
@@ -42,6 +42,7 @@ const SignupPage = () => {
           onSubmit={handleSubmit}
           className="space-y-4 flex flex-col items-center justify-center"
         >
+          {/* Full Name Field */}
           <div className="w-full flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:border-primary">
             <FaUser className="text-gray-400 mr-3" />
             <input
@@ -55,6 +56,7 @@ const SignupPage = () => {
             />
           </div>
 
+          {/* Email Field */}
           <div className="w-full flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:border-primary">
             <FaEnvelope className="text-gray-400 mr-3" />
             <input
@@ -68,6 +70,7 @@ const SignupPage = () => {
             />
           </div>
 
+          {/* Password Field */}
           <div className="w-full flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:border-primary">
             <FaLock className="text-gray-400 mr-3" />
             <input
@@ -88,6 +91,7 @@ const SignupPage = () => {
             </button>
           </div>
 
+          {/* Confirm Password Field */}
           <div className="w-full flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:border-primary">
             <FaLock className="text-gray-400 mr-3" />
             <input
@@ -108,13 +112,16 @@ const SignupPage = () => {
             </button>
           </div>
 
+          {/* Sign Up Button with Icon */}
           <button
             type="submit"
-            className="w-1/2 text-center text-white bg-primary rounded-full px-4 py-2 hover:bg-primaryDark transition"
+            className="w-1/2 flex items-center justify-center gap-2 text-white bg-primary rounded-full px-4 py-2 hover:bg-primaryDark transition"
           >
+            <FaUserPlus />
             Sign Up
           </button>
 
+          {/* Link to Login */}
           <Link href="/login">
             <p className="text-center text-textSecondary font-primary">
               Already have an account?{" "}
