@@ -43,8 +43,7 @@ const Footer: React.FC = () => {
           <Link href="/" className="hover:underline text-lg">
             Home
           </Link>
-          <Link href="#features" className="hover:underline text-lg">
-            {/* TODO: Implement Features page */}
+          <Link href="/features" className="hover:underline text-lg">
             Features
           </Link>
           <Link href="#pricing" className="hover:underline text-lg">
