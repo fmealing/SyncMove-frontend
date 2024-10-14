@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Step1: React.FC = () => {
   const preferences = [
@@ -28,6 +28,21 @@ const Step1: React.FC = () => {
     },
   ];
 
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
+  const [experienceLevels, setExperienceLevels] = useState(
+    Array(preferences.length).fill(0)
+  );
+
+  const handleCardClick = (index: number) => {
+    setSelectedCard(index === selectedCard ? null : index);
+  };
+
+  const handleExperienceClick = (index: number, level: number) => {
+    const updatedLevels = [...experienceLevels];
+    updatedLevels[index] = level;
+    setExperienceLevels(updatedLevels);
+  };
+
   return (
     <div className="flex flex-col items-center w-full">
       {/* Heading */}
@@ -40,7 +55,12 @@ const Step1: React.FC = () => {
         {preferences.map((preference, index) => (
           <div
             key={index}
-            className="flex h-52 p-6 rounded-[10px] border-2 border-textPrimary justify-start items-center gap-6 bg-lightGray shadow-md"
+            onClick={() => handleCardClick(index)}
+            className={`flex h-60 p-6 rounded-[10px] border-2 justify-start items-center gap-6 shadow-md cursor-pointer transition ${
+              selectedCard === index
+                ? "border-primary bg-primary/10"
+                : "border-textPrimary bg-lightGray"
+            }`}
           >
             <img
               src={preference.imageSrc}
@@ -54,6 +74,24 @@ const Step1: React.FC = () => {
               <p className="text-textPrimary text-lg font-normal leading-snug font-primary">
                 {preference.description}
               </p>
+
+              {/* Experience Level Selector */}
+              <div className="flex items-center gap-1 mt-2">
+                {[1, 2, 3, 4, 5].map((level) => (
+                  <button
+                    key={level}
+                    onClick={() => handleExperienceClick(index, level)}
+                    className={`w-6 h-6 rounded-full transition ${
+                      experienceLevels[index] >= level
+                        ? "bg-primary"
+                        : "bg-gray-300"
+                    }`}
+                  />
+                ))}
+                <span className="text-sm text-gray-500 ml-2 font-primary">
+                  Level {experienceLevels[index]}
+                </span>
+              </div>
             </div>
           </div>
         ))}

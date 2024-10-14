@@ -31,6 +31,14 @@ const SettingsPage: React.FC = () => {
     Other: [],
   });
 
+  // Activity Levels
+  const [activityLevels, setActivityLevels] = useState<Record<string, number>>({
+    Weightlifting: 1,
+    Running: 1,
+    Yoga: 1,
+    Other: 1,
+  });
+
   // State to manage toggles
   const [notificationSettings, setNotificationSettings] =
     useState<NotificationSettings>({
@@ -75,6 +83,14 @@ const SettingsPage: React.FC = () => {
     setNotificationSettings((prev) => ({
       ...prev,
       [setting]: !prev[setting],
+    }));
+  };
+
+  // Handler to set Activity Levels
+  const setExperienceLevel = (activity: string, level: number) => {
+    setActivityLevels((prev) => ({
+      ...prev,
+      [activity]: level,
     }));
   };
 
@@ -173,23 +189,48 @@ const SettingsPage: React.FC = () => {
           </div>
 
           {/* Preferred Activities */}
+          {/* Preferred Activities */}
           <div>
             <p className="text-lg text-textPrimary font-semibold mb-2 font-primary">
               Select Your Preferred Activities
             </p>
             <div className="flex flex-wrap gap-2">
               {["Weightlifting", "Running", "Yoga", "Other"].map((activity) => (
-                <button
-                  key={activity}
-                  className={`px-4 py-2 rounded-full border font-primary ${
-                    preferredActivities.includes(activity)
-                      ? "bg-primary text-white"
-                      : "border-secondary border-2 text-textPrimary"
-                  }`}
-                  onClick={() => toggleActivity(activity)}
-                >
-                  {activity}
-                </button>
+                <div key={activity} className="flex flex-col items-start">
+                  {/* Activity Button */}
+                  <button
+                    className={`px-4 py-2 rounded-full border font-primary ${
+                      preferredActivities.includes(activity)
+                        ? "bg-primary text-white"
+                        : "border-secondary border-2 text-textPrimary"
+                    }`}
+                    onClick={() => toggleActivity(activity)}
+                  >
+                    {activity}
+                  </button>
+
+                  {/* Experience Level Buttons for Selected Activity */}
+                  {preferredActivities.includes(activity) && (
+                    <div className="mt-2 flex space-x-2">
+                      <p className="text-sm text-textSecondary font-primary mr-2">
+                        Experience Level:
+                      </p>
+                      {[1, 2, 3, 4, 5].map((level) => (
+                        <button
+                          key={level}
+                          onClick={() => setExperienceLevel(activity, level)}
+                          className={`w-8 h-8 rounded-full ${
+                            activityLevels[activity] === level
+                              ? "bg-primary text-white"
+                              : "bg-gray-200 text-gray-700"
+                          }`}
+                        >
+                          {level}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </div>

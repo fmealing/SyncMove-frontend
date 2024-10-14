@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Step2: React.FC = () => {
   const goals = [
@@ -28,6 +28,12 @@ const Step2: React.FC = () => {
     },
   ];
 
+  const [selectedGoal, setSelectedGoal] = useState<number | null>(null);
+
+  const handleCardClick = (index: number) => {
+    setSelectedGoal(index === selectedGoal ? null : index);
+  };
+
   return (
     <div className="flex flex-col items-center w-full">
       {/* Title */}
@@ -40,7 +46,12 @@ const Step2: React.FC = () => {
         {goals.map((goal, index) => (
           <div
             key={index}
-            className="flex h-52 p-6 rounded-[10px] border-2 border-textPrimary justify-start items-center gap-6 bg-lightGray shadow-md"
+            onClick={() => handleCardClick(index)}
+            className={`flex h-52 p-6 rounded-[10px] border-2 justify-start items-center gap-6 shadow-md cursor-pointer transition ${
+              selectedGoal === index
+                ? "border-primary bg-primary/10"
+                : "border-textPrimary bg-lightGray"
+            }`}
           >
             <img
               src={goal.imageSrc}
