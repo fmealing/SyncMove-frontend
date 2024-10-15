@@ -63,7 +63,7 @@ const pendingPartners = [
     name: "Florian Mealing",
     location: "New York, USA",
     image: "/avatars/avatar-developer.jpg",
-    bio: "Frontend developer with a love for React.",
+    bio: "Millionaire, saves children from fires, very humble.",
   },
   {
     name: "Alice Johnson",

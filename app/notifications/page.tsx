@@ -25,20 +25,23 @@ const NotificationsPage = () => {
     {
       id: 1,
       timestamp: "5 minutes ago",
-      message: "New message from Alice",
+      message: "Alice sent you a match request",
       read: false,
+      type: "match request",
     },
     {
       id: 2,
       timestamp: "2 hours ago",
       message: "Bob wants to go running",
       read: false,
+      type: "message",
     },
     {
       id: 3,
       timestamp: "1 day ago",
-      message: "Charlie sent you a friend request",
+      message: "Charlie wants to be your friend",
       read: false,
+      type: "activity invite",
     },
   ]);
 
@@ -96,6 +99,20 @@ const NotificationsPage = () => {
                     </p>
                     <p className="text-lg text-textPrimary font-primary">
                       {notification.message}
+                    </p>
+                    <p
+                      className={`flex items-center justify-center max-w-32 w-full text-sm font-bold px-3 py-1 rounded-full text-white
+                                  ${
+                                    notification.type === "match request"
+                                      ? "bg-red-500"
+                                      : notification.type === "message"
+                                      ? "bg-green-500"
+                                      : notification.type === "activity invite"
+                                      ? "bg-yellow-500"
+                                      : "bg-gray-500"
+                                  }`}
+                    >
+                      {notification.type}
                     </p>
                   </div>
                   <div className="flex space-x-3">
