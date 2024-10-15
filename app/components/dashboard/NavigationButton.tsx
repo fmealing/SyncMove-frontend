@@ -14,7 +14,7 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
   href,
 }) => (
   <Link href={href}>
-    <button className="font-primary flex gap-2 rounded-full bg-primary text-lightGray px-4 py-2 text-[18px] items-center justify-center">
+    <button className="max-w-lg w-full font-primary flex gap-2 rounded-full bg-primary text-lightGray px-4 py-2 text-[18px] items-center justify-center hover:bg-primaryDark">
       <Icon />
       {label}
     </button>

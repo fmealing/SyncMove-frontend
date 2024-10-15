@@ -1,5 +1,11 @@
 import React from "react";
-import { FaBell, FaEnvelope, FaUser } from "react-icons/fa";
+import {
+  FaBell,
+  FaDumbbell,
+  FaEnvelope,
+  FaUser,
+  FaUserAstronaut,
+} from "react-icons/fa";
 import NavigationButton from "../components/dashboard/NavigationButton";
 import PartnerCard from "../components/dashboard/PartnerCard";
 import ActivityCard from "../components/dashboard/ActivityCard";
@@ -70,17 +76,16 @@ const Dashboard = () => {
           Icon={FaUser}
           href="/settings"
         />
+        <NavigationButton
+          label="matches"
+          Icon={FaUserAstronaut}
+          href="/matching"
+        />
       </div>
 
-      <Section title="Suggested Partners">
+      <Section title="Suggested Partners" href="/matching">
         {suggestedPartners.map((partner, index) => (
           <PartnerCard key={index} {...partner} />
-        ))}
-      </Section>
-
-      <Section title="Your Activities">
-        {activities.map((activity, index) => (
-          <ActivityCard key={index} {...activity} />
         ))}
       </Section>
     </div>
