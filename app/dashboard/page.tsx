@@ -8,7 +8,6 @@ import {
 } from "react-icons/fa";
 import NavigationButton from "../components/dashboard/NavigationButton";
 import PartnerCard from "../components/dashboard/PartnerCard";
-import ActivityCard from "../components/dashboard/ActivityCard";
 import Section from "../components/dashboard/Section";
 
 const suggestedPartners = [
@@ -32,21 +31,45 @@ const suggestedPartners = [
   },
 ];
 
-const activities = [
+const connectedPartners = [
   {
-    name: "Running",
+    name: "Jane Doe",
     location: "London, UK",
-    description: "Join me for a morning run in Hyde Park.",
+    image: "/avatars/avatar-2.jpg",
+    bio: "Creative designer with a passion for collaboration.",
   },
   {
-    name: "Yoga",
+    name: "John Smith",
     location: "New York, USA",
-    description: "Relax and unwind with a yoga session in Central Park.",
+    image: "/avatars/avatar-3.jpg",
+    bio: "Frontend developer with a love for React.",
   },
   {
-    name: "Cycling",
+    name: "Alice Johnson",
     location: "Paris, France",
-    description: "Explore the city on two wheels with a cycling tour.",
+    image: "/avatars/avatar-4.jpg",
+    bio: "UX designer with a focus on user research.",
+  },
+];
+
+const pendingPartners = [
+  {
+    name: "Jane Doe",
+    location: "London, UK",
+    image: "/avatars/avatar-5.jpg",
+    bio: "Creative designer with a passion for collaboration.",
+  },
+  {
+    name: "Florian Mealing",
+    location: "New York, USA",
+    image: "/avatars/avatar-developer.jpg",
+    bio: "Frontend developer with a love for React.",
+  },
+  {
+    name: "Alice Johnson",
+    location: "Paris, France",
+    image: "/avatars/avatar-4.jpg",
+    bio: "UX designer with a focus on user research.",
   },
 ];
 
@@ -77,14 +100,29 @@ const Dashboard = () => {
           href="/settings"
         />
         <NavigationButton
-          label="matches"
+          label="matching"
           Icon={FaUserAstronaut}
           href="/matching"
         />
       </div>
 
-      <Section title="Suggested Partners" href="/matching">
+      {/* Suggested Partners */}
+      <Section title="Suggested Partners">
         {suggestedPartners.map((partner, index) => (
+          <PartnerCard key={index} {...partner} />
+        ))}
+      </Section>
+
+      {/* Matched Partners */}
+      <Section title="Matched Partners">
+        {connectedPartners.map((partner, index) => (
+          <PartnerCard key={index} {...partner} />
+        ))}
+      </Section>
+
+      {/* Pending Partners */}
+      <Section title="Pending Partners">
+        {pendingPartners.map((partner, index) => (
           <PartnerCard key={index} {...partner} />
         ))}
       </Section>
