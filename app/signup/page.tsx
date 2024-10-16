@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { FaUser, FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 
+import axios from "axios";
+
 const SignupPage = () => {
   const [formdata, setFormdata] = useState({
     fullName: "",
@@ -22,10 +24,35 @@ const SignupPage = () => {
     setShowPassword((prev) => !prev);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form Data:", formdata);
-    // TODO: Send the form data to the server
+
+    // Check if password and confirm password match
+    if (formdata.password !== formdata.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    console.log("Form data:", formdata);
+    console.log("Submitting form...");
+
+    try {
+      // Make POST request to register endpoint
+      const response = await axios.post(
+        "http://localhost:5001/api/auth/register",
+        {
+          fullName: formdata.fullName,
+          email: formdata.email,
+          password: formdata.password,
+        }
+      );
+
+      // Redirect to onboarding or login page after successful registration
+      window.location.href = "/onboarding";
+    } catch (error) {
+      console.error("Registration failed:", error);
+      alert("Failed to register. Please try again.");
+    }
   };
 
   return (
@@ -117,13 +144,8 @@ const SignupPage = () => {
             type="submit"
             className="w-1/2 flex items-center justify-center gap-2 text-white bg-primary rounded-full px-4 py-2 hover:bg-primaryDark transition"
           >
-            <Link
-              href="/onboarding"
-              className="flex items-center justify-center gap-2"
-            >
-              <FaUserPlus />
-              Sign Up
-            </Link>
+            <FaUserPlus />
+            Sign Up
           </button>
 
           {/* Link to Login */}

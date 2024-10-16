@@ -15,7 +15,7 @@ const PartnerProfile = () => {
           />
           <div className="text-center">
             <h2 className="text-2xl font-bold text-textPrimary font-primary">
-              Jane Do
+              Jane Doe
             </h2>
             <p className="text-textSecondary font-primary">
               28 years old • 5 miles away
