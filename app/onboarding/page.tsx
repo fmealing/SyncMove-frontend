@@ -9,6 +9,8 @@ import axios from "axios";
 const Onboarding: React.FC = () => {
   const [step, setStep] = useState(1);
   const [fitnessGoal, setFitnessGoal] = useState("");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [userId] = useState("670fde1aa9cfbad6c7e0aa4b");
   const [userData, setUserData] = useState({
     activityType: "",
@@ -21,7 +23,7 @@ const Onboarding: React.FC = () => {
     } else if (step === 2) {
       handleSubmitStep2();
     } else {
-      setStep(step + 1);
+      handleSubmitStep3(); // Submit date and time when finishing Step 3
     }
   };
 
@@ -74,15 +76,37 @@ const Onboarding: React.FC = () => {
           },
         }
       );
-      setStep(step + 1); // Proceed to Step 3
+      setStep(step + 1);
     } catch (error) {
       console.error("Failed to submit Step 2 data:", error);
     }
   };
 
+  const handleSubmitStep3 = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.put(
+        `http://localhost:5001/api/users/${userId}`,
+        {
+          availabilityDate: selectedDate,
+          availabilityTime: selectedTime,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Navigate to the dashboard or complete the onboarding process
+      window.location.href = "/dashboard";
+    } catch (error) {
+      console.error("Failed to submit Step 3 data:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center w-full mx-auto p-4 min-h-screen">
-      {/* Progress Bar */}
       <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
         <div
           className="bg-primary h-2.5 rounded-full"
@@ -90,14 +114,14 @@ const Onboarding: React.FC = () => {
         />
       </div>
 
-      {/* Step Content */}
       <div className="w-full">
         {step === 1 && <Step1 onSubmit={handleStep1Data} />}
         {step === 2 && <Step2 onSubmit={handleStep2Data} />}
-        {step === 3 && <Step3 />}
+        {step === 3 && (
+          <Step3 setDate={setSelectedDate} setTime={setSelectedTime} />
+        )}
       </div>
 
-      {/* Navigation Buttons */}
       <div className="flex justify-center w-full mt-6 gap-4">
         <button
           className="h-12 px-4 rounded-md border-2 border-[#ffa500] flex justify-center items-center gap-2 text-[#ffa500] text-lg font-bold font-['Montserrat']"

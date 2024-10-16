@@ -1,22 +1,24 @@
 import React, { useState } from "react";
 import { FaClock } from "react-icons/fa";
 
-const TimeSelector: React.FC = () => {
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
-
+const TimeSelector: React.FC<{ setTime: (time: string) => void }> = ({
+  setTime,
+}) => {
   const times = [
     { label: "Morning (8-10AM)", value: "morning" },
     { label: "Afternoon (12-2PM)", value: "afternoon" },
     { label: "Evening (6-8PM)", value: "evening" },
   ];
 
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+
   const handleTimeClick = (time: string) => {
     setSelectedTime(time);
-    console.log("Selected Time:", time); // TODO: Delete this line
+    setTime(time); // Pass the selected time to the parent component
   };
 
   return (
-    <div className="flex flex-col items-center w-full space-y-4 space-x-4 max-w-72">
+    <div className="flex flex-col items-center w-full space-y-4 max-w-72">
       {times.map((time) => (
         <button
           key={time.value}
