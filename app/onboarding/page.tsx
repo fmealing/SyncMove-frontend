@@ -8,6 +8,7 @@ import axios from "axios";
 
 const Onboarding: React.FC = () => {
   const [step, setStep] = useState(1);
+  const [fitnessGoal, setFitnessGoal] = useState("");
   const [userId] = useState("670fde1aa9cfbad6c7e0aa4b");
   const [userData, setUserData] = useState({
     activityType: "",
@@ -17,6 +18,8 @@ const Onboarding: React.FC = () => {
   const goNext = () => {
     if (step === 1) {
       handleSubmitStep1();
+    } else if (step === 2) {
+      handleSubmitStep2();
     } else {
       setStep(step + 1);
     }
@@ -30,9 +33,12 @@ const Onboarding: React.FC = () => {
     setUserData({ activityType, experienceLevel });
   };
 
+  const handleStep2Data = (goal: string) => {
+    setFitnessGoal(goal);
+  };
+
   const handleSubmitStep1 = async () => {
     try {
-      // Retrieve the token
       const token = localStorage.getItem("token");
 
       await axios.put(
@@ -47,9 +53,30 @@ const Onboarding: React.FC = () => {
           },
         }
       );
-      setStep(step + 1); // Proceed to the next step after data submission
+      setStep(step + 1);
     } catch (error) {
       console.error("Failed to submit Step 1 data:", error);
+    }
+  };
+
+  const handleSubmitStep2 = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.put(
+        `http://localhost:5001/api/users/${userId}`,
+        {
+          fitnessGoals: fitnessGoal,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setStep(step + 1); // Proceed to Step 3
+    } catch (error) {
+      console.error("Failed to submit Step 2 data:", error);
     }
   };
 
@@ -66,7 +93,7 @@ const Onboarding: React.FC = () => {
       {/* Step Content */}
       <div className="w-full">
         {step === 1 && <Step1 onSubmit={handleStep1Data} />}
-        {step === 2 && <Step2 />}
+        {step === 2 && <Step2 onSubmit={handleStep2Data} />}
         {step === 3 && <Step3 />}
       </div>
 
