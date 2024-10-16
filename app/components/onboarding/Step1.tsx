@@ -1,29 +1,27 @@
 import React, { useState } from "react";
 
-const Step1: React.FC = () => {
+const Step1: React.FC<{
+  onSubmit: (activityType: string, experienceLevel: number) => void;
+}> = ({ onSubmit }) => {
   const preferences = [
     {
       title: "Gym",
-      description:
-        "Strength training, cardio, and more. Find partners who share your passion for hitting the gym.",
+      description: "Strength training, cardio...",
       imageSrc: "/onboarding-gym.jpg",
     },
     {
       title: "Cycling",
-      description:
-        "Join fellow cyclists for rides through scenic routes or intense road cycling sessions.",
+      description: "Join fellow cyclists...",
       imageSrc: "/onboarding-cycling.jpg",
     },
     {
       title: "Running",
-      description:
-        "From marathons to morning jogs, connect with running enthusiasts at all levels.",
+      description: "From marathons to jogs...",
       imageSrc: "/onboarding-running.jpg",
     },
     {
       title: "Other",
-      description:
-        "Yoga, swimming, hiking, and beyond. Discover partners for any activity that suits your lifestyle.",
+      description: "Yoga, swimming, hiking...",
       imageSrc: "/onboarding-other-1.jpg",
     },
   ];
@@ -41,16 +39,18 @@ const Step1: React.FC = () => {
     const updatedLevels = [...experienceLevels];
     updatedLevels[index] = level;
     setExperienceLevels(updatedLevels);
+
+    // Call onSubmit directly when user makes a selection
+    if (selectedCard !== null) {
+      onSubmit(preferences[selectedCard].title, experienceLevels[selectedCard]);
+    }
   };
 
   return (
     <div className="flex flex-col items-center w-full">
-      {/* Heading */}
       <h2 className="text-3xl font-bold text-textPrimary mb-6 font-primary">
         Choose Your Preferences
       </h2>
-
-      {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-[1100px]">
         {preferences.map((preference, index) => (
           <div
@@ -74,8 +74,6 @@ const Step1: React.FC = () => {
               <p className="text-textPrimary text-lg font-normal leading-snug font-primary">
                 {preference.description}
               </p>
-
-              {/* Experience Level Selector */}
               <div className="flex items-center gap-1 mt-2">
                 {[1, 2, 3, 4, 5].map((level) => (
                   <button

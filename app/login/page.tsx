@@ -29,6 +29,9 @@ const Login: React.FC = () => {
         }
       );
 
+      // Assuming the token is returned in response.data.token
+      const token = response.data.token;
+      localStorage.setItem("token", token); // Save the token to local storage
       console.log("Login successful:", response.data);
 
       // Redirect to the dashboard after successful login
