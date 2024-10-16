@@ -1,20 +1,3 @@
-// TO IMPLEMENT using DaisyUI and TailwindCSS
-// Bio section
-// Left side (1/3)
-// - Image (264x264px fully round)
-// - Name, Age, Distance
-// Right side (2/3)
-// - Bio heading, horizontal divider, description
-// - Fitness Goals heading, horizontal divider, list of goals
-// Activity Preference section
-// - 2 x 2 grid of buttons (outline)
-// - On the left, type of activity (i.e. running, weightlifting, cycling or other) with heart rate icon
-// - On the right, skill level (i.e. beginner, intermediate, advanced) with award icon
-// Availability section
-// - clock icon then availability (i.e. mornings, afternoons, evenings) plus the type of activity (i.e. running, weightlifting, cycling or other)
-
-// TODO: Make this better
-
 import React from "react";
 import { FaAward, FaHeartbeat, FaClock } from "react-icons/fa";
 
@@ -32,7 +15,7 @@ const PartnerProfile = () => {
           />
           <div className="text-center">
             <h2 className="text-2xl font-bold text-textPrimary font-primary">
-              Jane Doe
+              Jane Do
             </h2>
             <p className="text-textSecondary font-primary">
               28 years old • 5 miles away
