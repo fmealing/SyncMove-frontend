@@ -3,9 +3,41 @@ import Link from "next/link";
 import { useState } from "react";
 import React from "react";
 import { FaEye, FaEyeSlash, FaSignInAlt } from "react-icons/fa";
+import axios from "axios";
 
 const Login: React.FC = () => {
+  const [formdata, setFormdata] = useState({
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormdata((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5001/api/auth/login",
+        {
+          email: formdata.email,
+          password: formdata.password,
+        }
+      );
+
+      console.log("Login successful:", response.data);
+
+      // Redirect to the dashboard after successful login
+      window.location.href = "/dashboard";
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Login failed. Please check your email and password.");
+    }
+  };
 
   return (
     <div className="flex h-screen">
@@ -40,53 +72,67 @@ const Login: React.FC = () => {
             <hr className="flex-grow border-textPrimary/10" />
           </div>
 
-          {/* Email Input */}
-          <div className="w-full max-w-md mb-4">
-            <label className="block text-textPrimary/75 text-sm font-medium font-primary mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              placeholder="example@email.com"
-              className="w-full h-11 px-3 py-[11px] bg-white rounded-full border border-[#cbd2e0] text-[#333333] text-base font-normal font-primary"
-            />
-          </div>
-
-          {/* Password Input */}
-          <div className="w-full max-w-md mb-6">
-            <div className="flex justify-between items-center mb-1">
-              <label className="text-textPrimary/75 text-sm font-medium font-primary">
-                Password
+          <form
+            onSubmit={handleLogin}
+            className="w-full flex flex-col items-center"
+          >
+            {/* Email Input */}
+            <div className="w-full max-w-md mb-4">
+              <label className="block text-textPrimary/75 text-sm font-medium font-primary mb-1">
+                Email
               </label>
-              <a
-                href="#"
-                className="text-[#717d96] text-sm font-normal font-primary"
-              >
-                Forgot password?
-              </a>
-            </div>
-            <div className="relative">
               <input
-                type={showPassword ? "text" : "password"}
-                placeholder="min 8 chars"
+                type="email"
+                name="email"
+                value={formdata.email}
+                onChange={handleInputChange}
+                placeholder="example@email.com"
                 className="w-full h-11 px-3 py-[11px] bg-white rounded-full border border-[#cbd2e0] text-[#333333] text-base font-normal font-primary"
+                required
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-[#717d96]"
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
             </div>
-          </div>
 
-          {/* Sign In Button */}
-          <Link href="/dashboard">
-            <button className="w-full max-w-md h-12 px-4 bg-primary rounded-btn flex justify-center items-center gap-2 text-white text-base font-medium font-primary leading-tight hover:bg-primaryDark transition">
+            {/* Password Input */}
+            <div className="w-full max-w-md mb-6">
+              <div className="flex justify-between items-center mb-1">
+                <label className="text-textPrimary/75 text-sm font-medium font-primary">
+                  Password
+                </label>
+                <a
+                  href="#"
+                  className="text-[#717d96] text-sm font-normal font-primary"
+                >
+                  Forgot password?
+                </a>
+              </div>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formdata.password}
+                  onChange={handleInputChange}
+                  placeholder="min 8 chars"
+                  className="w-full h-11 px-3 py-[11px] bg-white rounded-full border border-[#cbd2e0] text-[#333333] text-base font-normal font-primary"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-[#717d96]"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+            </div>
+
+            {/* Sign In Button */}
+            <button
+              type="submit"
+              className="w-full max-w-md h-12 px-4 bg-primary rounded-btn flex justify-center items-center gap-2 text-white text-base font-medium font-primary leading-tight hover:bg-primaryDark transition"
+            >
               <FaSignInAlt className="w-5 h-5 text-white" /> Sign In
             </button>
-          </Link>
+          </form>
         </div>
       </div>
 
