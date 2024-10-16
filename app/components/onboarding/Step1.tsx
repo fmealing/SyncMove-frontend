@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Step1: React.FC<{
-  onSubmit: (activityType: string, experienceLevel: number) => void;
+  onSubmit: (
+    activityType: string,
+    experienceLevel: number,
+    location: { lat: number; lon: number }
+  ) => void;
 }> = ({ onSubmit }) => {
   const preferences = [
     {
@@ -30,9 +34,29 @@ const Step1: React.FC<{
   const [experienceLevels, setExperienceLevels] = useState(
     Array(preferences.length).fill(0)
   );
+  const [location, setLocation] = useState<{ lat: number; lon: number } | null>(
+    null
+  );
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        });
+      },
+      (error) => {
+        console.error("Failed to get user location:", error);
+        // Provide a fallback or handle error as needed
+        setLocation({ lat: 0, lon: 0 });
+      }
+    );
+  }, []);
 
   const handleCardClick = (index: number) => {
     setSelectedCard(index === selectedCard ? null : index);
+    console.log("Location:", location);
   };
 
   const handleExperienceClick = (index: number, level: number) => {
@@ -41,8 +65,12 @@ const Step1: React.FC<{
     setExperienceLevels(updatedLevels);
 
     // Call onSubmit directly when user makes a selection
-    if (selectedCard !== null) {
-      onSubmit(preferences[selectedCard].title, experienceLevels[selectedCard]);
+    if (selectedCard !== null && location) {
+      onSubmit(
+        preferences[selectedCard].title,
+        experienceLevels[selectedCard],
+        location
+      );
     }
   };
 

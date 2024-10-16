@@ -1,3 +1,4 @@
+// TODO: The upload needs to work
 "use client";
 import React, { useState } from "react";
 import Step1 from "../components/onboarding/Step1";
