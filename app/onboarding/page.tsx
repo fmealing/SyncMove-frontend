@@ -1,22 +1,36 @@
 // TODO: The upload needs to work
+// TODO: Make sure everything is matching the database names
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Step1 from "../components/onboarding/Step1";
 import Step2 from "../components/onboarding/Step2";
 import Step3 from "../components/onboarding/Step3";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const Onboarding: React.FC = () => {
   const [step, setStep] = useState(1);
   const [fitnessGoal, setFitnessGoal] = useState("");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [userId] = useState("670fde1aa9cfbad6c7e0aa4b");
+  const [userId, setUserId] = useState("");
   const [userData, setUserData] = useState({
     activityType: "",
     experienceLevel: 0,
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      const decoded = jwtDecode(token);
+      // console.log(decoded?.id);
+      setUserId(decoded.id as string);
+    } else {
+      window.location.href = "/login";
+    }
+  }, []);
 
   const goNext = () => {
     if (step === 1) {
