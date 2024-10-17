@@ -26,7 +26,7 @@ const ProfileSection: React.FC = () => {
             <input
               type={label === "Password" ? "password" : "text"}
               placeholder={label}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-primary font-primary"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-primary font-primary text-textPrimary"
             />
             <button className="text-primary hover:text-primaryDark transition">
               <FaEdit className="text-2xl" />
