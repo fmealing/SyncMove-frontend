@@ -1,4 +1,3 @@
-// TODO: The upload needs to work
 import React, { useState } from "react";
 import { FaClock } from "react-icons/fa";
 

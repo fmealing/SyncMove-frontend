@@ -50,13 +50,10 @@ const Onboarding: React.FC = () => {
 
   const goNext = () => {
     if (step === 1) {
-      console.log("Submitting Step 1 data:", userData);
       handleSubmitStep1();
     } else if (step === 2) {
-      console.log("Submitting Step 2 data:", fitnessGoal);
-      handleSubmitStep2();
+      handleSubmitStep2(fitnessGoal);
     } else {
-      console.log("Submitting Step 3 data");
       handleSubmitStep3();
     }
   };
@@ -64,16 +61,6 @@ const Onboarding: React.FC = () => {
   const goBack = () => {
     if (step > 1) setStep(step - 1);
   };
-
-  const handleStep1Data = (
-    activityType: string,
-    experienceLevel: number,
-    location: { lat: number; lon: number }
-  ) => {
-    setUserData({ activityType, experienceLevel, location });
-  };
-
-  const handleStep2Data = (goal: string) => setFitnessGoal(goal);
 
   const handleSubmitStep1 = async () => {
     const token = localStorage.getItem("token");
@@ -115,12 +102,11 @@ const Onboarding: React.FC = () => {
   const handleSubmitStep3 = async () => {
     try {
       const token = localStorage.getItem("token");
-
       await axios.put(
         `http://localhost:5001/api/users/${userId}`,
         {
           availability: {
-            date: [selectedDate], // If you want to collect multiple days, you might want to change this to an array
+            date: selectedDate, // Ensure selectedDate is formatted as needed
             timeOfDay: [selectedTime],
           },
         },
@@ -130,7 +116,6 @@ const Onboarding: React.FC = () => {
           },
         }
       );
-
       // Navigate to the dashboard or complete the onboarding process
       window.location.href = "/dashboard";
     } catch (error) {

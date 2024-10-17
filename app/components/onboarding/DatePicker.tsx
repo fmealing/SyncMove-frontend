@@ -17,13 +17,16 @@ const DatePicker: React.FC<DatePickerProps> = ({ setDate }) => {
 
     if (datepickerRef.current) {
       Flatpickr(datepickerRef.current, {
-        dateFormat: "Y-m-d",
+        dateFormat: "d-m-Y", // This controls what the user sees in the input
         minDate: "today",
         maxDate,
         onChange: (selectedDates) => {
           const date = selectedDates[0];
           if (date) {
-            const formattedDate = date.toISOString().split("T")[0]; // Format to YYYY-MM-DD
+            const day = String(date.getDate()).padStart(2, "0");
+            const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+            const year = date.getFullYear();
+            const formattedDate = `${day}/${month}/${year}`; // DD/MM/YYYY format
             setDate(formattedDate); // Pass the formatted date up to the parent
           }
         },

@@ -32,7 +32,6 @@ const Step2: React.FC<{
     const goal = goals[index].title;
     setSelectedGoal(index === selectedGoal ? null : index);
 
-    console.log("Selected goal:", goal);
     onSubmit(goal); // Immediately submit the goal
   };
 

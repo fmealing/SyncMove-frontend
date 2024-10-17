@@ -53,7 +53,7 @@ const Step1: React.FC<{
   }, []);
 
   const handleCardClick = (index: number) => {
-    console.log("Location: ", location);
+    // console.log("Location: ", location);
     setSelectedCard(index);
   };
 
@@ -64,13 +64,8 @@ const Step1: React.FC<{
   };
 
   const handleSubmitStep1 = async () => {
-    console.log("Submitting Step 1 data");
-    console.log("Selected card:", selectedCard);
-    console.log("Experience levels:", experienceLevels);
-    console.log("Location:", location);
     if (selectedCard === null || !location) return; // Ensure data is selected
     const token = localStorage.getItem("token");
-    console.log("Token: ", token);
     try {
       await axios.put(
         `http://localhost:5001/api/users/${userId}`,
@@ -84,7 +79,7 @@ const Step1: React.FC<{
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("Step 1 data submitted successfully");
+      // console.log("Step 1 data submitted successfully");
       goToNextStep(); // Move to the next step after successful submission
     } catch (error) {
       console.error("Failed to submit Step 1 data:", error);
@@ -143,7 +138,7 @@ const Step1: React.FC<{
         onClick={handleSubmitStep1}
         className="h-12 px-4 bg-[#007bff] rounded-md flex justify-center items-center gap-2 text-[#f7f7f7] text-lg font-medium font-['Montserrat'] mt-6"
       >
-        Next
+        Continue to Step 2
         <FaArrowRight className="w-5 h-5" />
       </button>
     </div>
