@@ -1,7 +1,6 @@
 import React from "react";
 import { FaEnvelope, FaBell } from "react-icons/fa";
 
-// Ensure NotificationSettingKey type is available
 type NotificationSettingKey = "notifications" | "messages" | "reminders";
 
 type NotificationSettings = {
