@@ -96,22 +96,17 @@ const Onboarding: React.FC = () => {
     }
   };
 
-  const handleSubmitStep2 = async () => {
+  const handleSubmitStep2 = async (goal: string) => {
+    const token = localStorage.getItem("token");
     try {
-      const token = localStorage.getItem("token");
-
       await axios.put(
         `http://localhost:5001/api/users/${userId}`,
         {
-          fitnessGoals: fitnessGoal,
+          fitnessGoals: goal,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      setStep(step + 1);
+      setStep(3); // Move to Step 3 after API call success
     } catch (error) {
       console.error("Failed to submit Step 2 data:", error);
     }
@@ -153,11 +148,11 @@ const Onboarding: React.FC = () => {
       </div>
 
       <div className="w-full">
-        // In the Onboarding component:
+        {/* In the Onboarding component: */}
         {step === 1 && (
           <Step1 userId={userId} goToNextStep={() => setStep(2)} />
         )}
-        {step === 2 && <Step2 onSubmit={handleStep2Data} />}
+        {step === 2 && <Step2 onSubmit={handleSubmitStep2} />}
         {step === 3 && (
           <Step3 setDate={setSelectedDate} setTime={setSelectedTime} />
         )}

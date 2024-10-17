@@ -31,7 +31,9 @@ const Step2: React.FC<{
   const handleCardClick = (index: number) => {
     const goal = goals[index].title;
     setSelectedGoal(index === selectedGoal ? null : index);
-    onSubmit(goal); // Call onSubmit with the selected goal title
+
+    console.log("Selected goal:", goal);
+    onSubmit(goal); // Immediately submit the goal
   };
 
   return (
