@@ -104,17 +104,25 @@ const SettingsPage: React.FC = () => {
         </h2>
 
         <nav className="flex flex-col space-y-4">
-          {["Profile", "Preferences", "Notifications", "Privacy"].map(
-            (section) => (
-              <button
-                key={section}
-                className="flex items-center gap-2 text-textSecondary py-2 px-3 rounded-lg hover:bg-gray-100 transition"
-              >
-                <FaCog />
-                {section}
-              </button>
-            )
-          )}
+          {[
+            { section: "Profile", id: "profile" },
+            { section: "Preferences", id: "preferences" },
+            { section: "Notifications", id: "notifications" },
+            { section: "Privacy", id: "privacy" },
+          ].map(({ section, id }) => (
+            <button
+              key={section}
+              className="flex items-center gap-2 text-textSecondary py-2 px-3 rounded-lg hover:bg-gray-100 transition"
+              onClick={() => {
+                document
+                  .getElementById(id)
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              <FaCog />
+              {section}
+            </button>
+          ))}
         </nav>
       </div>
 
@@ -128,7 +136,7 @@ const SettingsPage: React.FC = () => {
         </h1>
 
         {/* Profile Section */}
-        <section className="space-y-4">
+        <section id="profile" className="space-y-4">
           <h2 className="text-h2 font-semibold text-textPrimary font-primary">
             Profile
           </h2>
@@ -160,7 +168,7 @@ const SettingsPage: React.FC = () => {
         </section>
 
         {/* Fitness Preferences Section */}
-        <section className="space-y-4">
+        <section id="preferences" className="space-y-4">
           <h2 className="text-h2 font-semibold text-textPrimary font-primary">
             Fitness Preferences
           </h2>
@@ -188,7 +196,6 @@ const SettingsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Preferred Activities */}
           {/* Preferred Activities */}
           <div>
             <p className="text-lg text-textPrimary font-semibold mb-2 font-primary">
@@ -261,7 +268,7 @@ const SettingsPage: React.FC = () => {
         </section>
 
         {/* Notification Preferences Section */}
-        <section className="space-y-4 py-6">
+        <section id="notifications" className="space-y-4 py-6">
           <h2 className="text-h2 font-semibold text-textPrimary font-primary">
             Notification Preferences
           </h2>
@@ -314,7 +321,7 @@ const SettingsPage: React.FC = () => {
         </section>
 
         {/* Privacy Preferences Section */}
-        <section className="space-y-4">
+        <section id="privacy" className="space-y-4">
           <h2 className="text-h2 font-semibold text-textPrimary font-primary">
             Privacy Preferences
           </h2>
