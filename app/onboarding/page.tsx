@@ -18,51 +18,92 @@ const Onboarding: React.FC = () => {
   const [userData, setUserData] = useState({
     activityType: "",
     experienceLevel: 0,
+    location: { lat: 0, lon: 0 },
   });
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          window.location.href = "/login";
+          return;
+        }
 
-    if (token) {
-      const decoded = jwtDecode(token);
-      // console.log(decoded?.id);
-      setUserId(decoded.id as string);
-    } else {
-      window.location.href = "/login";
-    }
+        const decoded = jwtDecode<{ id: string }>(token);
+        setUserId(decoded.id);
+
+        const response = await axios.get(
+          `http://localhost:5001/api/users/${decoded.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("User data:", response.data);
+        // Assuming response.data contains user information
+        // Update user data state if necessary
+        setUserData({
+          activityType: response.data.activityType || "",
+          experienceLevel: response.data.experienceLevel || 0,
+          location: response.data.location || {},
+        });
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const goNext = () => {
     if (step === 1) {
+      console.log("going to step 2");
       handleSubmitStep1();
     } else if (step === 2) {
+      console.log("going to step 3");
       handleSubmitStep2();
     } else {
+      console.log("submitting...");
       handleSubmitStep3(); // Submit date and time when finishing Step 3
     }
   };
 
   const goBack = () => {
+    console.log("going back");
     if (step > 1) setStep(step - 1);
   };
 
-  const handleStep1Data = (activityType: string, experienceLevel: number) => {
-    setUserData({ activityType, experienceLevel });
+  const handleStep1Data = (
+    activityType: string,
+    experienceLevel: number,
+    location: { lat: number; lon: number }
+  ) => {
+    console.log("Step 1 data:", activityType, experienceLevel);
+    setUserData({ activityType, experienceLevel, location });
   };
 
   const handleStep2Data = (goal: string) => {
+    console.log("Step 2 data:", goal);
     setFitnessGoal(goal);
   };
 
   const handleSubmitStep1 = async () => {
+    console.log("Submitting Step 1 data:", userData);
     try {
       const token = localStorage.getItem("token");
+      console.log("Token for submit step 1:", token);
 
       await axios.put(
         `http://localhost:5001/api/users/${userId}`,
         {
           activityType: userData.activityType,
           experienceLevel: userData.experienceLevel,
+          location: {
+            type: "Point",
+            coordinates: [userData.location.lon, userData.location.lat],
+          },
         },
         {
           headers: {
@@ -104,8 +145,10 @@ const Onboarding: React.FC = () => {
       await axios.put(
         `http://localhost:5001/api/users/${userId}`,
         {
-          availabilityDate: selectedDate,
-          availabilityTime: selectedTime,
+          availability: {
+            date: [selectedDate], // If you want to collect multiple days, you might want to change this to an array
+            timeOfDay: [selectedTime],
+          },
         },
         {
           headers: {
@@ -113,6 +156,7 @@ const Onboarding: React.FC = () => {
           },
         }
       );
+
       // Navigate to the dashboard or complete the onboarding process
       window.location.href = "/dashboard";
     } catch (error) {
