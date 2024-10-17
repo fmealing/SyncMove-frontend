@@ -1,3 +1,10 @@
+// TODO: Make Sidebar work ✅
+// TODO: Turn the settings page into components
+// TODO: Dynamic Profile Section
+// TODO: Dynamic Fitness Preferences Section
+// TODO: Dynamic Notification Preferences Section
+// TODO: Dynamic Privacy Preferences Section
+
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -10,6 +17,10 @@ import {
   FaEnvelope,
   FaBell,
 } from "react-icons/fa";
+import ProfileSection from "../components/Settings/ProfileSection";
+import FitnessPreferences from "../components/Settings/FitnessPreferences";
+import NotificationPreferences from "../components/Settings/NotificationPreferences";
+import PrivacyPreferences from "../components/Settings/PrivacyPreferences";
 
 // Types declaration
 type NotificationSettings = {
@@ -131,260 +142,29 @@ const SettingsPage: React.FC = () => {
 
       {/* Right Content Panel */}
       <div className="flex-1 p-6 bg-lightGray rounded-lg shadow-md space-y-8">
-        <h1 className="text-h1 font-semibold text-textPrimary font-primary">
-          Settings
-        </h1>
-
-        {/* Profile Section */}
-        <section id="profile" className="space-y-4">
-          <h2 className="text-h2 font-semibold text-textPrimary font-primary">
-            Profile
-          </h2>
-          <div className="flex items-center space-x-4">
-            <img
-              src="/avatars/avatar-1.jpg"
-              alt="Profile"
-              className="w-28 h-28 rounded-full border-2 border-textPrimary object-cover"
-            />
-            <button className="flex items-center gap-2 px-4 py-2 bg-primary rounded-full hover:bg-primaryDark transition font-primary">
-              <FaUpload />
-              Upload Image
-            </button>
-          </div>
-          <div className="space-y-4">
-            {["Full Name", "Email", "Password"].map((label) => (
-              <div key={label} className="flex items-center space-x-2">
-                <input
-                  type={label === "Password" ? "password" : "text"}
-                  placeholder={label}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-primary font-primary"
-                />
-                <button className="text-primary hover:text-primaryDark transition">
-                  <FaEdit className="text-2xl" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Fitness Preferences Section */}
-        <section id="preferences" className="space-y-4">
-          <h2 className="text-h2 font-semibold text-textPrimary font-primary">
-            Fitness Preferences
-          </h2>
-
-          <div>
-            <p className="text-lg text-textPrimary font-semibold mb-2 font-primary">
-              Select Your Fitness Goals
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {["Lose Weight", "Gain Muscle", "General Health", "Other"].map(
-                (goal) => (
-                  <button
-                    key={goal}
-                    className={`px-4 py-2 rounded-full border font-primary ${
-                      fitnessGoals.includes(goal)
-                        ? "bg-primary text-white"
-                        : "border-secondary border-2 text-textPrimary"
-                    }`}
-                    onClick={() => toggleGoal(goal)}
-                  >
-                    {goal}
-                  </button>
-                )
-              )}
-            </div>
-          </div>
-
-          {/* Preferred Activities */}
-          <div>
-            <p className="text-lg text-textPrimary font-semibold mb-2 font-primary">
-              Select Your Preferred Activities
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {["Weightlifting", "Running", "Yoga", "Other"].map((activity) => (
-                <div key={activity} className="flex flex-col items-start">
-                  {/* Activity Button */}
-                  <button
-                    className={`px-4 py-2 rounded-full border font-primary ${
-                      preferredActivities.includes(activity)
-                        ? "bg-primary text-white"
-                        : "border-secondary border-2 text-textPrimary"
-                    }`}
-                    onClick={() => toggleActivity(activity)}
-                  >
-                    {activity}
-                  </button>
-
-                  {/* Experience Level Buttons for Selected Activity */}
-                  {preferredActivities.includes(activity) && (
-                    <div className="mt-2 flex space-x-2">
-                      <p className="text-sm text-textSecondary font-primary mr-2">
-                        Experience Level:
-                      </p>
-                      {[1, 2, 3, 4, 5].map((level) => (
-                        <button
-                          key={level}
-                          onClick={() => setExperienceLevel(activity, level)}
-                          className={`w-8 h-8 rounded-full ${
-                            activityLevels[activity] === level
-                              ? "bg-primary text-white"
-                              : "bg-gray-200 text-gray-700"
-                          }`}
-                        >
-                          {level}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Preferred Times */}
-          {preferredActivities.map((activity) => (
-            <div key={activity} className="space-y-2 mt-4">
-              <p className="text-lg text-textSecondary font-medium mb-2 font-primary">
-                Preferred Times for {activity}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {["Morning", "Afternoon", "Evening"].map((time) => (
-                  <button
-                    key={time}
-                    className={`px-4 py-2 rounded-full border ${
-                      preferredTime[activity]?.includes(time)
-                        ? "bg-primary text-white"
-                        : "border-secondary border-2 text-textPrimary"
-                    }`}
-                    onClick={() => toggleTime(activity, time)}
-                  >
-                    {time}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
-        </section>
-
-        {/* Notification Preferences Section */}
-        <section id="notifications" className="space-y-4 py-6">
-          <h2 className="text-h2 font-semibold text-textPrimary font-primary">
-            Notification Preferences
-          </h2>
-
-          {/* Toggle Switches */}
-          <div className="space-y-4">
-            {[
-              {
-                label: "Notifications",
-                state: notificationSettings.notifications,
-                key: "notifications" as NotificationSettingKey,
-              },
-              {
-                label: "Messages",
-                state: notificationSettings.messages,
-                key: "messages" as NotificationSettingKey,
-              },
-              {
-                label: "Activity Reminders",
-                state: notificationSettings.reminders,
-                key: "reminders" as NotificationSettingKey,
-              },
-            ].map(({ label, state, key }) => (
-              <div key={key} className="flex items-center justify-between">
-                <span className="text-lg text-textPrimary font-primary">
-                  {label}
-                </span>
-                <input
-                  type="checkbox"
-                  className="toggle toggle-primary"
-                  checked={state}
-                  onChange={() => toggleSetting(key)}
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Email and Push Notifications */}
-          <div className="flex items-center gap-2 mt-4">
-            <button className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full hover:bg-primaryDark transition">
-              <FaEnvelope />
-              Email Notifications
-            </button>
-            <span className="text-textSecondary font-primary">or</span>
-            <button className="flex items-center gap-2 bg-secondary text-white px-4 py-2 rounded-full hover:bg-secondaryDark transition">
-              <FaBell />
-              Push Notifications
-            </button>
-          </div>
-        </section>
-
-        {/* Privacy Preferences Section */}
-        <section id="privacy" className="space-y-4">
-          <h2 className="text-h2 font-semibold text-textPrimary font-primary">
-            Privacy Preferences
-          </h2>
-
-          {/* Visibility */}
-          <div className="space-y-2">
-            <label className="text-lg text-textPrimary font-primary font-semibold">
-              Visibility
-            </label>
-            <select
-              className="w-full py-2 px-4 rounded-full border border-gray-300 focus:outline-none focus:border-primary text-textPrimary font-primary"
-              value={visibility}
-              onChange={(e) => setVisibility(e.target.value)}
-            >
-              <option value="Public">Public</option>
-              <option value="Friends">Friends</option>
-              <option value="Private">Private</option>
-            </select>
-          </div>
-
-          {/* Share Location and Share Activity Checkboxes */}
-          <div className="space-y-2">
-            {[
-              {
-                label: "Share Location",
-                checked: shareLocation,
-                onChange: setShareLocation,
-              },
-              {
-                label: "Share Activity",
-                checked: shareActivity,
-                onChange: setShareActivity,
-              },
-            ].map(({ label, checked, onChange }) => (
-              <label
-                key={label}
-                className="flex items-center gap-2 cursor-pointer text-textPrimary"
-              >
-                <input
-                  type="checkbox"
-                  className="checkbox checkbox-primary rounded-full"
-                  checked={checked}
-                  onChange={(e) => onChange(e.target.checked)}
-                />
-                {label}
-              </label>
-            ))}
-          </div>
-        </section>
-
-        {/* Save and Delete Buttons */}
-        <div className="flex justify-between pt-4">
-          <button className="flex items-center gap-2 text-error px-4 py-2 rounded-full border border-error hover:bg-error hover:text-white transition">
-            <FaTrashAlt />
-            Delete Account
-          </button>
-          <Link href="/dashboard">
-            <button className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full hover:bg-primaryDark transition">
-              <FaSave />
-              Save Changes
-            </button>
-          </Link>
-        </div>
+        <ProfileSection />
+        <FitnessPreferences
+          fitnessGoals={fitnessGoals}
+          preferredActivities={preferredActivities}
+          activityLevels={activityLevels}
+          toggleGoal={toggleGoal}
+          toggleActivity={toggleActivity}
+          setExperienceLevel={setExperienceLevel}
+          preferredTime={preferredTime}
+          toggleTime={toggleTime}
+        />
+        <NotificationPreferences
+          notificationSettings={notificationSettings}
+          toggleSetting={toggleSetting}
+        />
+        <PrivacyPreferences
+          visibility={visibility}
+          shareLocation={shareLocation}
+          shareActivity={shareActivity}
+          setVisibility={setVisibility}
+          setShareLocation={setShareLocation}
+          setShareActivity={setShareActivity}
+        />
       </div>
     </div>
   );
