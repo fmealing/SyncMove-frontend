@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { FaArrowRight } from "react-icons/fa";
 
 const Step1: React.FC<{
-  onSubmit: (
-    activityType: string,
-    experienceLevel: number,
-    location: { lat: number; lon: number }
-  ) => void;
-}> = ({ onSubmit }) => {
+  userId: string;
+  goToNextStep: () => void;
+}> = ({ userId, goToNextStep }) => {
   const preferences = [
     {
       title: "Gym",
@@ -48,29 +47,47 @@ const Step1: React.FC<{
       },
       (error) => {
         console.error("Failed to get user location:", error);
-        // Provide a fallback or handle error as needed
         setLocation({ lat: 0, lon: 0 });
       }
     );
   }, []);
 
   const handleCardClick = (index: number) => {
-    setSelectedCard(index === selectedCard ? null : index);
-    console.log("Location:", location);
+    console.log("Location: ", location);
+    setSelectedCard(index);
   };
 
   const handleExperienceClick = (index: number, level: number) => {
     const updatedLevels = [...experienceLevels];
     updatedLevels[index] = level;
     setExperienceLevels(updatedLevels);
+  };
 
-    // Call onSubmit directly when user makes a selection
-    if (selectedCard !== null && location) {
-      onSubmit(
-        preferences[selectedCard].title,
-        experienceLevels[selectedCard],
-        location
+  const handleSubmitStep1 = async () => {
+    console.log("Submitting Step 1 data");
+    console.log("Selected card:", selectedCard);
+    console.log("Experience levels:", experienceLevels);
+    console.log("Location:", location);
+    if (selectedCard === null || !location) return; // Ensure data is selected
+    const token = localStorage.getItem("token");
+    console.log("Token: ", token);
+    try {
+      await axios.put(
+        `http://localhost:5001/api/users/${userId}`,
+        {
+          activityType: preferences[selectedCard].title,
+          experienceLevel: experienceLevels[selectedCard],
+          location: {
+            type: "Point",
+            coordinates: [location.lon, location.lat],
+          },
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
+      console.log("Step 1 data submitted successfully");
+      goToNextStep(); // Move to the next step after successful submission
+    } catch (error) {
+      console.error("Failed to submit Step 1 data:", error);
     }
   };
 
@@ -122,6 +139,13 @@ const Step1: React.FC<{
           </div>
         ))}
       </div>
+      <button
+        onClick={handleSubmitStep1}
+        className="h-12 px-4 bg-[#007bff] rounded-md flex justify-center items-center gap-2 text-[#f7f7f7] text-lg font-medium font-['Montserrat'] mt-6"
+      >
+        Next
+        <FaArrowRight className="w-5 h-5" />
+      </button>
     </div>
   );
 };

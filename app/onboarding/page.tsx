@@ -23,32 +23,23 @@ const Onboarding: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "/login";
+        return;
+      }
+
+      const decoded = jwtDecode<{ id: string }>(token);
+      setUserId(decoded.id);
+
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          window.location.href = "/login";
-          return;
-        }
-
-        const decoded = jwtDecode<{ id: string }>(token);
-        setUserId(decoded.id);
-
         const response = await axios.get(
           `http://localhost:5001/api/users/${decoded.id}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
         console.log("User data:", response.data);
-        // Assuming response.data contains user information
-        // Update user data state if necessary
-        setUserData({
-          activityType: response.data.activityType || "",
-          experienceLevel: response.data.experienceLevel || 0,
-          location: response.data.location || {},
-        });
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
@@ -59,19 +50,18 @@ const Onboarding: React.FC = () => {
 
   const goNext = () => {
     if (step === 1) {
-      console.log("going to step 2");
+      console.log("Submitting Step 1 data:", userData);
       handleSubmitStep1();
     } else if (step === 2) {
-      console.log("going to step 3");
+      console.log("Submitting Step 2 data:", fitnessGoal);
       handleSubmitStep2();
     } else {
-      console.log("submitting...");
-      handleSubmitStep3(); // Submit date and time when finishing Step 3
+      console.log("Submitting Step 3 data");
+      handleSubmitStep3();
     }
   };
 
   const goBack = () => {
-    console.log("going back");
     if (step > 1) setStep(step - 1);
   };
 
@@ -80,21 +70,14 @@ const Onboarding: React.FC = () => {
     experienceLevel: number,
     location: { lat: number; lon: number }
   ) => {
-    console.log("Step 1 data:", activityType, experienceLevel);
     setUserData({ activityType, experienceLevel, location });
   };
 
-  const handleStep2Data = (goal: string) => {
-    console.log("Step 2 data:", goal);
-    setFitnessGoal(goal);
-  };
+  const handleStep2Data = (goal: string) => setFitnessGoal(goal);
 
   const handleSubmitStep1 = async () => {
-    console.log("Submitting Step 1 data:", userData);
+    const token = localStorage.getItem("token");
     try {
-      const token = localStorage.getItem("token");
-      console.log("Token for submit step 1:", token);
-
       await axios.put(
         `http://localhost:5001/api/users/${userId}`,
         {
@@ -105,11 +88,7 @@ const Onboarding: React.FC = () => {
             coordinates: [userData.location.lon, userData.location.lat],
           },
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setStep(step + 1);
     } catch (error) {
@@ -174,7 +153,10 @@ const Onboarding: React.FC = () => {
       </div>
 
       <div className="w-full">
-        {step === 1 && <Step1 onSubmit={handleStep1Data} />}
+        // In the Onboarding component:
+        {step === 1 && (
+          <Step1 userId={userId} goToNextStep={() => setStep(2)} />
+        )}
         {step === 2 && <Step2 onSubmit={handleStep2Data} />}
         {step === 3 && (
           <Step3 setDate={setSelectedDate} setTime={setSelectedTime} />
