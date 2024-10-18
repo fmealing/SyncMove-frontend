@@ -1,0 +1,78 @@
+[
+  {
+    "question": "How do I create an account?",
+    "answer": "To create an account, click the 'Sign Up' button at the top right corner and fill in the required details."
+  },
+  {
+    "question": "Can I reset my password?",
+    "answer": "Yes, you can reset your password by clicking on 'Forgot Password' on the login page and following the instructions."
+  },
+  {
+    "question": "How do I change my email address?",
+    "answer": "To change your email, navigate to your account settings and update your email address in the 'Email' section."
+  },
+  {
+    "question": "Where can I report bugs or issues?",
+    "answer": "You can report bugs by selecting 'Bug Report' in the feedback form or by contacting support through our help center."
+  },
+  {
+    "question": "How do I request new features?",
+    "answer": "To request a new feature, you can submit a 'Feature Request' in the feedback form or through the community forums."
+  },
+  {
+    "question": "How do I submit feedback?",
+    "answer": "You can submit feedback through the form on the 'Feedback' page, or by sending an email to support@domain.com."
+  },
+  {
+    "question": "How do I update my profile information?",
+    "answer": "Go to 'Profile Settings' and edit the information you'd like to update. Changes will be saved automatically."
+  },
+  {
+    "question": "What should I do if I encounter a bug?",
+    "answer": "If you encounter a bug, try clearing your cache and refreshing the page. If the issue persists, report it using the feedback form."
+  },
+  {
+    "question": "Is my data secure?",
+    "answer": "Yes, we use industry-standard encryption and security practices to ensure your data is safe."
+  },
+  {
+    "question": "Can I delete my account?",
+    "answer": "Yes, you can delete your account by going to 'Account Settings' and selecting the 'Delete Account' option at the bottom of the page."
+  },
+  {
+    "question": "How do I contact support?",
+    "answer": "You can contact support via email at support@domain.com or through the live chat feature available on the support page."
+  },
+  {
+    "question": "Why am I not receiving emails?",
+    "answer": "If you are not receiving emails, please check your spam/junk folder. Ensure that you have verified your email address in your account settings."
+  },
+  {
+    "question": "How do I manage notification preferences?",
+    "answer": "Go to your 'Notification Settings' and you can toggle which notifications you'd like to receive, including email and push notifications."
+  },
+  {
+    "question": "Can I use your service for free?",
+    "answer": "Yes, we offer a free plan with limited features. You can upgrade to a premium plan for more advanced features."
+  },
+  {
+    "question": "Where can I see my usage statistics?",
+    "answer": "You can view your usage statistics on the 'Dashboard' under the 'Analytics' section."
+  },
+  {
+    "question": "What payment methods do you accept?",
+    "answer": "We accept major credit cards, PayPal, and bank transfers for payments. You can manage your payment methods in the 'Billing' section."
+  },
+  {
+    "question": "Can I get a refund?",
+    "answer": "We offer a refund within 14 days of purchase for annual plans. For more details, check our refund policy page."
+  },
+  {
+    "question": "Do you offer discounts for students?",
+    "answer": "Yes, we offer a student discount. Please contact support with proof of enrollment to apply for the discount."
+  },
+  {
+    "question": "Is there a limit to how many files I can upload?",
+    "answer": "The free plan has a limit of 1GB per file, but our premium plans offer higher limits. Check our pricing page for details."
+  }
+]
