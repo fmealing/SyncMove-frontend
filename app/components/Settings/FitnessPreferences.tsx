@@ -31,7 +31,10 @@ const FitnessPreferences: React.FC = () => {
         const userId = decodedToken.id;
 
         const response = await axios.get(
-          `http://localhost:5001/api/users/${userId}`
+          `http://localhost:5001/api/users/${userId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
         const data = response.data;
 
@@ -50,6 +53,13 @@ const FitnessPreferences: React.FC = () => {
   const savePreferences = async () => {
     try {
       const token = localStorage.getItem("token");
+
+      // Check if token is present
+      if (!token) {
+        console.error("No token found, user is not authenticated");
+        return;
+      }
+
       const decodedToken: { id: string } = jwtDecode(token);
       const userId = decodedToken.id;
 
@@ -93,12 +103,24 @@ const FitnessPreferences: React.FC = () => {
   };
 
   const toggleTime = (activity: string, time: string) => {
-    setPreferredTime((prev) => ({
-      ...prev,
-      [activity]: prev[activity].includes(time)
-        ? prev[activity].filter((t) => t !== time)
-        : [...prev[activity], time],
-    }));
+    setPreferredTime((prev) => {
+      // Get the current times for the activity or set it as an empty array if undefined
+      const currentTimes = prev[activity] || [];
+
+      // Check if the time already exists
+      const timeExists = currentTimes.includes(time);
+
+      // Update the times based on whether the time is already present
+      const updatedTimes = timeExists
+        ? currentTimes.filter((t) => t !== time) // Remove the time if it exists
+        : [...currentTimes, time]; // Add the time if it doesn't exist
+
+      // Return the updated state
+      return {
+        ...prev,
+        [activity]: updatedTimes,
+      };
+    });
   };
 
   return (

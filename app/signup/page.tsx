@@ -3,6 +3,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { FaUser, FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
 import { HiEye, HiEyeOff } from "react-icons/hi";
+import { jwtDecode } from "jwt-decode";
 
 import axios from "axios";
 
