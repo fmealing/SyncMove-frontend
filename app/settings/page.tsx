@@ -143,16 +143,7 @@ const SettingsPage: React.FC = () => {
       {/* Right Content Panel */}
       <div className="flex-1 p-6 bg-lightGray rounded-lg shadow-md space-y-8">
         <ProfileSection />
-        <FitnessPreferences
-          fitnessGoals={fitnessGoals}
-          preferredActivities={preferredActivities}
-          activityLevels={activityLevels}
-          toggleGoal={toggleGoal}
-          toggleActivity={toggleActivity}
-          setExperienceLevel={setExperienceLevel}
-          preferredTime={preferredTime}
-          toggleTime={toggleTime}
-        />
+        <FitnessPreferences />
         <NotificationPreferences
           notificationSettings={notificationSettings}
           toggleSetting={toggleSetting}

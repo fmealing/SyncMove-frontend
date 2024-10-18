@@ -33,9 +33,6 @@ const SignupPage = () => {
       return;
     }
 
-    console.log("Form data:", formdata);
-    console.log("Submitting form...");
-
     try {
       // Make POST request to register endpoint
       const response = await axios.post(
@@ -46,6 +43,9 @@ const SignupPage = () => {
           password: formdata.password,
         }
       );
+      // Set token in local storage
+      const token = response.data.token;
+      localStorage.setItem("token", token);
 
       // Redirect to onboarding or login page after successful registration
       window.location.href = "/onboarding";
