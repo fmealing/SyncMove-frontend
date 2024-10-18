@@ -144,10 +144,7 @@ const SettingsPage: React.FC = () => {
       <div className="flex-1 p-6 bg-lightGray rounded-lg shadow-md space-y-8">
         <ProfileSection />
         <FitnessPreferences />
-        <NotificationPreferences
-          notificationSettings={notificationSettings}
-          toggleSetting={toggleSetting}
-        />
+        <NotificationPreferences />
         <PrivacyPreferences
           visibility={visibility}
           shareLocation={shareLocation}
