@@ -32,79 +32,6 @@ type NotificationSettings = {
 type NotificationSettingKey = "notifications" | "messages" | "reminders";
 
 const SettingsPage: React.FC = () => {
-  // State to manage fitness preferences
-  const [fitnessGoals, setFitnessGoals] = useState<string[]>([]);
-  const [preferredActivities, setPreferredActivities] = useState<string[]>([]);
-  const [preferredTime, setPreferredTime] = useState<Record<string, string[]>>({
-    Weightlifting: [],
-    Running: [],
-    Yoga: [],
-    Other: [],
-  });
-
-  // Activity Levels
-  const [activityLevels, setActivityLevels] = useState<Record<string, number>>({
-    Weightlifting: 1,
-    Running: 1,
-    Yoga: 1,
-    Other: 1,
-  });
-
-  // State to manage toggles
-  const [notificationSettings, setNotificationSettings] =
-    useState<NotificationSettings>({
-      notifications: true,
-      messages: false,
-      reminders: true,
-    });
-
-  // State to manage privacy settings
-  const [visibility, setVisibility] = useState("Public");
-  const [shareLocation, setShareLocation] = useState(false);
-  const [shareActivity, setShareActivity] = useState(false);
-
-  // Handler for selecting fitness goals
-  const toggleGoal = (goal: string) => {
-    setFitnessGoals((prev) =>
-      prev.includes(goal) ? prev.filter((g) => g !== goal) : [...prev, goal]
-    );
-  };
-
-  // Handler for selecting preferred activities
-  const toggleActivity = (activity: string) => {
-    setPreferredActivities((prev) =>
-      prev.includes(activity)
-        ? prev.filter((a) => a !== activity)
-        : [...prev, activity]
-    );
-  };
-
-  // Handler for selecting times per activity
-  const toggleTime = (activity: string, time: string) => {
-    setPreferredTime((prev) => ({
-      ...prev,
-      [activity]: prev[activity].includes(time)
-        ? prev[activity].filter((t) => t !== time)
-        : [...prev[activity], time],
-    }));
-  };
-
-  // Handler to toggle preferences
-  const toggleSetting = (setting: NotificationSettingKey) => {
-    setNotificationSettings((prev) => ({
-      ...prev,
-      [setting]: !prev[setting],
-    }));
-  };
-
-  // Handler to set Activity Levels
-  const setExperienceLevel = (activity: string, level: number) => {
-    setActivityLevels((prev) => ({
-      ...prev,
-      [activity]: level,
-    }));
-  };
-
   return (
     <div className="flex w-full min-h-screen p-6 bg-lightGray">
       {/* Left Navigation Panel */}
@@ -145,14 +72,7 @@ const SettingsPage: React.FC = () => {
         <ProfileSection />
         <FitnessPreferences />
         <NotificationPreferences />
-        <PrivacyPreferences
-          visibility={visibility}
-          shareLocation={shareLocation}
-          shareActivity={shareActivity}
-          setVisibility={setVisibility}
-          setShareLocation={setShareLocation}
-          setShareActivity={setShareActivity}
-        />
+        <PrivacyPreferences />
       </div>
     </div>
   );
