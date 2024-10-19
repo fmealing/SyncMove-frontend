@@ -1,38 +1,13 @@
-// PLAN
-// 1. Identify Dynamic Data Points
-// - User Data
-// - Suggested Partners
-// - Connected Partners
-// - Pending Partners
-// 2. API Endpoints
-// - User Data Endpoint (to fetch the user's profile by ID from token)
-// - Suggested Partners Endpoint
-// - Connected Partners Endpoint
-// - Pending Partners Endpoint
-// 3. Plan the Data Fetching
-// - fetch user data to dynamically populate the username in the welcome message
-// - fetch the suggested, connected, and pending partners and update the state to populate each section
-// 4. Create State Variables
-// - User data
-// - Suggested Partners
-// - Connected Partners
-// - Pending Partners
-
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  FaBell,
-  FaDumbbell,
-  FaEnvelope,
-  FaUser,
-  FaUserAstronaut,
-} from "react-icons/fa";
+import { FaBell, FaEnvelope, FaUser, FaUserAstronaut } from "react-icons/fa";
 import NavigationButton from "../components/dashboard/NavigationButton";
 import PartnerCard from "../components/dashboard/PartnerCard";
 import Section from "../components/dashboard/Section";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
+// TODO: Replace this with dynamic loading
 const connectedPartners = [
   {
     name: "Jane Doe",
@@ -66,74 +41,18 @@ const connectedPartners = [
 const Dashboard = () => {
   const [suggestedPartners, setSuggestedPartners] = useState([]);
   const [pendingPartners, setPendingPartners] = useState([]);
+  const [userProfile, setUserProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
-    // Fetch suggested partners
-    const fetchSuggestedPartners = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-      const decoded = jwtDecode(token);
-      const id = decoded.id;
-
-      try {
-        const response = await axios.post(
-          "http://localhost:5001/api/users/suggested-partners",
-          {
-            location: [-73.856077, 40.848447], // Hardcoded location for now
-            preferences: ["running", "endurance", 3], // Hardcoded preferences for now
-            includeAI: false, // Hardcoded AI inclusion for now
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // Properly include the token in headers
-            },
-          }
-        );
-        setSuggestedPartners(response.data);
-      } catch (error) {
-        console.error("Failed to fetch suggested partners: ", error);
-      }
-    };
-
-    // Fetch pending partners
-    const fetchPendingPartners = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        console.log("Token", token);
-
-        if (!token) {
-          console.log("No token found");
-          return;
-        }
-
-        const decoded = jwtDecode(token);
-        const userId = decoded.id;
-
-        console.log("Fetching pending partners");
-        const response = await axios.post(
-          "http://localhost:5001/api/users/pending-partners",
-          {
-            userId,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // Properly include the token in headers
-            },
-          }
-        );
-        console.log("Pending partners", response.data);
-        setPendingPartners(response.data);
-      } catch (error) {
-        console.error("Failed to fetch pending partners: ", error);
-      }
-    };
-
+    // Fetch user profile first
     const fetchUserProfile = async () => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
       const decoded = jwtDecode(token);
-      const id = decoded.id;
+      const id = decoded.id!;
 
       try {
         const response = await axios.get(
@@ -145,18 +64,77 @@ const Dashboard = () => {
           }
         );
         const userProfile = response.data;
+        setUserProfile(userProfile);
         setUsername(userProfile.fullName);
+
+        // Fetch suggested partners after user data is available
+        await fetchSuggestedPartners(userProfile);
+        await fetchPendingPartners(id, token);
+        setLoading(false); // Done loading once all data is fetched
       } catch (error) {
         console.error("Failed to fetch user profile: ", error);
+        setLoading(false);
       }
     };
 
-    fetchSuggestedPartners();
-    fetchPendingPartners();
-    fetchUserProfile();
+    // Fetch suggested partners
+    const fetchSuggestedPartners = async (userProfile: any) => {
+      // TODO: Replace any with actual type
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const response = await axios.post(
+          "http://localhost:5001/api/users/suggested-partners",
+          {
+            location: userProfile.location.coordinates, // Use the user's actual location
+            preferences: [
+              userProfile.activityType,
+              userProfile.fitnessGoals,
+              userProfile.experienceLevel,
+            ], // Use the user's preferences dynamically
+            includeAI: false, // Decide if AI users should be included
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setSuggestedPartners(response.data);
+      } catch (error) {
+        console.error("Failed to fetch suggested partners: ", error);
+      }
+    };
+
+    // Fetch pending partners
+    const fetchPendingPartners = async (userId, token) => {
+      try {
+        const response = await axios.post(
+          "http://localhost:5001/api/users/pending-partners",
+          { userId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setPendingPartners(response.data);
+      } catch (error) {
+        console.error("Failed to fetch pending partners: ", error);
+      }
+    };
+
+    fetchUserProfile(); // Start by fetching user profile
   }, []);
 
-  const [username, setUsername] = useState("");
+  if (loading) {
+    return (
+      <div className="text-h2 text-textPrimary justify-center items-center">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-8">
