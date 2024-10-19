@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaMessage } from "react-icons/fa6";
 import { jwtDecode } from "jwt-decode";
+import Link from "next/link";
 
 const MatchingPage = () => {
-  // State to hold suggested partners and pagination details
   const [partners, setPartners] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -44,7 +44,7 @@ const MatchingPage = () => {
       const response = await axios.post(
         `http://localhost:5001/api/users/suggested-partners-pagination?page=${page}&limit=6`,
         {
-          location: userProfile.location.coordinates, // Use user's location
+          location: userProfile.location.coordinates,
           preferences: [
             userProfile.activityType,
             userProfile.fitnessGoals,
@@ -92,32 +92,46 @@ const MatchingPage = () => {
       </h2>
 
       {loading ? (
-        <p>Loading...</p> // Display a loading indicator
+        <p>Loading...</p>
       ) : (
         <>
-          {/* Partner Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {partners.map((partner: any, index: number) => (
-              <div key={index} className="card card-side bg-base-100 shadow-lg">
-                <figure className="w-1/3">
-                  <img
-                    src={partner.profilePicture || "/default-avatar.png"} // Default image if none provided
-                    alt={partner.fullName}
-                    className="object-cover h-[200px] w-[200px] rounded-full m-4 border-2 border-textPrimary"
-                  />
-                </figure>
-                <div className="card-body w-2/3">
-                  <h3 className="card-title text-textPrimary">
-                    {partner.fullName}
-                  </h3>
-                  <p className="text-sm text-textSecondary">{partner.bio}</p>
-                  <button className="flex gap-2 rounded-full bg-primary text-lightGray w-1/2 h-12 text-[20px] justify-center items-center hover:bg-primaryDark transition">
-                    <FaMessage />
-                    Connect
-                  </button>
+            {partners.map((partner: any, index: number) => {
+              console.log(partner);
+
+              return (
+                <div
+                  key={index}
+                  className="card card-side bg-base-100 shadow-lg"
+                >
+                  <figure className="w-1/3">
+                    <img
+                      src={partner.profilePicture || "/default-avatar.png"}
+                      alt={partner.fullName}
+                      className="object-cover h-[200px] w-[200px] rounded-full m-4 border-2 border-textPrimary"
+                    />
+                  </figure>
+                  <div className="card-body w-2/3">
+                    <h3 className="card-title text-textPrimary font-primary">
+                      {partner.fullName}
+                    </h3>
+                    <p className="text-sm text-textSecondary font-primary">
+                      {partner.bio}
+                    </p>
+                    <p className="text-base text-textPrimary font-primary">
+                      Activity: {partner.activityType}
+                    </p>
+                    {/* Use Link to navigate to partner's profile */}
+                    <Link href={`/partnerProfile/${partner._id}`}>
+                      <button className="flex gap-2 rounded-full bg-primary text-lightGray w-1/2 h-12 text-[20px] justify-center items-center hover:bg-primaryDark transition">
+                        <FaMessage />
+                        Connect
+                      </button>
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Pagination */}
