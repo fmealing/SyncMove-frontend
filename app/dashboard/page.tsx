@@ -180,6 +180,10 @@ const Dashboard = () => {
       </div>
 
       {/* Suggested Partners */}
+      {/* TODO: Add an indicator (like percentage), how much the user match */}
+      {/* TODO: Find the maximum possible value from AI algorithm */}
+      {/* Max value is 4727 */}
+      {/* Create a utility function */}
       <Section title="Suggested Partners">
         {suggestedPartners.map((partner, index) => {
           console.log(partner);
