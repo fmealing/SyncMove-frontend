@@ -7,6 +7,7 @@ interface UserData {
   fullName: string;
   email: string;
   profilePicture: string;
+  bio: string;
 }
 
 const ProfileSection: React.FC = () => {
@@ -14,6 +15,9 @@ const ProfileSection: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>("");
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [bio, setBio] = useState<string>(""); // State to handle bio input
+  const [isSavingProfile, setIsSavingProfile] = useState<boolean>(false); // Loading state for saving the entire profile
+  const [profileSaveStatus, setProfileSaveStatus] = useState<string>(""); // Status message for profile save
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -33,9 +37,10 @@ const ProfileSection: React.FC = () => {
         setUserData({
           fullName: response.data.fullName,
           email: response.data.email,
-          profilePicture:
-            response.data.profilePicture || "/avatars/avatar-1.jpg",
+          profilePicture: response.data.profilePicture,
+          bio: response.data.bio,
         });
+        setBio(response.data.bio); // Set bio from user data
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
@@ -50,48 +55,45 @@ const ProfileSection: React.FC = () => {
     setSelectedImage(file);
   };
 
-  // Handle image upload and updating the profile picture
-  const handleImageUpload = async () => {
-    if (!selectedImage) {
-      setUploadStatus("Please select an image.");
-      return;
-    }
+  // Handle profile update (bio, image, etc.)
+  const handleSaveProfile = async () => {
+    setIsSavingProfile(true); // Set loading state
 
-    const formData = new FormData();
-    formData.append("file", selectedImage);
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const decoded = jwtDecode(token) as { id: string };
+    let imageUrl = userData?.profilePicture;
 
     try {
-      setIsUploading(true); // Set loading state
+      // If an image is selected, upload it first
+      if (selectedImage) {
+        const formData = new FormData();
+        formData.append("file", selectedImage);
 
-      const token = localStorage.getItem("token");
+        const uploadResponse = await axios.post(
+          "http://localhost:5001/api/images/upload",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
-      // Check if the user is authenticated
-      if (!token) {
-        setUploadStatus("User is not authenticated.");
-        setIsUploading(false);
-        return;
+        imageUrl = uploadResponse.data.imageUrl;
       }
 
-      const decoded = jwtDecode(token) as { id: string };
-
-      // Upload the image
-      const uploadResponse = await axios.post(
-        "http://localhost:5001/api/images/upload",
-        formData,
+      // Update the user's profile in the backend (bio, profile picture)
+      await axios.put(
+        `http://localhost:5001/api/users/${decoded.id}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      const imageUrl = uploadResponse.data.imageUrl;
-
-      // Update the user's profile picture in the backend
-      const updateResponse = await axios.put(
-        `http://localhost:5001/api/users/${decoded.id}/profile-picture`,
-        { profilePicture: imageUrl },
+          fullName: userData?.fullName,
+          email: userData?.email,
+          bio,
+          profilePicture: imageUrl,
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -100,14 +102,12 @@ const ProfileSection: React.FC = () => {
         }
       );
 
-      // Update the frontend state to reflect the new image
-      setUserData((prev) => prev && { ...prev, profilePicture: imageUrl });
-      setUploadStatus("Image uploaded and profile updated successfully!");
+      setProfileSaveStatus("Profile updated successfully!");
     } catch (error) {
-      setUploadStatus("Error uploading or updating profile image.");
-      console.error("Error:", error);
+      console.error("Failed to update profile:", error);
+      setProfileSaveStatus("Failed to update profile.");
     } finally {
-      setIsUploading(false); // Reset loading state
+      setIsSavingProfile(false); // Reset loading state
     }
   };
 
@@ -138,18 +138,11 @@ const ProfileSection: React.FC = () => {
           </label>
         </div>
       </div>
-      <button
-        onClick={handleImageUpload}
-        className="mt-4 px-4 py-2 bg-primary text-white rounded-full hover:bg-primaryDark transition"
-        disabled={isUploading}
-      >
-        {isUploading ? "Uploading..." : "Save New Image"}
-      </button>
-      {uploadStatus && <p>{uploadStatus}</p>}
 
       <div className="space-y-4">
         {userData && (
           <>
+            {/* Full Name */}
             <div className="flex items-center space-x-2">
               <input
                 type="text"
@@ -162,6 +155,7 @@ const ProfileSection: React.FC = () => {
               </button>
             </div>
 
+            {/* Email */}
             <div className="flex items-center space-x-2">
               <input
                 type="text"
@@ -174,17 +168,30 @@ const ProfileSection: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <input
-                type="password"
-                value="********"
-                readOnly
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-primary font-primary text-textPrimary"
+            {/* Bio Section */}
+            <div className="flex flex-col space-y-2">
+              <label className="font-primary text-textPrimary">Bio</label>
+              <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary font-primary text-textPrimary"
+                rows={3}
+                maxLength={150} // Limit bio length
+                placeholder="Write a short bio..."
               />
-              <button className="text-primary hover:text-primaryDark transition">
-                <FaEdit className="text-2xl" />
-              </button>
             </div>
+
+            {/* Save Profile Button */}
+            <button
+              onClick={handleSaveProfile}
+              className="mt-4 px-4 py-2 bg-primary text-white rounded-full hover:bg-primaryDark transition"
+              disabled={isSavingProfile}
+            >
+              {isSavingProfile ? "Saving..." : "Save Profile"}
+            </button>
+            {profileSaveStatus && (
+              <p className="text-success">{profileSaveStatus}</p>
+            )}
           </>
         )}
       </div>

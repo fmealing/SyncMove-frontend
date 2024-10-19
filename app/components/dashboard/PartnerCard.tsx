@@ -2,43 +2,52 @@ import React, { useEffect, useState } from "react";
 import { fetchCityFromCoordinates } from "@/app/utils/geoCoding";
 
 interface PartnerCardProps {
-  name: string;
-  location: {
+  fullName: string;
+  location?: {
     type: string;
     coordinates: [number, number];
   };
-  image: string;
+  profilePicture: string;
   bio: string;
 }
 
 const PartnerCard: React.FC<PartnerCardProps> = ({
-  name,
+  fullName,
   location,
-  image,
+  profilePicture,
   bio,
 }) => {
-  const [longitude, latitude] = location.coordinates;
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState<string>("");
 
   useEffect(() => {
-    const fetchCity = async () => {
-      const city = await fetchCityFromCoordinates(latitude, longitude);
-      setCity(city);
-    };
+    if (location && location.coordinates) {
+      const [longitude, latitude] = location.coordinates;
 
-    fetchCity();
-  });
+      const fetchCity = async () => {
+        const fetchedCity = await fetchCityFromCoordinates(latitude, longitude);
+        setCity(fetchedCity || "Unknown");
+      };
+
+      fetchCity();
+    }
+  }, [location]);
 
   return (
     <div className="card bg-base-100 shadow-lg">
       <figure>
-        <img src={image} alt={name} className="w-full h-48 object-cover" />
+        <img
+          src={profilePicture}
+          alt={fullName}
+          className="w-full h-48 object-cover"
+        />
       </figure>
       <div className="card-body">
-        <h3 className="card-title text-textPrimary font-primary">{name}</h3>
-        <p className="text-textPrimary font-primary">
-          Location: {city ? city : "Unknown"}
-        </p>
+        <h3 className="card-title text-textPrimary font-primary">{fullName}</h3>
+        {city && (
+          <p className="text-textSecondary font-primary">
+            Location: {city ? city : "Unknown"}
+          </p>
+        )}
         <p className="text-textPrimary font-primary">{bio}</p>
       </div>
     </div>
