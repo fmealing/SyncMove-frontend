@@ -7,45 +7,35 @@ import Section from "../components/dashboard/Section";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { fetchCityFromCoordinates } from "../utils/geoCoding";
+import Link from "next/link";
 
-// TODO: Replace this with dynamic loading
-const connectedPartners = [
-  {
-    name: "Jane Doe",
-    location: {
-      type: "Point",
-      coordinates: [-73.856077, 40.848447],
-    },
-    image:
-      "https://www.shutterstock.com/image-vector/avatar-photo-default-user-icon-600nw-2345549599.jpg",
-    bio: "Creative designer with a passion for collaboration.",
-  },
-  {
-    name: "John Smith",
-    location: {
-      type: "Point",
-      coordinates: [-73.856077, 40.848447],
-    },
-    image:
-      "https://www.shutterstock.com/image-vector/avatar-photo-default-user-icon-600nw-2345549599.jpg",
-    bio: "Frontend developer with a love for React.",
-  },
-  {
-    name: "Alice Johnson",
-    location: {
-      type: "Point",
-      coordinates: [-73.856077, 40.848447],
-    },
-    image:
-      "https://www.shutterstock.com/image-vector/avatar-photo-default-user-icon-600nw-2345549599.jpg",
-    bio: "UX designer with a focus on user research.",
-  },
-];
+// Define types
+interface Partner {
+  fullName: string;
+  profilePicture: string;
+  bio: string;
+  location?: {
+    type: string;
+    coordinates: [number, number];
+  };
+}
+
+interface UserProfile {
+  fullName: string;
+  location: {
+    type: string;
+    coordinates: [number, number];
+  };
+  activityType: string;
+  fitnessGoals: string;
+  experienceLevel: number;
+}
 
 const Dashboard = () => {
-  const [suggestedPartners, setSuggestedPartners] = useState([]);
-  const [pendingPartners, setPendingPartners] = useState([]);
-  const [userProfile, setUserProfile] = useState(null);
+  const [suggestedPartners, setSuggestedPartners] = useState<Partner[]>([]);
+  const [pendingPartners, setPendingPartners] = useState<Partner[]>([]);
+  const [matchedPartners, setMatchedPartners] = useState<Partner[]>([]);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
   const [userCity, setUserCity] = useState("");
@@ -56,7 +46,7 @@ const Dashboard = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const decoded = jwtDecode(token);
+      const decoded = jwtDecode<{ id: string }>(token);
       const id = decoded.id;
 
       try {
@@ -68,21 +58,21 @@ const Dashboard = () => {
             },
           }
         );
-        const userProfile = response.data;
+        const userProfile: UserProfile = response.data;
         setUserProfile(userProfile);
         setUsername(userProfile.fullName);
 
         // Fetch the city from the coordinates
-
         const city = await fetchCityFromCoordinates(
           userProfile.location.coordinates[1],
           userProfile.location.coordinates[0]
         );
         setUserCity(city || "Unknown");
 
-        // Fetch suggested partners after user data is available
+        // Fetch suggested, pending, and matched partners after user data is available
         await fetchSuggestedPartners(userProfile);
         await fetchPendingPartners(id, token);
+        await fetchMatchedPartners(id, token);
         setLoading(false); // Done loading once all data is fetched
       } catch (error) {
         console.error("Failed to fetch user profile: ", error);
@@ -91,8 +81,7 @@ const Dashboard = () => {
     };
 
     // Fetch suggested partners
-    const fetchSuggestedPartners = async (userProfile: any) => {
-      // TODO: Replace any with actual type
+    const fetchSuggestedPartners = async (userProfile: UserProfile) => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
@@ -100,13 +89,13 @@ const Dashboard = () => {
         const response = await axios.post(
           "http://localhost:5001/api/users/suggested-partners",
           {
-            location: userProfile.location.coordinates, // Use the user's actual location
+            location: userProfile.location.coordinates,
             preferences: [
               userProfile.activityType,
               userProfile.fitnessGoals,
               userProfile.experienceLevel,
-            ], // Use the user's preferences dynamically
-            includeAI: false, // Decide if AI users should be included
+            ],
+            includeAI: false,
           },
           {
             headers: {
@@ -121,7 +110,7 @@ const Dashboard = () => {
     };
 
     // Fetch pending partners
-    const fetchPendingPartners = async (userId, token) => {
+    const fetchPendingPartners = async (userId: string, token: string) => {
       try {
         const response = await axios.post(
           "http://localhost:5001/api/users/pending-partners",
@@ -135,6 +124,24 @@ const Dashboard = () => {
         setPendingPartners(response.data);
       } catch (error) {
         console.error("Failed to fetch pending partners: ", error);
+      }
+    };
+
+    // Fetch matched partners
+    const fetchMatchedPartners = async (userId: string, token: string) => {
+      try {
+        const response = await axios.post(
+          "http://localhost:5001/api/users/matched-partners", // Assuming this is a valid endpoint
+          { userId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setMatchedPartners(response.data);
+      } catch (error) {
+        console.error("Failed to fetch matched partners: ", error);
       }
     };
 
@@ -152,7 +159,7 @@ const Dashboard = () => {
   return (
     <div className="p-6 space-y-8">
       <h1 className="text-textPrimary font-primary text-h2 font-semibold">
-        Welcome back, {username}!
+        Welcome back, {username} from {userCity}!
       </h1>
 
       {/* Navigation Buttons */}
@@ -180,25 +187,23 @@ const Dashboard = () => {
       </div>
 
       {/* Suggested Partners */}
-      {/* TODO: Add an indicator (like percentage), how much the user match */}
-      {/* TODO: Find the maximum possible value from AI algorithm */}
-      {/* Max value is 4727 */}
-      {/* Create a utility function */}
-      <Section title="Suggested Partners">
-        {suggestedPartners.map((partner, index) => {
-          console.log(partner);
-          return <PartnerCard key={index} {...partner} />;
-        })}
-      </Section>
+      <Link href="/matching">
+        <Section title="Suggested Partners">
+          {suggestedPartners.map((partner, index) => (
+            <PartnerCard key={index} {...partner} />
+          ))}
+        </Section>
+      </Link>
 
       {/* Matched Partners */}
       <Section title="Matched Partners">
-        {connectedPartners.map((partner, index) => (
+        {matchedPartners.map((partner, index) => (
           <PartnerCard
             key={index}
             fullName={partner.fullName}
             profilePicture={partner.profilePicture}
             bio={partner.bio}
+            location={partner.location}
           />
         ))}
       </Section>
@@ -211,6 +216,7 @@ const Dashboard = () => {
             fullName={partner.fullName}
             profilePicture={partner.profilePicture}
             bio={partner.bio}
+            location={partner.location}
           />
         ))}
       </Section>
