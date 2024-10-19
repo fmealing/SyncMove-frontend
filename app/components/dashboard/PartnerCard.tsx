@@ -85,7 +85,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
             </div>
           </div>
         ) : (
-          <p className="text-sm text-gray-500">Match score unavailable</p>
+          <></>
         )}
       </div>
     </div>
