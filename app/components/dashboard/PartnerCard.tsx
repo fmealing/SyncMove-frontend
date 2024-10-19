@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { fetchCityFromCoordinates } from "@/app/utils/geoCoding";
 
 interface PartnerCardProps {
   name: string;
@@ -17,6 +18,16 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
   bio,
 }) => {
   const [longitude, latitude] = location.coordinates;
+  const [city, setCity] = useState("");
+
+  useEffect(() => {
+    const fetchCity = async () => {
+      const city = await fetchCityFromCoordinates(latitude, longitude);
+      setCity(city);
+    };
+
+    fetchCity();
+  });
 
   return (
     <div className="card bg-base-100 shadow-lg">
@@ -26,7 +37,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
       <div className="card-body">
         <h3 className="card-title text-textPrimary font-primary">{name}</h3>
         <p className="text-textPrimary font-primary">
-          Location: Longitude {longitude}, Latitude {latitude}
+          Location: {city ? city : "Unknown"}
         </p>
         <p className="text-textPrimary font-primary">{bio}</p>
       </div>
