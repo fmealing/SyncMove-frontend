@@ -16,7 +16,8 @@ const connectedPartners = [
       type: "Point",
       coordinates: [-73.856077, 40.848447],
     },
-    image: "/avatars/avatar-2.jpg",
+    image:
+      "https://www.shutterstock.com/image-vector/avatar-photo-default-user-icon-600nw-2345549599.jpg",
     bio: "Creative designer with a passion for collaboration.",
   },
   {
@@ -25,7 +26,8 @@ const connectedPartners = [
       type: "Point",
       coordinates: [-73.856077, 40.848447],
     },
-    image: "/avatars/avatar-3.jpg",
+    image:
+      "https://www.shutterstock.com/image-vector/avatar-photo-default-user-icon-600nw-2345549599.jpg",
     bio: "Frontend developer with a love for React.",
   },
   {
@@ -34,7 +36,8 @@ const connectedPartners = [
       type: "Point",
       coordinates: [-73.856077, 40.848447],
     },
-    image: "/avatars/avatar-4.jpg",
+    image:
+      "https://www.shutterstock.com/image-vector/avatar-photo-default-user-icon-600nw-2345549599.jpg",
     bio: "UX designer with a focus on user research.",
   },
 ];
@@ -149,7 +152,7 @@ const Dashboard = () => {
   return (
     <div className="p-6 space-y-8">
       <h1 className="text-textPrimary font-primary text-h2 font-semibold">
-        Welcome back, {username} from {userCity}!
+        Welcome back, {username}!
       </h1>
 
       {/* Navigation Buttons */}
@@ -178,22 +181,33 @@ const Dashboard = () => {
 
       {/* Suggested Partners */}
       <Section title="Suggested Partners">
-        {suggestedPartners.map((partner, index) => (
-          <PartnerCard key={index} {...partner} />
-        ))}
+        {suggestedPartners.map((partner, index) => {
+          console.log(partner);
+          return <PartnerCard key={index} {...partner} />;
+        })}
       </Section>
 
       {/* Matched Partners */}
       <Section title="Matched Partners">
         {connectedPartners.map((partner, index) => (
-          <PartnerCard key={index} {...partner} />
+          <PartnerCard
+            key={index}
+            fullName={partner.fullName}
+            profilePicture={partner.profilePicture}
+            bio={partner.bio}
+          />
         ))}
       </Section>
 
       {/* Pending Partners */}
       <Section title="Pending Partners">
         {pendingPartners.map((partner, index) => (
-          <PartnerCard key={index} {...partner} />
+          <PartnerCard
+            key={index}
+            fullName={partner.fullName}
+            profilePicture={partner.profilePicture}
+            bio={partner.bio}
+          />
         ))}
       </Section>
     </div>
