@@ -6,6 +6,7 @@ import PartnerCard from "../components/dashboard/PartnerCard";
 import Section from "../components/dashboard/Section";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { fetchCityFromCoordinates } from "../utils/geoCoding";
 
 // TODO: Replace this with dynamic loading
 const connectedPartners = [
@@ -44,6 +45,7 @@ const Dashboard = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
+  const [userCity, setUserCity] = useState("");
 
   useEffect(() => {
     // Fetch user profile first
@@ -52,7 +54,7 @@ const Dashboard = () => {
       if (!token) return;
 
       const decoded = jwtDecode(token);
-      const id = decoded.id!;
+      const id = decoded.id;
 
       try {
         const response = await axios.get(
@@ -66,6 +68,14 @@ const Dashboard = () => {
         const userProfile = response.data;
         setUserProfile(userProfile);
         setUsername(userProfile.fullName);
+
+        // Fetch the city from the coordinates
+
+        const city = await fetchCityFromCoordinates(
+          userProfile.location.coordinates[1],
+          userProfile.location.coordinates[0]
+        );
+        setUserCity(city || "Unknown");
 
         // Fetch suggested partners after user data is available
         await fetchSuggestedPartners(userProfile);
@@ -139,7 +149,7 @@ const Dashboard = () => {
   return (
     <div className="p-6 space-y-8">
       <h1 className="text-textPrimary font-primary text-h2 font-semibold">
-        Welcome back, {username}
+        Welcome back, {username} from {userCity}!
       </h1>
 
       {/* Navigation Buttons */}
