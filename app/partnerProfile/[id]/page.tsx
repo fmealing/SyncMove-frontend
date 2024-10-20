@@ -97,11 +97,11 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
     try {
       const user2Id = params.id; // Partner's ID
 
-      console.log("Starting match with user ID: ", user2Id);
-      console.log("Match score: ", matchScore);
+      console.log("Starting match with user ID: ", user2Id); // This is correct
+      console.log("Match score: ", matchScore); // This is correct
 
       await axios.post(
-        "http://localhost:5001/api/match",
+        "http://localhost:5001/api/match/create",
         {
           user2Id,
           score: matchScore,
