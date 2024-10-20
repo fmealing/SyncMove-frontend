@@ -8,6 +8,7 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const NotificationsPage = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
