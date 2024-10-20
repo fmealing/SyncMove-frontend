@@ -55,7 +55,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
 
   // Function to calculate match score between logged-in user and the partner
   const fetchMatchScore = async () => {
-    if (!loggedInUser || !partner) return;
+    if (!loggedInUser || !partner) return null;
 
     try {
       const response = await axios.post("http://127.0.0.1:5001/match", {
@@ -77,11 +77,14 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
 
       if (match) {
         setMatchScore(match.score);
+        return match.score; // Return the score here
       } else {
         setMatchScore(null); // No match found
+        return null;
       }
     } catch (error) {
       console.error("Error fetching match score: ", error);
+      return null;
     }
   };
 
@@ -94,29 +97,49 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
 
   // Function to start a match
   const startMatch = async () => {
+    const user2Id = params.id; // Partner's ID
+    const score = await fetchMatchScore(); // Calculate match score
+    console.log("Match score: ", score);
+    const token = localStorage.getItem("token");
+
     try {
-      const user2Id = params.id; // Partner's ID
-
-      console.log("Starting match with user ID: ", user2Id); // This is correct
-      console.log("Match score: ", matchScore); // This is correct
-
-      await axios.post(
+      // 1. Call the match creation API
+      const matchResponse = await axios.post(
         "http://localhost:5001/api/match/create",
-        {
-          user2Id,
-          score: matchScore,
-        },
+        { user2Id, score },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
-      setMatchStatus("Match started successfully!");
+      if (matchResponse.status === 201) {
+        console.log("Match created successfully.");
+
+        // 2. After creating the match, call the notification API
+        const notificationResponse = await axios.post(
+          "http://localhost:5001/api/notifications",
+          {
+            userId: user2Id, // The user receiving the notification
+            type: "match_request",
+            content: `${partner.fullName} wants to work out with you.`,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (notificationResponse.status === 201) {
+          console.log("Notification sent successfully.");
+          setMatchStatus("Match and notification created successfully!");
+        }
+      }
     } catch (error) {
-      console.error("Failed to start match: ", error);
-      setMatchStatus("Failed to start match.");
+      console.error("Failed to create match or send notification:", error);
+      setMatchStatus("Failed to create match or send notification.");
     }
   };
 
