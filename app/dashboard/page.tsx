@@ -41,11 +41,38 @@ const Dashboard = () => {
   const [userCity, setUserCity] = useState("");
 
   useEffect(() => {
-    // Fetch user profile first
-    const fetchUserProfile = async () => {
+    // Function to check token and redirect if invalid
+    const checkAuthAndRedirect = async () => {
       const token = localStorage.getItem("token");
-      if (!token) return;
 
+      // If no token found, redirect to the login page
+      if (!token) {
+        window.location.href = "/login"; // Redirect to the login page
+        return;
+      }
+
+      try {
+        // Decode the token to check expiration
+        const decodedToken = jwtDecode<{ exp: number }>(token);
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        // If token is expired, redirect to the login page
+        if (decodedToken.exp < currentTime) {
+          localStorage.removeItem("token"); // Clear invalid token
+          window.location.href = "/login"; // Redirect to the login page
+          return;
+        }
+
+        // Fetch user profile and proceed
+        await fetchUserProfile(token);
+      } catch (error) {
+        console.error("Token validation failed:", error);
+        window.location.href = "/login"; // Redirect to the login page
+      }
+    };
+
+    // Fetch user profile
+    const fetchUserProfile = async (token: string) => {
       const decoded = jwtDecode<{ id: string }>(token);
       const id = decoded.id;
 
@@ -145,7 +172,8 @@ const Dashboard = () => {
       }
     };
 
-    fetchUserProfile(); // Start by fetching user profile
+    // Check authentication and fetch data
+    checkAuthAndRedirect();
   }, []);
 
   if (loading) {
