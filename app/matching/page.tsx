@@ -2,11 +2,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaMessage } from "react-icons/fa6";
-import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
+import { jwtDecode } from "jwt-decode";
 
 const MatchingPage = () => {
-  const [partners, setPartners] = useState([]);
+  const [partners, setPartners] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -17,10 +17,10 @@ const MatchingPage = () => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    const decoded = jwtDecode<{ id: string }>(token);
-    const userId = decoded.id;
-
     try {
+      const decoded = jwtDecode<{ id: string }>(token);
+      const userId = decoded.id;
+
       const response = await axios.get(
         `http://localhost:5001/api/users/${userId}`,
         {
@@ -34,14 +34,36 @@ const MatchingPage = () => {
     }
   };
 
-  // Fetch suggested partners based on the user profile and current page
+  // Function to fetch match scores from /match API
+  const fetchMatchScores = async (userProfile: any) => {
+    try {
+      const response = await axios.post("http://127.0.0.1:5001/match", {
+        location: userProfile.location.coordinates,
+        preferences: [
+          userProfile.activityType,
+          userProfile.fitnessGoals,
+          userProfile.experienceLevel,
+        ],
+        includeAI: false,
+      });
+
+      console.log("Match API response: ", response.data.matches);
+      return response.data.matches; // Returns the matches with scores and user IDs
+    } catch (error) {
+      console.error("Error calculating match score: ", error);
+      return [];
+    }
+  };
+
+  // Fetch suggested partners and associate match scores
   const fetchPartners = async (page: number, userProfile: any) => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
     setLoading(true);
     try {
-      const response = await axios.post(
+      // Fetch partners from your paginated API
+      const partnersResponse = await axios.post(
         `http://localhost:5001/api/users/suggested-partners-pagination?page=${page}&limit=6`,
         {
           location: userProfile.location.coordinates,
@@ -57,9 +79,25 @@ const MatchingPage = () => {
         }
       );
 
-      setPartners(response.data.partners);
-      setTotalPages(response.data.totalPages);
-      setCurrentPage(response.data.currentPage);
+      // Fetch match scores
+      const matchScores = await fetchMatchScores(userProfile);
+
+      // Map the match scores to the partners
+      const partnersWithScores = partnersResponse.data.partners.map(
+        (partner: any) => {
+          const match = matchScores.find(
+            (match: any) => match.user_id === partner._id
+          );
+          return {
+            ...partner,
+            matchScore: match ? `${(match.score * 100).toFixed(0)}%` : "N/A",
+          };
+        }
+      );
+
+      setPartners(partnersWithScores);
+      setTotalPages(partnersResponse.data.totalPages);
+      setCurrentPage(partnersResponse.data.currentPage);
     } catch (error) {
       console.error("Failed to fetch partners", error);
     } finally {
@@ -97,8 +135,6 @@ const MatchingPage = () => {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {partners.map((partner: any, index: number) => {
-              console.log(partner);
-
               return (
                 <div
                   key={index}
@@ -121,8 +157,13 @@ const MatchingPage = () => {
                     <p className="text-base text-textPrimary font-primary">
                       Activity: {partner.activityType}
                     </p>
-                    {/* Use Link to navigate to partner's profile */}
-                    <Link href={`/partnerProfile/${partner._id}`}>
+                    <p className="text-base text-textPrimary font-primary">
+                      Match Score: {partner.matchScore}
+                    </p>
+                    {/* Pass match score to the partner's profile page */}
+                    <Link
+                      href={`/partnerProfile/${partner._id}?matchScore=${partner.matchScore}`}
+                    >
                       <button className="flex gap-2 rounded-full bg-primary text-lightGray w-1/2 h-12 text-[20px] justify-center items-center hover:bg-primaryDark transition">
                         <FaMessage />
                         Connect
