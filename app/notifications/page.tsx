@@ -1,57 +1,75 @@
-// TO IMPLEMENT using DaisyUI and TailwindCSS
-// Heading that says "Notifications"
-// 2 possible states: no notifications and notifications
-// No notifications: display a message that says "No notifications" along side an illustration
-// Notifications:
-// - Secondary button in textPrimary that says "Clear all" with an icon
-// - List of notifications with the following structure:
-//   - Timestamp
-//   - Notification message
-//   - Mark as read button
-//   - Message user button
+"use client"; // Required for client-side functionality
 
-"use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaBellSlash,
   FaTrashAlt,
   FaEnvelope,
   FaCheckCircle,
 } from "react-icons/fa";
+import axios from "axios";
 
 const NotificationsPage = () => {
-  // Dummy data
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      timestamp: "5 minutes ago",
-      message: "Alice sent you a match request",
-      read: false,
-      type: "match request",
-    },
-    {
-      id: 2,
-      timestamp: "2 hours ago",
-      message: "Bob wants to go running",
-      read: false,
-      type: "message",
-    },
-    {
-      id: 3,
-      timestamp: "1 day ago",
-      message: "Charlie wants to be your friend",
-      read: false,
-      type: "activity invite",
-    },
-  ]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Fetch notifications from the backend
+  const fetchNotifications = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const response = await axios.get(
+        "http://localhost:5001/api/notifications",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setNotifications(response.data.data); // Set notifications from the response
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
+      setError("Failed to load notifications. Please try again later.");
+      setLoading(false);
+    }
+  };
+
+  // Mark notification as read
+  const markAsRead = async (id: string) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.put(
+        `http://localhost:5001/api/notifications/${id}/read`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      // Update local state after marking as read
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notification) =>
+          notification._id === id
+            ? { ...notification, isRead: true }
+            : notification
+        )
+      );
+    } catch (error) {
+      console.error("Failed to mark notification as read:", error);
+    }
+  };
+
+  // Clear all notifications
   const clearNotifications = () => setNotifications([]);
 
-  const markAsRead = (id: number) => {
-    setNotifications(
-      notifications.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
-  };
+  // Fetch notifications on component mount
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  if (loading) {
+    return <p>Loading notifications...</p>;
+  }
 
   return (
     <div className="notification-background w-full min-h-screen flex flex-col items-center p-6 bg-lightGray">
@@ -60,6 +78,9 @@ const NotificationsPage = () => {
         <h1 className="text-h2 font-semibold font-primary text-textPrimary">
           Notifications
         </h1>
+
+        {/* Error Message */}
+        {error && <p className="text-red-500">{error}</p>}
 
         {/* Notifications List or No Notifications */}
         {notifications.length === 0 ? (
@@ -88,9 +109,9 @@ const NotificationsPage = () => {
             <ul className="space-y-4">
               {notifications.map((notification) => (
                 <li
-                  key={notification.id}
+                  key={notification._id}
                   className={`flex items-center justify-between p-4 border rounded-lg ${
-                    notification.read ? "bg-gray-100" : "bg-blue-50"
+                    notification.isRead ? "bg-gray-100" : "bg-blue-50"
                   }`}
                 >
                   <div className="flex-1">
@@ -98,27 +119,27 @@ const NotificationsPage = () => {
                       {notification.timestamp}
                     </p>
                     <p className="text-lg text-textPrimary font-primary">
-                      {notification.message}
+                      {notification.content}
                     </p>
                     <p
                       className={`flex items-center justify-center max-w-32 w-full text-sm font-bold px-3 py-1 rounded-full text-white
                                   ${
-                                    notification.type === "match request"
+                                    notification.type === "match_request"
                                       ? "bg-red-500"
                                       : notification.type === "message"
                                       ? "bg-green-500"
-                                      : notification.type === "activity invite"
+                                      : notification.type === "activity_invite"
                                       ? "bg-yellow-500"
                                       : "bg-gray-500"
                                   }`}
                     >
-                      {notification.type}
+                      {notification.type.replace("_", " ")}
                     </p>
                   </div>
                   <div className="flex space-x-3">
-                    {!notification.read && (
+                    {!notification.isRead && (
                       <button
-                        onClick={() => markAsRead(notification.id)}
+                        onClick={() => markAsRead(notification._id)}
                         className="text-primary hover:text-green-600 transition"
                       >
                         <FaCheckCircle className="text-xl" />
