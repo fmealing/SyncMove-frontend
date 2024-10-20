@@ -1,4 +1,4 @@
-"use client"; // Required for client-side functionality
+"use client";
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -184,6 +184,9 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
             <h2 className="text-2xl font-bold text-textPrimary font-primary">
               {partner.fullName || "Unknown Partner"}
             </h2>
+            <p className="text-textSecondary font-primary">
+              Match: {(Number(matchScore) * 100).toFixed(1)}%
+            </p>
             <p className="text-textSecondary font-primary">
               {partner.age ? `${partner.age} years old` : "Age not available"}
             </p>
