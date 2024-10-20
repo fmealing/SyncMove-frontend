@@ -9,13 +9,13 @@ const FitnessPreferences: React.FC = () => {
     Weightlifting: 1,
     Running: 1,
     Yoga: 1,
-    Other: 1,
+    generalFitness: 1,
   });
   const [preferredTime, setPreferredTime] = useState<Record<string, string[]>>({
     Weightlifting: [],
     Running: [],
     Yoga: [],
-    Other: [],
+    generalFitness: [],
   });
 
   useEffect(() => {
@@ -133,21 +133,24 @@ const FitnessPreferences: React.FC = () => {
           Select Your Fitness Goals
         </p>
         <div className="flex flex-wrap gap-2">
-          {["Lose Weight", "Gain Muscle", "General Health", "Other"].map(
-            (goal) => (
-              <button
-                key={goal}
-                className={`px-4 py-2 rounded-full border font-primary ${
-                  fitnessGoals.includes(goal)
-                    ? "bg-primary text-white"
-                    : "border-secondary border-2 text-textPrimary"
-                }`}
-                onClick={() => toggleGoal(goal)}
-              >
-                {goal}
-              </button>
-            )
-          )}
+          {[
+            "Lose Weight",
+            "Gain Muscle",
+            "General Health",
+            "General Fitness",
+          ].map((goal) => (
+            <button
+              key={goal}
+              className={`px-4 py-2 rounded-full border font-primary ${
+                fitnessGoals.includes(goal)
+                  ? "bg-primary text-white"
+                  : "border-secondary border-2 text-textPrimary"
+              }`}
+              onClick={() => toggleGoal(goal)}
+            >
+              {goal}
+            </button>
+          ))}
         </div>
       </div>
       <div>

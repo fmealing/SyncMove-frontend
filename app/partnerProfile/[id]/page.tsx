@@ -4,69 +4,107 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaAward, FaClock, FaHeartbeat } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
+import { jwtDecode } from "jwt-decode";
 
 const PartnerProfile = ({ params }: { params: { id: string } }) => {
   const [partner, setPartner] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [matchStatus, setMatchStatus] = useState<string | null>(null);
+  const [loggedInUser, setLoggedInUser] = useState<any>(null);
+  const [matchScore, setMatchScore] = useState<number | null>(null);
 
   useEffect(() => {
-    if (params.id) {
-      // Fetch partner details based on ID
-      const fetchPartner = async () => {
+    const fetchLoggedInUserProfile = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
         try {
+          const decoded = jwtDecode<{ id: string }>(token);
+          const userId = decoded.id;
           const response = await axios.get(
-            `http://localhost:5001/api/users/${params.id}`,
+            `http://localhost:5001/api/users/${userId}`,
             {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
+              headers: { Authorization: `Bearer ${token}` },
             }
           );
-          setPartner(response.data);
+          setLoggedInUser(response.data);
         } catch (error) {
-          console.error("Failed to fetch partner details", error);
-          setError("Failed to load partner details. Please try again later.");
-        } finally {
-          setLoading(false);
+          console.error("Failed to fetch logged-in user profile", error);
         }
-      };
-      fetchPartner();
-    }
+      }
+    };
+
+    const fetchPartner = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5001/api/users/${params.id}`
+        );
+        setPartner(response.data);
+      } catch (error) {
+        console.error("Failed to fetch partner details", error);
+        setError("Failed to load partner details. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Fetch both logged-in user profile and partner's details
+    fetchLoggedInUserProfile();
+    fetchPartner();
   }, [params.id]);
 
-  // Function to calculate match score
-  const calculateMatchScore = async () => {
+  // Function to calculate match score between logged-in user and the partner
+  const fetchMatchScore = async () => {
+    if (!loggedInUser || !partner) return;
+
     try {
       const response = await axios.post("http://127.0.0.1:5001/match", {
-        location: partner.location.coordinates, // Example: [52.4888835, -1.8952849]
+        location: loggedInUser.location.coordinates,
         preferences: [
-          partner.activityType, // Example: "Cycling"
-          partner.availability.timeOfDay || "Other", // Example: "Other" (fallback value if undefined)
-          partner.experienceLevel, // Example: 2
+          loggedInUser.activityType,
+          loggedInUser.fitnessGoals,
+          loggedInUser.experienceLevel,
         ],
         includeAI: false,
       });
 
-      return response.data.score; // Assuming the API returns a score
+      console.log("Match API response: ", response.data.matches);
+
+      // Find the score that matches params.id (partner ID)
+      const match = response.data.matches.find(
+        (m: any) => m.user_id === params.id
+      );
+
+      if (match) {
+        setMatchScore(match.score);
+      } else {
+        setMatchScore(null); // No match found
+      }
     } catch (error) {
-      console.error("Error calculating match score: ", error);
-      throw error;
+      console.error("Error fetching match score: ", error);
     }
   };
+
+  // Fetch the match score once both profiles are loaded
+  useEffect(() => {
+    if (loggedInUser && partner) {
+      fetchMatchScore();
+    }
+  }, [loggedInUser, partner]);
 
   // Function to start a match
   const startMatch = async () => {
     try {
-      const score = await calculateMatchScore(); // First, calculate the match score
       const user2Id = params.id; // Partner's ID
+
+      console.log("Starting match with user ID: ", user2Id);
+      console.log("Match score: ", matchScore);
 
       await axios.post(
         "http://localhost:5001/api/match",
         {
           user2Id,
-          score,
+          score: matchScore,
         },
         {
           headers: {
