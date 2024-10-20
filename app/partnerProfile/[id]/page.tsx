@@ -101,6 +101,9 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
     const score = await fetchMatchScore(); // Calculate match score
     console.log("Match score: ", score);
     const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const userId = jwtDecode<{ id: string }>(token).id;
 
     try {
       // 1. Call the match creation API
@@ -116,12 +119,13 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
 
       if (matchResponse.status === 201) {
         console.log("Match created successfully.");
+        console.log("Creating notification...");
 
         // 2. After creating the match, call the notification API
         const notificationResponse = await axios.post(
           "http://localhost:5001/api/notifications",
           {
-            userId: user2Id, // The user receiving the notification
+            userId: userId, // The user receiving the notification
             type: "match_request",
             content: `${partner.fullName} wants to work out with you.`,
           },
@@ -131,6 +135,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
             },
           }
         );
+        console.log("Notification response: ", notificationResponse);
 
         if (notificationResponse.status === 201) {
           console.log("Notification sent successfully.");
