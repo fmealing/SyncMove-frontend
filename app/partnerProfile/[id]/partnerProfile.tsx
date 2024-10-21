@@ -5,6 +5,7 @@ import axios from "axios";
 import { FaAward, FaClock, FaHeartbeat } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
 import { jwtDecode } from "jwt-decode";
+import LoadingScreen from "@/app/components/LoadingScreen";
 
 const PartnerProfile = ({ params }: { params: { id: string } }) => {
   const [partner, setPartner] = useState<any>(null);
@@ -149,7 +150,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
   };
 
   if (loading) {
-    return <p>Loading partner details...</p>;
+    return <LoadingScreen />;
   }
 
   if (error) {

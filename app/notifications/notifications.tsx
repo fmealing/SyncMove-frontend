@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import LoadingScreen from "../components/LoadingScreen";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -69,7 +70,7 @@ const Notifications = () => {
   }, []);
 
   if (loading) {
-    return <p>Loading notifications...</p>;
+    return <LoadingScreen />;
   }
 
   return (

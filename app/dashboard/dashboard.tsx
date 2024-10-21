@@ -8,6 +8,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { fetchCityFromCoordinates } from "../utils/geoCoding";
 import Link from "next/link";
+import LoadingScreen from "../components/LoadingScreen";
 
 // Define types
 interface Partner {
@@ -177,15 +178,11 @@ const Dashboard = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="text-h2 text-textPrimary justify-center items-center">
-        Loading...
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="p-6 space-y-8 min-h-screen">
       <h1 className="text-textPrimary font-primary text-h2 font-semibold">
         Welcome back, {username}!
       </h1>
