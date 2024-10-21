@@ -1,3 +1,8 @@
+// TODO: Fetch matches and check if the status is accepted and show them
+// API route for fetch matches: http://localhost:5001/api/match/user/:userId GET
+// Requires authentication -> Add Authorization header with Bearer token
+// User Id comes from the JWT token
+
 "use client";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -36,9 +41,12 @@ const Messaging = () => {
   // Fetch Conversations
   const fetchConversations = async () => {
     try {
-      const response = await axios.get("/api/conversations", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const response = await axios.get(
+        "http://localhost:5001/api/conversations",
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
       setConversations(response.data);
     } catch (error) {
       console.error("Failed to fetch conversations", error);
@@ -48,9 +56,12 @@ const Messaging = () => {
   // Fetch Messages for a Conversation
   const fetchMessages = async (conversationId) => {
     try {
-      const response = await axios.get(`/api/messages/${conversationId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const response = await axios.get(
+        `http://localhost:5001/api/messages/${conversationId}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
       setMessages(response.data);
     } catch (error) {
       console.error("Failed to fetch messages", error);
