@@ -4,6 +4,7 @@ import axios from "axios";
 import { FaMessage } from "react-icons/fa6";
 import Link from "next/link";
 import { jwtDecode } from "jwt-decode";
+import LoadingScreen from "../components/LoadingScreen";
 
 const Matching = () => {
   const [partners, setPartners] = useState<any[]>([]);
@@ -130,7 +131,7 @@ const Matching = () => {
       </h2>
 
       {loading ? (
-        <p>Loading...</p>
+        <LoadingScreen />
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
