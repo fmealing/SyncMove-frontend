@@ -1,8 +1,3 @@
-// TODO: Fetch matches and check if the status is accepted and show them
-// API route for fetch matches: http://localhost:5001/api/match/user/:userId GET
-// Requires authentication -> Add Authorization header with Bearer token
-// User Id comes from the JWT token
-
 "use client";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -16,6 +11,7 @@ const Messaging = () => {
   const [messages, setMessages] = useState([]);
   const [messageContent, setMessageContent] = useState("");
   const [userId, setUserId] = useState(null); // Store user ID
+  const [userFullName, setUserFullName] = useState(""); // Store user full name
   const [socket, setSocket] = useState(null); // Store the socket connection
 
   // Get the user ID from the JWT token and initialize socket connection
@@ -24,6 +20,13 @@ const Messaging = () => {
     if (token) {
       const decodedToken = jwtDecode(token);
       setUserId(decodedToken.id);
+
+      // Fetch the user's fullName from the API or local storage
+      axios
+        .get(`http://localhost:5001/api/users/${decodedToken.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => setUserFullName(response.data.fullName));
 
       // Initialize Socket.io client
       const newSocket = io("http://localhost:5001", {
@@ -92,10 +95,14 @@ const Messaging = () => {
       content: messageContent,
     });
 
-    // Add the message locally for instant feedback
+    // Add the message locally for instant feedback with user's fullName
     setMessages([
       ...messages,
-      { sender: userId, content: messageContent, timestamp: new Date() },
+      {
+        sender: { _id: userId, fullName: userFullName }, // Attach fullName here
+        content: messageContent,
+        timestamp: new Date(),
+      },
     ]);
     setMessageContent(""); // Clear input
   };
@@ -152,7 +159,7 @@ const Messaging = () => {
                 <div
                   key={idx}
                   className={`message ${
-                    msg.sender === userId ? "sent" : "received"
+                    msg.sender._id === userId ? "sent" : "received"
                   }`}
                 >
                   <p className="text-textPrimary text-lg font-semibold font-primary">
@@ -185,6 +192,7 @@ const Messaging = () => {
             className="w-full py-2 pl-4 pr-12 rounded-full border border-gray-300 focus:outline-none focus:border-primary font-primary text-textPrimary"
             value={messageContent}
             onChange={(e) => setMessageContent(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSendMessage()} // Send message on Enter key
           />
           <button
             className="absolute right-6 text-primary"
