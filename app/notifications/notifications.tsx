@@ -1,20 +1,21 @@
-"use client"; // Required for client-side functionality
+"use client";
 
 import React, { useEffect, useState } from "react";
 import {
-  FaBellSlash,
   FaTrashAlt,
   FaEnvelope,
   FaCheckCircle,
+  FaCalendarAlt,
 } from "react-icons/fa";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import { useRouter } from "next/navigation";
 import LoadingScreen from "../components/LoadingScreen";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   // Fetch notifications from the backend
   const fetchNotifications = async () => {
@@ -64,6 +65,11 @@ const Notifications = () => {
   // Clear all notifications
   const clearNotifications = () => setNotifications([]);
 
+  // Handle scheduling redirection
+  const handleScheduleWorkout = (userId: string) => {
+    router.push(`/schedule-workout?userId=${userId}`);
+  };
+
   // Fetch notifications on component mount
   useEffect(() => {
     fetchNotifications();
@@ -112,15 +118,15 @@ const Notifications = () => {
               {notifications.map((notification) => (
                 <li
                   key={notification._id}
-                  className={`flex items-center justify-between p-4 border rounded-lg ${
+                  className={`flex flex-col md:flex-row justify-between p-4 border rounded-lg ${
                     notification.isRead ? "bg-gray-100" : "bg-blue-50"
                   }`}
                 >
-                  <div className="flex-1">
+                  <div className="flex-1 mb-4 md:mb-0">
                     <p className="text-sm text-textSecondary font-primary">
                       {notification.timestamp}
                     </p>
-                    <p className="text-lg text-textPrimary font-primary">
+                    <p className="text-lg text-textPrimary font-primary mb-4">
                       {notification.content}
                     </p>
                     <p
@@ -138,18 +144,47 @@ const Notifications = () => {
                       {notification.type.replace("_", " ")}
                     </p>
                   </div>
-                  <div className="flex space-x-3">
+
+                  {/* Actions Section */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                     {!notification.isRead && (
-                      <button
-                        onClick={() => markAsRead(notification._id)}
-                        className="text-primary hover:text-green-600 transition"
-                      >
-                        <FaCheckCircle className="text-xl" />
-                      </button>
+                      <div className="flex flex-col items-center">
+                        <button
+                          onClick={() => markAsRead(notification._id)}
+                          className="text-primary hover:text-green-600 transition"
+                        >
+                          <FaCheckCircle className="text-xl" />
+                        </button>
+                        <span className="text-base text-textPrimary font-primary hover:text-textSecondary transition">
+                          Mark as Read
+                        </span>
+                      </div>
                     )}
-                    <button className="text-primary hover:text-blue-600 transition">
-                      <FaEnvelope className="text-xl" />
-                    </button>
+
+                    {notification.type === "match_request" && (
+                      <div className="flex flex-col items-center">
+                        <button
+                          onClick={() =>
+                            handleScheduleWorkout(notification.user)
+                          }
+                          className="text-primary hover:text-blue-600 transition"
+                        >
+                          <FaCalendarAlt className="text-xl" />
+                        </button>
+                        <span className="text-base text-textPrimary font-primary hover:text-textSecondary transition">
+                          Schedule Workout
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="flex flex-col items-center">
+                      <button className="text-primary hover:text-blue-600 transition">
+                        <FaEnvelope className="text-xl" />
+                      </button>
+                      <span className="text-base text-textPrimary font-primary hover:text-textSecondary transition">
+                        Message User
+                      </span>
+                    </div>
                   </div>
                 </li>
               ))}
