@@ -48,6 +48,7 @@ const Messaging = () => {
         }
       );
       setConversations(response.data);
+      console.log("Conversations", response.data);
     } catch (error) {
       console.error("Failed to fetch conversations", error);
     }
@@ -63,6 +64,7 @@ const Messaging = () => {
         }
       );
       setMessages(response.data);
+      console.log("Messages", response.data);
     } catch (error) {
       console.error("Failed to fetch messages", error);
     }
@@ -153,7 +155,10 @@ const Messaging = () => {
                     msg.sender === userId ? "sent" : "received"
                   }`}
                 >
-                  <p>{msg.content}</p>
+                  <p className="text-textPrimary text-lg font-semibold font-primary">
+                    {msg.sender.fullName}
+                  </p>
+                  <p className="text-textPrimary font-primary">{msg.content}</p>
                   <span className="text-xs text-gray-400">
                     {new Date(msg.timestamp).toLocaleTimeString()}
                   </span>
