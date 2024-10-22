@@ -6,6 +6,7 @@ import TimeSelector from "@/app/components/onboarding/TimeSelector";
 import { FaCheckCircle } from "react-icons/fa";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import toast from "react-hot-toast";
 
 interface Partner {
   fullName: string;
@@ -28,7 +29,7 @@ const ScheduleWorkoutPage = () => {
   const userId = params?.userId;
 
   if (!userId) {
-    alert("User ID not found. Please try again.");
+    toast.error("User ID not found. Please try again.");
     return null;
   }
 
@@ -50,6 +51,7 @@ const ScheduleWorkoutPage = () => {
       setPartner(response.data);
     } catch (error) {
       console.error("Error fetching partner data:", error);
+      toast.error("Failed to fetch partner data. Please try again.");
     }
   };
 
@@ -59,22 +61,15 @@ const ScheduleWorkoutPage = () => {
     fetchPartnerData();
   }, [userId]);
 
-  // Debugging log to check partner state
-  // useEffect(() => {
-  //   console.log("Partner data: ", partner);
-  //   console.log("full name: ", partner.fullName);
-  //   console.log("location: ", partner.location?.coordinates);
-  // }, [partner]);
-
   const handleConfirmActivity = async () => {
     if (!selectedDate || !selectedTime) {
-      alert("Please select both a date and time!");
+      toast.error("Please select both a data and a time!");
       return;
     }
 
     try {
       if (!partner) {
-        alert("Partner data not found. Please try again.");
+        toast.error("Partner data not found. Please try again.");
         return;
       }
 
@@ -82,7 +77,7 @@ const ScheduleWorkoutPage = () => {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        alert("You must be logged in to schedule a workout!");
+        toast.error("You must be logged in to schedule a workout.");
         return;
       }
 
@@ -110,14 +105,14 @@ const ScheduleWorkoutPage = () => {
       );
 
       if (response.status === 201) {
-        alert("Workout scheduled successfully!");
+        toast.success("Workout scheduled successfully!");
         router.push("/dashboard");
       } else {
-        alert("Failed to schedule workout. Try again later.");
+        toast.error("Failed to schedule the workout. Please try again.");
       }
     } catch (error) {
       console.error("Error scheduling activity:", error);
-      alert("An error occurred while scheduling the workout.");
+      toast.error("An error occurred while scheduling the workout.");
     } finally {
       setLoading(false);
     }
