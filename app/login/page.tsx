@@ -4,6 +4,7 @@ import { useState } from "react";
 import React from "react";
 import { FaEye, FaEyeSlash, FaSignInAlt } from "react-icons/fa";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Login: React.FC = () => {
   const [formdata, setFormdata] = useState({
@@ -32,13 +33,13 @@ const Login: React.FC = () => {
       // Assuming the token is returned in response.data.token
       const token = response.data.token;
       localStorage.setItem("token", token); // Save the token to local storage
-      console.log("Login successful:", response.data);
+      toast.success("Login successful. Redirecting to dashboard...");
 
       // Redirect to the dashboard after successful login
       window.location.href = "/dashboard";
     } catch (error) {
       console.error("Login failed:", error);
-      alert("Login failed. Please check your email and password.");
+      toast.error("Login failed. Please try again.");
     }
   };
 

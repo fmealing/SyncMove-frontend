@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import toast from "react-hot-toast";
 
 const FitnessPreferences: React.FC = () => {
   const [fitnessGoals, setFitnessGoals] = useState<string[]>([]);
@@ -44,6 +45,7 @@ const FitnessPreferences: React.FC = () => {
         setPreferredTime({ [data.activityType]: data.availability.timeOfDay });
       } catch (error) {
         console.error("Failed to fetch user preferences:", error);
+        toast.error("Failed to fetch user preferences");
       }
     };
 
@@ -78,8 +80,10 @@ const FitnessPreferences: React.FC = () => {
         }
       );
       console.log("Preferences saved successfully");
+      toast.success("Preferences saved successfully");
     } catch (error) {
       console.error("Failed to save preferences:", error);
+      toast.error("Failed to save preferences");
     }
   };
 

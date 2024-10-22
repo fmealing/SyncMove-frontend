@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import toast from "react-hot-toast";
 
 const PrivacyPreferences: React.FC = () => {
   const [visibility, setVisibility] = useState<string>("Public");
@@ -66,8 +67,10 @@ const PrivacyPreferences: React.FC = () => {
       );
 
       console.log("Privacy preferences saved successfully");
+      toast.success("Privacy preferences saved successfully");
     } catch (error) {
       console.error("Failed to save privacy preferences:", error);
+      toast.error("Failed to save privacy preferences");
     }
   };
 

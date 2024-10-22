@@ -48,7 +48,7 @@ const Matching = () => {
         includeAI: false,
       });
 
-      console.log("Match API response: ", response.data.matches);
+      // console.log("Match API response: ", response.data.matches);
       return response.data.matches; // Returns the matches with scores and user IDs
     } catch (error) {
       console.error("Error calculating match score: ", error);
