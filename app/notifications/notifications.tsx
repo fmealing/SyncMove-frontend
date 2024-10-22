@@ -28,6 +28,7 @@ const Notifications = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      // console.log(response.data);
       setNotifications(response.data.data); // Set notifications from the response
       setLoading(false);
     } catch (error) {
@@ -164,7 +165,7 @@ const Notifications = () => {
 
                     {notification.type === "match_request" && (
                       <div className="flex flex-col items-center">
-                        <Link href={`/schedule-workout/${notification.user}`}>
+                        <Link href={`/schedule-workout/${notification.sender}`}>
                           <button className="text-primary hover:text-blue-600 transition">
                             <FaCalendarAlt className="text-xl" />
                           </button>
