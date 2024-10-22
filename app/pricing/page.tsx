@@ -1,3 +1,6 @@
+// TODO: Implement Stripe Checkout for one-time payments
+// TODO: Find good value for cost of each plan
+
 "use client";
 import React from "react";
 import { FaCheck, FaStar, FaGift, FaRocket } from "react-icons/fa";
