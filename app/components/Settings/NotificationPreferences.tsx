@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaEnvelope, FaBell } from "react-icons/fa";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import toast from "react-hot-toast";
 
 type NotificationSettingKey = "notifications" | "messages" | "reminders";
 
@@ -101,8 +102,10 @@ const NotificationPreferences: React.FC = () => {
       );
 
       console.log("Notification preferences saved successfully");
+      toast.success("Notification preferences saved successfully");
     } catch (error) {
       console.error("Failed to save notification preferences:", error);
+      toast.error("Failed to save notification preferences");
     }
   };
 

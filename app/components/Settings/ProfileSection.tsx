@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaEdit, FaUpload } from "react-icons/fa";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import toast from "react-hot-toast";
 
 interface UserData {
   fullName: string;
@@ -103,9 +104,11 @@ const ProfileSection: React.FC = () => {
       );
 
       setProfileSaveStatus("Profile updated successfully!");
+      toast.success("Profile updated successfully!");
     } catch (error) {
       console.error("Failed to update profile:", error);
       setProfileSaveStatus("Failed to update profile.");
+      toast.error("Failed to update profile.");
     } finally {
       setIsSavingProfile(false); // Reset loading state
     }

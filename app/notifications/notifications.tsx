@@ -10,6 +10,7 @@ import {
 import axios from "axios";
 import LoadingScreen from "../components/LoadingScreen";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -34,6 +35,7 @@ const Notifications = () => {
       setLoading(false);
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
+      toast.error("Failed to load notifications. Please try again later.");
       setError("Failed to load notifications. Please try again later.");
       setLoading(false);
     }
@@ -59,6 +61,7 @@ const Notifications = () => {
         )
       );
     } catch (error) {
+      toast.error("Failed to mark notification as read. Please try again.");
       console.error("Failed to mark notification as read:", error);
     }
   };
