@@ -9,6 +9,7 @@ interface UserData {
   email: string;
   profilePicture: string;
   bio: string;
+  dob: string; // Add DOB field to UserData interface
 }
 
 const ProfileSection: React.FC = () => {
@@ -17,6 +18,7 @@ const ProfileSection: React.FC = () => {
   const [uploadStatus, setUploadStatus] = useState<string>("");
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [bio, setBio] = useState<string>(""); // State to handle bio input
+  const [dob, setDob] = useState<string>(""); // State to handle DOB input
   const [isSavingProfile, setIsSavingProfile] = useState<boolean>(false); // Loading state for saving the entire profile
   const [profileSaveStatus, setProfileSaveStatus] = useState<string>(""); // Status message for profile save
 
@@ -40,8 +42,10 @@ const ProfileSection: React.FC = () => {
           email: response.data.email,
           profilePicture: response.data.profilePicture,
           bio: response.data.bio,
+          dob: response.data.dob, // Fetch DOB from backend
         });
         setBio(response.data.bio); // Set bio from user data
+        setDob(response.data.dob); // Set DOB from user data
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
@@ -56,7 +60,7 @@ const ProfileSection: React.FC = () => {
     setSelectedImage(file);
   };
 
-  // Handle profile update (bio, image, etc.)
+  // Handle profile update (bio, dob, image, etc.)
   const handleSaveProfile = async () => {
     setIsSavingProfile(true); // Set loading state
 
@@ -86,13 +90,14 @@ const ProfileSection: React.FC = () => {
         imageUrl = uploadResponse.data.imageUrl;
       }
 
-      // Update the user's profile in the backend (bio, profile picture)
+      // Update the user's profile in the backend (bio, dob, profile picture)
       await axios.put(
         `http://localhost:5001/api/users/${decoded.id}`,
         {
           fullName: userData?.fullName,
           email: userData?.email,
           bio,
+          dob, // Save updated DOB
           profilePicture: imageUrl,
         },
         {
@@ -181,6 +186,19 @@ const ProfileSection: React.FC = () => {
                 rows={3}
                 maxLength={150} // Limit bio length
                 placeholder="Write a short bio..."
+              />
+            </div>
+
+            {/* Date of Birth */}
+            <div className="flex flex-col space-y-2">
+              <label className="font-primary text-textPrimary">
+                Date of Birth
+              </label>
+              <input
+                type="date"
+                value={dob} // Bind DOB state
+                onChange={(e) => setDob(e.target.value)} // Update DOB state on change
+                className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary font-primary text-textPrimary"
               />
             </div>
 
