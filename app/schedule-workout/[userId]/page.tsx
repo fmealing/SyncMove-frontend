@@ -1,3 +1,4 @@
+// TOFO: Deal with 400 error - status isn't accepted
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
@@ -86,6 +87,19 @@ const ScheduleWorkoutPage = () => {
           remember to be respectful, arrive on time, and communicate any changes
           to your partner.
         </p>
+
+        {/* Debugging Button TODO: Delete Later */}
+        <button
+          onClick={() =>
+            console.log(
+              userId ===
+                jwtDecode<{ id: string }>(localStorage.getItem("token")).id // These are the same
+            )
+          }
+          className="text-lg  text-white px-4 py-2 font-primary bg-primary rounded-full mb-10"
+        >
+          Debugging Button
+        </button>
 
         <div className="flex flex-col md:flex-row md:items-start md:space-x-8 space-y-6 md:space-y-0 w-full">
           <div className="flex-1">

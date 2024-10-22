@@ -104,7 +104,8 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    const userId = jwtDecode<{ id: string }>(token).id;
+    const decoded = jwtDecode<{ id: string }>(token);
+    const senderId = decoded.id; // Get the logged-in user ID
 
     try {
       // 1. Call the match creation API
@@ -117,31 +118,42 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
           },
         }
       );
+      console.log("Match response: ", matchResponse);
 
       if (matchResponse.status === 201) {
         console.log("Match created successfully.");
-        console.log("Creating notification...");
 
         // 2. After creating the match, call the notification API
-        const notificationResponse = await axios.post(
-          "http://localhost:5001/api/notifications",
-          {
-            userId: userId, // The user receiving the notification
-            type: "match_request",
-            content: `${partner.fullName} wants to work out with you.`,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log("Notification response: ", notificationResponse);
+        try {
+          console.log("Creating notification...");
 
-        if (notificationResponse.status === 201) {
-          console.log("Notification sent successfully.");
-          setMatchStatus("Match and notification created successfully!");
+          const notificationResponse = await axios.post(
+            "http://localhost:5001/api/notifications",
+            {
+              userId: user2Id, // The user receiving the notification
+              senderId: senderId, // The logged-in user sending the request
+              type: "match_request",
+              content: `${loggedInUser.fullName} wants to work out with you.`,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log("Notification response: ", notificationResponse);
+
+          if (notificationResponse.status === 201) {
+            console.log("Notification sent successfully.");
+            setMatchStatus("Match and notification created successfully!");
+          }
+        } catch (notificationError) {
+          console.error("Failed to send notification:", notificationError);
+          setMatchStatus("Match created, but notification failed.");
         }
+      } else {
+        console.error("Failed to create match.");
+        setMatchStatus("Failed to create match.");
       }
     } catch (error) {
       console.error("Failed to create match or send notification:", error);
