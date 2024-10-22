@@ -8,14 +8,13 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import LoadingScreen from "../components/LoadingScreen";
+import Link from "next/link";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   // Fetch notifications from the backend
   const fetchNotifications = async () => {
@@ -65,11 +64,6 @@ const Notifications = () => {
   // Clear all notifications
   const clearNotifications = () => setNotifications([]);
 
-  // Handle scheduling redirection
-  const handleScheduleWorkout = (userId: string) => {
-    router.push(`/schedule-workout?userId=${userId}`);
-  };
-
   // Fetch notifications on component mount
   useEffect(() => {
     fetchNotifications();
@@ -86,6 +80,14 @@ const Notifications = () => {
         <h1 className="text-h2 font-semibold font-primary text-textPrimary">
           Notifications
         </h1>
+
+        {/* For Debugging purposes */}
+        <button
+          onClick={() => console.log("Notification data:", notifications)}
+          className="text-lg px-4 py-2 rounded-full font-primary bg-primary"
+        >
+          For Debugging
+        </button>
 
         {/* Error Message */}
         {error && <p className="text-red-500">{error}</p>}
@@ -130,16 +132,15 @@ const Notifications = () => {
                       {notification.content}
                     </p>
                     <p
-                      className={`flex items-center justify-center max-w-32 w-full text-sm font-bold px-3 py-1 rounded-full text-white
-                                  ${
-                                    notification.type === "match_request"
-                                      ? "bg-red-500"
-                                      : notification.type === "message"
-                                      ? "bg-green-500"
-                                      : notification.type === "activity_invite"
-                                      ? "bg-yellow-500"
-                                      : "bg-gray-500"
-                                  }`}
+                      className={`flex items-center justify-center max-w-32 w-full text-sm font-bold px-3 py-1 rounded-full text-white ${
+                        notification.type === "match_request"
+                          ? "bg-red-500"
+                          : notification.type === "message"
+                          ? "bg-green-500"
+                          : notification.type === "activity_invite"
+                          ? "bg-yellow-500"
+                          : "bg-gray-500"
+                      }`}
                     >
                       {notification.type.replace("_", " ")}
                     </p>
@@ -163,17 +164,14 @@ const Notifications = () => {
 
                     {notification.type === "match_request" && (
                       <div className="flex flex-col items-center">
-                        <button
-                          onClick={() =>
-                            handleScheduleWorkout(notification.user)
-                          }
-                          className="text-primary hover:text-blue-600 transition"
-                        >
-                          <FaCalendarAlt className="text-xl" />
-                        </button>
-                        <span className="text-base text-textPrimary font-primary hover:text-textSecondary transition">
-                          Schedule Workout
-                        </span>
+                        <Link href={`/schedule-workout/${notification.user}`}>
+                          <button className="text-primary hover:text-blue-600 transition">
+                            <FaCalendarAlt className="text-xl" />
+                          </button>
+                          <span className="text-base text-textPrimary font-primary hover:text-textSecondary transition">
+                            Schedule Workout
+                          </span>
+                        </Link>
                       </div>
                     )}
 
