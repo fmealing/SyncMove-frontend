@@ -1,4 +1,3 @@
-// TODO: Deal with 400 error - status isn't accepted
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
@@ -8,13 +7,30 @@ import { FaCheckCircle } from "react-icons/fa";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
+interface Partner {
+  fullName: string;
+  dateString: string;
+  activityType: string;
+  location?: {
+    type: string;
+    coordinates: [number, number];
+  };
+  description: string;
+}
+
 const ScheduleWorkoutPage = () => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [partner, setPartner] = useState<Partner | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter(); // Initialize router for accessing the URL
   const params = useParams(); // Get the dynamic route parameter
-  const userId = params.userId;
+  const userId = params?.userId;
+
+  if (!userId) {
+    alert("User ID not found. Please try again.");
+    return null;
+  }
 
   const handleDateChange = (date: string) => {
     setSelectedDate(date);
@@ -24,6 +40,32 @@ const ScheduleWorkoutPage = () => {
     setSelectedTime(time);
   };
 
+  // Async function to fetch partner data
+  const fetchPartnerData = async () => {
+    try {
+      console.log("partnerResponse called. User ID: ", userId);
+      const response = await axios.get(
+        `http://localhost:5001/api/users/${userId}`
+      );
+      setPartner(response.data);
+    } catch (error) {
+      console.error("Error fetching partner data:", error);
+    }
+  };
+
+  // UseEffect to load partner data on page load
+  useEffect(() => {
+    // Calling the async function inside useEffect
+    fetchPartnerData();
+  }, [userId]);
+
+  // Debugging log to check partner state
+  // useEffect(() => {
+  //   console.log("Partner data: ", partner);
+  //   console.log("full name: ", partner.fullName);
+  //   console.log("location: ", partner.location?.coordinates);
+  // }, [partner]);
+
   const handleConfirmActivity = async () => {
     if (!selectedDate || !selectedTime) {
       alert("Please select both a date and time!");
@@ -31,6 +73,11 @@ const ScheduleWorkoutPage = () => {
     }
 
     try {
+      if (!partner) {
+        alert("Partner data not found. Please try again.");
+        return;
+      }
+
       setLoading(true);
       const token = localStorage.getItem("token");
 
@@ -43,13 +90,13 @@ const ScheduleWorkoutPage = () => {
       const myUserId = decoded.id;
 
       const response = await axios.post(
-        "http://localhost:5001/api/activities", // Replace with your API URL
+        "http://localhost:5001/api/activities",
         {
-          activityType: "Workout", // You can modify this to be dynamic
-          description: `Scheduled workout with user ${userId}`,
+          activityType: "Workout", // For this version workout meetup only
+          description: `Scheduled ${selectedTime} workout with ${partner.fullName}`,
           location: {
             type: "Point",
-            coordinates: [-73.935242, 40.73061], // Placeholder for coordinates
+            coordinates: partner.location?.coordinates, // Placeholder for coordinates
           },
           dateString: selectedDate,
           timeOfDay: selectedTime,
@@ -76,14 +123,6 @@ const ScheduleWorkoutPage = () => {
     }
   };
 
-  const handleDebug = () => {
-    console.log("User1: ", userId);
-    console.log(
-      "User2: ",
-      jwtDecode<{ id: string }>(localStorage.getItem("token")).id
-    );
-  };
-
   return (
     <div className="scheduling-background min-h-screen">
       <div className="scheduling-content">
@@ -95,14 +134,6 @@ const ScheduleWorkoutPage = () => {
           remember to be respectful, arrive on time, and communicate any changes
           to your partner.
         </p>
-
-        {/* Debugging Button TODO: Delete Later */}
-        <button
-          onClick={() => handleDebug()}
-          className="text-lg  text-white px-4 py-2 font-primary bg-primary rounded-full mb-10"
-        >
-          Debugging Button
-        </button>
 
         <div className="flex flex-col md:flex-row md:items-start md:space-x-8 space-y-6 md:space-y-0 w-full">
           <div className="flex-1">
