@@ -1,4 +1,4 @@
-// TOFO: Deal with 400 error - status isn't accepted
+// TODO: Deal with 400 error - status isn't accepted
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
@@ -76,6 +76,14 @@ const ScheduleWorkoutPage = () => {
     }
   };
 
+  const handleDebug = () => {
+    console.log("User1: ", userId);
+    console.log(
+      "User2: ",
+      jwtDecode<{ id: string }>(localStorage.getItem("token")).id
+    );
+  };
+
   return (
     <div className="scheduling-background min-h-screen">
       <div className="scheduling-content">
@@ -90,12 +98,7 @@ const ScheduleWorkoutPage = () => {
 
         {/* Debugging Button TODO: Delete Later */}
         <button
-          onClick={() =>
-            console.log(
-              userId ===
-                jwtDecode<{ id: string }>(localStorage.getItem("token")).id // These are the same
-            )
-          }
+          onClick={() => handleDebug()}
           className="text-lg  text-white px-4 py-2 font-primary bg-primary rounded-full mb-10"
         >
           Debugging Button
