@@ -1,11 +1,11 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaAward, FaClock, FaHeartbeat } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
 import { jwtDecode } from "jwt-decode";
 import LoadingScreen from "@/app/components/LoadingScreen";
+import { calculateAgeFromDob } from "@/app/utils/calculateAgeFromDob";
 
 const PartnerProfile = ({ params }: { params: { id: string } }) => {
   const [partner, setPartner] = useState<any>(null);
@@ -201,7 +201,9 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
               Match: {(Number(matchScore) * 100).toFixed(1)}%
             </p>
             <p className="text-textSecondary font-primary">
-              {partner.age ? `${partner.age} years old` : "Age not available"}
+              {partner.dob
+                ? `${calculateAgeFromDob(partner.dob)} years old`
+                : "Age not available"}
             </p>
           </div>
 
