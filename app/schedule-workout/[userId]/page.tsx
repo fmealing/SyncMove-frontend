@@ -24,8 +24,9 @@ const ScheduleWorkoutPage = () => {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [partner, setPartner] = useState<Partner | null>(null);
   const [loading, setLoading] = useState(false);
-  const router = useRouter(); // Initialize router for accessing the URL
-  const params = useParams(); // Get the dynamic route parameter
+  const [location, setLocation] = useState<string>(""); // For manually inputted location
+  const router = useRouter();
+  const params = useParams();
   const userId = params?.userId;
 
   if (!userId) {
@@ -57,13 +58,12 @@ const ScheduleWorkoutPage = () => {
 
   // UseEffect to load partner data on page load
   useEffect(() => {
-    // Calling the async function inside useEffect
     fetchPartnerData();
   }, [userId]);
 
   const handleConfirmActivity = async () => {
-    if (!selectedDate || !selectedTime) {
-      toast.error("Please select both a data and a time!");
+    if (!selectedDate || !selectedTime || !location) {
+      toast.error("Please select a date, time, and location.");
       return;
     }
 
@@ -87,15 +87,12 @@ const ScheduleWorkoutPage = () => {
       const response = await axios.post(
         "http://localhost:5001/api/activities",
         {
-          activityType: "Workout", // For this version workout meetup only
-          description: `Scheduled ${selectedTime} workout with ${partner.fullName}`,
-          location: {
-            type: "Point",
-            coordinates: partner.location?.coordinates, // Placeholder for coordinates
-          },
+          activityType: "Workout",
+          description: `Scheduled ${selectedTime} workout with ${partner.fullName} at ${location}`,
           dateString: selectedDate,
           timeOfDay: selectedTime,
-          participants: [userId, myUserId], // Include both users in the participants array
+          participants: [userId, myUserId],
+          location, // Send the location string
         },
         {
           headers: {
@@ -154,6 +151,20 @@ const ScheduleWorkoutPage = () => {
               </p>
             )}
           </div>
+        </div>
+
+        {/* Input Field For Location String */}
+        <div className="flex-1">
+          <label className="text-lg text-gray-700 font-semibold">
+            Enter Location:
+          </label>
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
+            placeholder="Enter location (e.g., Gym Group, Selly Oak)"
+          />
         </div>
 
         <button
