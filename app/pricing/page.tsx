@@ -1,9 +1,8 @@
-// TODO: Implement Stripe Checkout for one-time payments
-// TODO: Find good value for cost of each plan
+// This still needs some work
 
 "use client";
 import React from "react";
-import { FaCheck, FaStar, FaGift, FaRocket } from "react-icons/fa";
+import { FaCheck, FaTimes, FaStar } from "react-icons/fa";
 import Link from "next/link";
 
 const PricingPage: React.FC = () => {
@@ -14,16 +13,28 @@ const PricingPage: React.FC = () => {
     "Privacy and data security",
   ];
 
+  const freeMissingFeatures = [
+    "Priority support",
+    "Exclusive content and resources",
+    "Unlimited connections",
+    "Early access to new features",
+  ];
+
   const growthFeatures = [
     "Connect with up to 30 people",
-    "All free plan features",
+    "Message and connect with partners",
+    "Flexible scheduling options",
+    "Privacy and data security",
     "Priority support",
     "Exclusive content and resources",
   ];
 
   const proFeatures = [
     "Unlimited connections",
-    "All Growth plan features",
+    "Message and connect with partners",
+    "Flexible scheduling options",
+    "Privacy and data security",
+    "Exclusive content and resources",
     "Premium support",
     "Early access to new features",
   ];
@@ -52,6 +63,8 @@ const PricingPage: React.FC = () => {
           </h2>
           <p className="text-xl font-bold text-gray-900">£0 - One-Time</p>
           <p className="text-gray-500">Best for new users</p>
+
+          {/* Included Features */}
           <ul className="space-y-4 text-left">
             {freeFeatures.map((feature, index) => (
               <li
@@ -63,6 +76,23 @@ const PricingPage: React.FC = () => {
               </li>
             ))}
           </ul>
+
+          {/* Missing Features */}
+          <ul className="space-y-4 text-left mt-6 border-t border-gray-200 pt-4">
+            <li className="text-gray-500 text-sm">
+              Not included in this plan:
+            </li>
+            {freeMissingFeatures.map((feature, index) => (
+              <li
+                key={index}
+                className="flex items-center text-gray-400 font-primary"
+              >
+                <FaTimes className="text-red-500 mr-2" />
+                {feature}
+              </li>
+            ))}
+          </ul>
+
           <Link href="/signup">
             <button className="bg-primary text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-primaryDark transition mt-6">
               Get Started for Free
@@ -80,6 +110,8 @@ const PricingPage: React.FC = () => {
           </h2>
           <p className="text-xl font-bold text-gray-900">£25 - One-Time</p>
           <p className="text-gray-500">Perfect for active users</p>
+
+          {/* Growth Features */}
           <ul className="space-y-4 text-left">
             {growthFeatures.map((feature, index) => (
               <li
@@ -112,6 +144,8 @@ const PricingPage: React.FC = () => {
           </h2>
           <p className="text-xl font-bold text-gray-900">£50 - One-Time</p>
           <p className="text-gray-500">Ideal for power users</p>
+
+          {/* Pro Features */}
           <ul className="space-y-4 text-left">
             {proFeatures.map((feature, index) => (
               <li
