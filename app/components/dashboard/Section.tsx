@@ -12,7 +12,6 @@ const Section: React.FC<SectionProps> = ({ title, children }) => (
       <h2 className="text-2xl font-semibold text-textPrimary font-primary">
         {title}
       </h2>
-      <button className="btn btn-link font-primary">View All</button>
     </div>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">{children}</div>
   </section>
