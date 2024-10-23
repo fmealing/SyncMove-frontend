@@ -49,29 +49,6 @@ const Notifications = () => {
     }
   };
 
-  // Mark notification as read
-  // const markAsRead = async (id: string) => {
-  //   const token = localStorage.getItem("token");
-  //   try {
-  //     await axios.put(
-  //       `http://localhost:5001/api/notifications/${id}/read`,
-  //       {},
-  //       {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       }
-  //     );
-  //     setNotifications((prevNotifications) =>
-  //       prevNotifications.map((notification) =>
-  //         notification._id === id
-  //           ? { ...notification, isRead: true }
-  //           : notification
-  //       )
-  //     );
-  //   } catch (error) {
-  //     toast.error("Failed to mark notification as read. Please try again.");
-  //   }
-  // };
-
   // Delete notification
   const deleteNotification = async (id: string) => {
     const token = localStorage.getItem("token");
@@ -92,7 +69,7 @@ const Notifications = () => {
     const token = localStorage.getItem("token");
     try {
       await axios.put(
-        `http://localhost:5001/api/matches/${matchId}/accept`,
+        `http://localhost:5001/api/match/${matchId}/accept`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -110,7 +87,7 @@ const Notifications = () => {
     const token = localStorage.getItem("token");
     try {
       await axios.put(
-        `http://localhost:5001/api/matches/${matchId}/decline`,
+        `http://localhost:5001/api/match/${matchId}/decline`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -183,7 +160,7 @@ const Notifications = () => {
                         ? "bg-green-500"
                         : notification.type === "activity_invite"
                         ? "bg-yellow-500"
-                        : "bg-gray-500"
+                        : "bg-blue-900"
                     }`}
                   >
                     {notification.type.replace("_", " ")}
@@ -224,14 +201,18 @@ const Notifications = () => {
                   )}
 
                   <div className="flex flex-col items-center">
-                    <Link href={"/messaging"}>
-                      <button className="text-primary hover:text-blue-600 transition">
-                        <FaEnvelope className="text-xl" />
-                      </button>
-                    </Link>
-                    <span className="text-base text-textPrimary font-primary hover:text-textSecondary transition">
-                      Message User
-                    </span>
+                    {notification.type !== "rejected" || (
+                      <>
+                        <Link href={"/messaging"}>
+                          <button className="text-primary hover:text-blue-600 transition">
+                            <FaEnvelope className="text-xl" />
+                          </button>
+                        </Link>
+                        <span className="text-base text-textPrimary font-primary hover:text-textSecondary transition">
+                          Message User
+                        </span>
+                      </>
+                    )}
                   </div>
                 </div>
               </li>

@@ -135,7 +135,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
               senderId: senderId, // The logged-in user sending the request
               matchId: matchResponse.data.match._id,
               type: "match_request",
-              content: `${loggedInUser.fullName} wants to work out with you.`,
+              content: `${loggedInUser.fullName} wants to Workout with you.`,
             },
             {
               headers: {
