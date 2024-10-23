@@ -6,6 +6,7 @@ import {
   FaEnvelope,
   FaCheckCircle,
   FaCalendarAlt,
+  FaTimesCircle,
 } from "react-icons/fa";
 import axios from "axios";
 import LoadingScreen from "../components/LoadingScreen";
@@ -22,7 +23,6 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
 
   // Fetch notifications from the backend
   const fetchNotifications = async () => {
@@ -36,16 +36,13 @@ const Notifications = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      // If notifications are found, update the state
       setNotifications(response.data.data);
       setLoading(false);
     } catch (error) {
       const err = error as ErrorMessage;
-      // Check if error is 404 - means no notifications found
       if (err.response && err.response.status === 404) {
-        setNotifications([]); // Set empty notifications array
+        setNotifications([]);
       } else {
-        // Handle other types of errors (like network issues)
         setError("Failed to load notifications. Please try again later.");
       }
       setLoading(false);
@@ -53,34 +50,79 @@ const Notifications = () => {
   };
 
   // Mark notification as read
-  const markAsRead = async (id: string) => {
+  // const markAsRead = async (id: string) => {
+  //   const token = localStorage.getItem("token");
+  //   try {
+  //     await axios.put(
+  //       `http://localhost:5001/api/notifications/${id}/read`,
+  //       {},
+  //       {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
+  //     setNotifications((prevNotifications) =>
+  //       prevNotifications.map((notification) =>
+  //         notification._id === id
+  //           ? { ...notification, isRead: true }
+  //           : notification
+  //       )
+  //     );
+  //   } catch (error) {
+  //     toast.error("Failed to mark notification as read. Please try again.");
+  //   }
+  // };
+
+  // Delete notification
+  const deleteNotification = async (id: string) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.delete(`http://localhost:5001/api/notifications/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setNotifications((prevNotifications) =>
+        prevNotifications.filter((notification) => notification._id !== id)
+      );
+    } catch (error) {
+      toast.error("Failed to delete notification. Please try again.");
+    }
+  };
+
+  // Accept match request
+  const acceptMatch = async (notificationId: string, matchId: string) => {
     const token = localStorage.getItem("token");
     try {
       await axios.put(
-        `http://localhost:5001/api/notifications/${id}/read`,
+        `http://localhost:5001/api/matches/${matchId}/accept`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      // Update local state after marking as read
-      setNotifications((prevNotifications) =>
-        prevNotifications.map((notification) =>
-          notification._id === id
-            ? { ...notification, isRead: true }
-            : notification
-        )
-      );
+      deleteNotification(notificationId); // Delete the notification after accepting
+      toast.success("Match request accepted!");
     } catch (error) {
-      toast.error("Failed to mark notification as read. Please try again.");
-      console.error("Failed to mark notification as read:", error);
+      toast.error("Failed to accept match request. Please try again.");
     }
   };
 
-  // Clear all notifications
-  const clearNotifications = () => setNotifications([]);
+  // Decline match request
+  const declineMatch = async (notificationId: string, matchId: string) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.put(
+        `http://localhost:5001/api/matches/${matchId}/decline`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      deleteNotification(notificationId); // Delete the notification after declining
+      toast.success("Match request declined.");
+    } catch (error) {
+      toast.error("Failed to decline match request. Please try again.");
+    }
+  };
 
-  // Fetch notifications on component mount
   useEffect(() => {
     fetchNotifications();
   }, []);
@@ -92,23 +134,20 @@ const Notifications = () => {
   return (
     <div className="notification-background w-full min-h-screen flex flex-col items-center p-6 bg-lightGray">
       <div className="notification-content max-w-4xl w-full space-y-6 bg-white rounded-lg shadow-lg p-6">
-        {/* Heading */}
         <h1 className="text-h2 font-semibold font-primary text-textPrimary">
           Notifications
         </h1>
 
-        {/* For Debugging purposes */}
+        {/* Button for Debugging */}
         <button
-          onClick={() => console.log("Notification data:", notifications)}
-          className="text-lg px-4 py-2 rounded-full font-primary bg-primary"
+          onClick={() => console.log("Notifications:", notifications)}
+          className="text-lg font-primary text-white px-4 py-2 bg-primary rounded-full"
         >
-          For Debugging
+          For Debugging. Delete later
         </button>
 
-        {/* Error Message */}
         {error && <p className="text-red-500">{error}</p>}
 
-        {/* Notifications List or No Notifications */}
         {notifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center space-y-4 p-10">
             <img
@@ -121,89 +160,83 @@ const Notifications = () => {
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {/* Clear All Button */}
-            <button
-              onClick={clearNotifications}
-              className="flex items-center gap-2 text-textSecondary border-[3px] border-secondary px-4 py-2 rounded-full hover:bg-primary hover:text-lightGray transition font-primary"
-            >
-              <FaTrashAlt />
-              Clear All
-            </button>
+          <ul className="space-y-4">
+            {notifications.map((notification) => (
+              <li
+                key={notification._id}
+                className={`flex flex-col md:flex-row justify-between p-4 border rounded-lg ${
+                  notification.isRead ? "bg-gray-100" : "bg-blue-50"
+                }`}
+              >
+                <div className="flex-1 mb-4 md:mb-0">
+                  <p className="text-sm text-textSecondary font-primary">
+                    {notification.timestamp}
+                  </p>
+                  <p className="text-lg text-textPrimary font-primary mb-4">
+                    {notification.content}
+                  </p>
+                  <p
+                    className={`flex items-center justify-center max-w-32 w-full text-sm font-bold px-3 py-1 rounded-full text-white ${
+                      notification.type === "match_request"
+                        ? "bg-red-500"
+                        : notification.type === "message"
+                        ? "bg-green-500"
+                        : notification.type === "activity_invite"
+                        ? "bg-yellow-500"
+                        : "bg-gray-500"
+                    }`}
+                  >
+                    {notification.type.replace("_", " ")}
+                  </p>
+                </div>
 
-            {/* List of Notifications */}
-            <ul className="space-y-4">
-              {notifications.map((notification) => (
-                <li
-                  key={notification._id}
-                  className={`flex flex-col md:flex-row justify-between p-4 border rounded-lg ${
-                    notification.isRead ? "bg-gray-100" : "bg-blue-50"
-                  }`}
-                >
-                  <div className="flex-1 mb-4 md:mb-0">
-                    <p className="text-sm text-textSecondary font-primary">
-                      {notification.timestamp}
-                    </p>
-                    <p className="text-lg text-textPrimary font-primary mb-4">
-                      {notification.content}
-                    </p>
-                    <p
-                      className={`flex items-center justify-center max-w-32 w-full text-sm font-bold px-3 py-1 rounded-full text-white ${
-                        notification.type === "match_request"
-                          ? "bg-red-500"
-                          : notification.type === "message"
-                          ? "bg-green-500"
-                          : notification.type === "activity_invite"
-                          ? "bg-yellow-500"
-                          : "bg-gray-500"
-                      }`}
-                    >
-                      {notification.type.replace("_", " ")}
-                    </p>
-                  </div>
-
-                  {/* Actions Section */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                    {!notification.isRead && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                  {notification.type === "match_request" && (
+                    <>
                       <div className="flex flex-col items-center">
                         <button
-                          onClick={() => markAsRead(notification._id)}
+                          onClick={() =>
+                            acceptMatch(notification._id, notification.matchId)
+                          }
                           className="text-primary hover:text-green-600 transition"
                         >
                           <FaCheckCircle className="text-xl" />
                         </button>
                         <span className="text-base text-textPrimary font-primary hover:text-textSecondary transition">
-                          Mark as Read
+                          Accept Match
                         </span>
                       </div>
-                    )}
 
-                    {notification.type === "match_request" && (
                       <div className="flex flex-col items-center">
-                        <Link href={`/schedule-workout/${notification.sender}`}>
-                          <button className="text-primary hover:text-blue-600 transition">
-                            <FaCalendarAlt className="text-xl" />
-                          </button>
-                          <span className="text-base text-textPrimary font-primary hover:text-textSecondary transition">
-                            Schedule Workout
-                          </span>
-                        </Link>
+                        <button
+                          onClick={() =>
+                            declineMatch(notification._id, notification.matchId)
+                          }
+                          className="text-red-500 hover:text-red-700 transition"
+                        >
+                          <FaTimesCircle className="text-xl" />
+                        </button>
+                        <span className="text-base text-textPrimary font-primary hover:text-textSecondary transition">
+                          Decline Match
+                        </span>
                       </div>
-                    )}
+                    </>
+                  )}
 
-                    <div className="flex flex-col items-center">
+                  <div className="flex flex-col items-center">
+                    <Link href={"/messaging"}>
                       <button className="text-primary hover:text-blue-600 transition">
                         <FaEnvelope className="text-xl" />
                       </button>
-                      <span className="text-base text-textPrimary font-primary hover:text-textSecondary transition">
-                        Message User
-                      </span>
-                    </div>
+                    </Link>
+                    <span className="text-base text-textPrimary font-primary hover:text-textSecondary transition">
+                      Message User
+                    </span>
                   </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+                </div>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     </div>

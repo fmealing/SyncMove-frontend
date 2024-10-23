@@ -119,6 +119,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
         }
       );
       console.log("Match response: ", matchResponse);
+      console.log("Match Id", matchResponse.data.match._id);
 
       if (matchResponse.status === 201) {
         console.log("Match created successfully.");
@@ -132,6 +133,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
             {
               userId: user2Id, // The user receiving the notification
               senderId: senderId, // The logged-in user sending the request
+              matchId: matchResponse.data.match._id,
               type: "match_request",
               content: `${loggedInUser.fullName} wants to work out with you.`,
             },
