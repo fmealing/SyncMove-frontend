@@ -1,11 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaAward, FaClock, FaHeartbeat } from "react-icons/fa";
+import { FaAward, FaCalendarAlt, FaClock, FaHeartbeat } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
 import { jwtDecode } from "jwt-decode";
 import LoadingScreen from "@/app/components/LoadingScreen";
 import { calculateAgeFromDob } from "@/app/utils/calculateAgeFromDob";
+import toast from "react-hot-toast";
 
 const PartnerProfile = ({ params }: { params: { id: string } }) => {
   const [partner, setPartner] = useState<any>(null);
@@ -118,16 +119,10 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
           },
         }
       );
-      console.log("Match response: ", matchResponse);
-      console.log("Match Id", matchResponse.data.match._id);
 
       if (matchResponse.status === 201) {
-        console.log("Match created successfully.");
-
         // 2. After creating the match, call the notification API
         try {
-          console.log("Creating notification...");
-
           const notificationResponse = await axios.post(
             "http://localhost:5001/api/notifications",
             {
@@ -143,19 +138,18 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
               },
             }
           );
-          console.log("Notification response: ", notificationResponse);
 
           if (notificationResponse.status === 201) {
             console.log("Notification sent successfully.");
-            setMatchStatus("Match and notification created successfully!");
+            toast.success("Match and notification created successfully!");
           }
         } catch (notificationError) {
           console.error("Failed to send notification:", notificationError);
-          setMatchStatus("Match created, but notification failed.");
+          toast.error("Match created, but notification failed.");
         }
       } else {
         console.error("Failed to create match.");
-        setMatchStatus("Failed to create match.");
+        toast.error("Failed to create match.");
       }
     } catch (error) {
       console.error("Failed to create match or send notification:", error);
@@ -182,7 +176,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
   }
 
   if (!partner) {
-    return <p>Partner not found.</p>;
+    toast.error("Partner not found. Please try again later.");
   }
 
   return (
@@ -218,7 +212,17 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
             Connect Now!
           </button>
 
-          {matchStatus && <p className="text-actionAmber">{matchStatus}</p>}
+          {/* Button to jump straight to schedule workout */}
+          {/* TODO: Give another user the option to block another user and go private. this is to be implemented close to the end */}
+          <button
+            onClick={() =>
+              (window.location.href = `/schedule-workout/${partner._id}`)
+            }
+            className="px-6 py-3 mt-4 border border-primary text-primary rounded-full flex gap-2 items-center justify-center hover:bg-primary hover:text-white transition-colors duration-300"
+          >
+            <FaCalendarAlt />
+            Schedule Workout
+          </button>
         </div>
 
         <div className="md:w-2/3 space-y-6 px-10">
@@ -234,12 +238,12 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
           </div>
 
           {/* Debugging button */}
-          <button
+          {/* <button
             onClick={() => console.log("Partner: ", partner)}
             className="px-4 py-2 rounded-full text-white bg-primary text-h3 font-primary"
           >
             Keep for debugging
-          </button>
+          </button> */}
 
           {/* Fitness Goal */}
           <div>
