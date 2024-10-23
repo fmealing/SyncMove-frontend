@@ -12,6 +12,12 @@ import LoadingScreen from "../components/LoadingScreen";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
+interface ErrorMessage {
+  response: {
+    status: number;
+  };
+}
+
 const Notifications = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,13 +36,18 @@ const Notifications = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      // console.log(response.data);
-      setNotifications(response.data.data); // Set notifications from the response
+      // If notifications are found, update the state
+      setNotifications(response.data.data);
       setLoading(false);
     } catch (error) {
-      console.error("Failed to fetch notifications:", error);
-      toast.error("Failed to load notifications. Please try again later.");
-      setError("Failed to load notifications. Please try again later.");
+      const err = error as ErrorMessage;
+      // Check if error is 404 - means no notifications found
+      if (err.response && err.response.status === 404) {
+        setNotifications([]); // Set empty notifications array
+      } else {
+        // Handle other types of errors (like network issues)
+        setError("Failed to load notifications. Please try again later.");
+      }
       setLoading(false);
     }
   };
