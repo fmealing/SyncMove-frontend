@@ -9,6 +9,7 @@ import { jwtDecode } from "jwt-decode";
 import { fetchCityFromCoordinates } from "../utils/geoCoding";
 import Link from "next/link";
 import LoadingScreen from "../components/LoadingScreen";
+import ActivityCard from "../components/dashboard/ActivityCard";
 
 // Define types
 interface Partner {
@@ -188,7 +189,7 @@ const Dashboard = () => {
       </h1>
 
       {/* Navigation Buttons */}
-      <div className="flex flex-col gap-4 max-w-56">
+      <div className="flex flex-col gap-4 max-w-56 pb-10">
         <NavigationButton
           label="Notifications"
           Icon={FaBell}
@@ -219,6 +220,9 @@ const Dashboard = () => {
           ))}
         </Section>
       </Link>
+
+      {/* This is where the activities go */}
+      <ActivityCard />
 
       {/* Matched Partners */}
       <Section title="Matched Partners">

@@ -65,7 +65,11 @@ const Notifications = () => {
   };
 
   // Accept match request
-  const acceptMatch = async (notificationId: string, matchId: string) => {
+  const acceptMatch = async (
+    notificationId: string,
+    matchId: string,
+    userId: string
+  ) => {
     const token = localStorage.getItem("token");
     try {
       await axios.put(
@@ -77,8 +81,7 @@ const Notifications = () => {
       );
       deleteNotification(notificationId); // Delete the notification after accepting
       toast.success("Match request accepted!");
-      // Redirect to the messaging page
-      window.location.href = "/messaging";
+      window.location.href = `/schedule-workout/${userId}`;
     } catch (error) {
       toast.error("Failed to accept match request. Please try again.");
     }
@@ -175,7 +178,11 @@ const Notifications = () => {
                       <div className="flex flex-col items-center">
                         <button
                           onClick={() =>
-                            acceptMatch(notification._id, notification.matchId)
+                            acceptMatch(
+                              notification._id,
+                              notification.matchId,
+                              notification.user
+                            )
                           }
                           className="text-primary hover:text-green-600 transition"
                         >
