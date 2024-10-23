@@ -77,6 +77,8 @@ const Notifications = () => {
       );
       deleteNotification(notificationId); // Delete the notification after accepting
       toast.success("Match request accepted!");
+      // Redirect to the messaging page
+      window.location.href = "/messaging";
     } catch (error) {
       toast.error("Failed to accept match request. Please try again.");
     }
@@ -201,7 +203,7 @@ const Notifications = () => {
                   )}
 
                   <div className="flex flex-col items-center">
-                    {notification.type !== "rejected" || (
+                    {notification.type == "activity_invite" && (
                       <>
                         <Link href={"/messaging"}>
                           <button className="text-primary hover:text-blue-600 transition">
