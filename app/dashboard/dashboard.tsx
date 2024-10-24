@@ -20,6 +20,7 @@ interface Partner {
     type: string;
     coordinates: [number, number];
   };
+  matchScore: number; // Ensure matchScore is part of the Partner interface
 }
 
 interface UserProfile {
@@ -31,7 +32,7 @@ interface UserProfile {
   activityType: string;
   fitnessGoals: string;
   experienceLevel: number;
-  dob: string; // Add dob to UserProfile interface
+  dob: string;
 }
 
 // Calculate age from date of birth
@@ -53,11 +54,9 @@ const Dashboard = () => {
   const [userCity, setUserCity] = useState("");
 
   useEffect(() => {
-    // Function to check token and redirect if invalid
     const checkAuthAndRedirect = async () => {
       const token = localStorage.getItem("token");
 
-      // If no token found, redirect to the login page
       if (!token) {
         window.location.href = "/login";
         return;
@@ -67,14 +66,12 @@ const Dashboard = () => {
         const decodedToken = jwtDecode<{ exp: number }>(token);
         const currentTime = Math.floor(Date.now() / 1000);
 
-        // If token is expired, redirect to the login page
         if (decodedToken.exp < currentTime) {
           localStorage.removeItem("token");
           window.location.href = "/login";
           return;
         }
 
-        // Fetch user profile
         await fetchUserProfile(token);
       } catch (error) {
         console.error("Token validation failed:", error);
@@ -82,7 +79,6 @@ const Dashboard = () => {
       }
     };
 
-    // Fetch user profile
     const fetchUserProfile = async (token: string) => {
       const decoded = jwtDecode<{ id: string }>(token);
       const id = decoded.id;
@@ -100,17 +96,14 @@ const Dashboard = () => {
         setUserProfile(userProfile);
         setUsername(userProfile.fullName);
 
-        // Calculate the user's age from their DOB
         const age = calculateAge(userProfile.dob);
 
-        // Fetch the city from the coordinates
         const city = await fetchCityFromCoordinates(
           userProfile.location.coordinates[1],
           userProfile.location.coordinates[0]
         );
         setUserCity(city || "Unknown");
 
-        // Fetch suggested, pending, and matched partners after user data is available
         await fetchSuggestedPartners(userProfile, age);
         await fetchPendingPartners(id, token);
         await fetchMatchedPartners(id, token);
@@ -121,7 +114,6 @@ const Dashboard = () => {
       }
     };
 
-    // Fetch suggested partners
     const fetchSuggestedPartners = async (
       userProfile: UserProfile,
       age: number | null
@@ -148,14 +140,18 @@ const Dashboard = () => {
             },
           }
         );
-        setSuggestedPartners(response.data);
-        console.log("Suggested Partners: ", response.data); // score is 72
+
+        // Sort the suggested partners by match score and select the top 3
+        const sortedPartners = response.data
+          .sort((a: Partner, b: Partner) => b.matchScore - a.matchScore)
+          .slice(0, 3);
+
+        setSuggestedPartners(sortedPartners);
       } catch (error) {
         console.error("Failed to fetch suggested partners: ", error);
       }
     };
 
-    // Fetch pending partners
     const fetchPendingPartners = async (userId: string, token: string) => {
       try {
         const response = await axios.post(
@@ -173,7 +169,6 @@ const Dashboard = () => {
       }
     };
 
-    // Fetch matched partners
     const fetchMatchedPartners = async (userId: string, token: string) => {
       try {
         const response = await axios.post(
@@ -191,7 +186,6 @@ const Dashboard = () => {
       }
     };
 
-    // Check authentication and fetch data
     checkAuthAndRedirect();
   }, []);
 
@@ -204,13 +198,6 @@ const Dashboard = () => {
       <h1 className="text-textPrimary font-primary text-h2 font-semibold">
         Welcome back, {username}!
       </h1>
-
-      <button
-        onClick={() => console.log("User Profile:", userProfile)}
-        className="text-xl font-primary px-4 py-2 text-white bg-primary rounded-full  "
-      >
-        For Debugging. Delete later
-      </button>
 
       {/* Navigation Buttons */}
       <div className="flex flex-col gap-4 max-w-56 pb-10">
@@ -238,7 +225,7 @@ const Dashboard = () => {
 
       {/* Suggested Partners */}
       <Link href="/matching">
-        <Section title="Suggested Partners">
+        <Section title="Top 3 Suggested Partners">
           {suggestedPartners.map((partner, index) => (
             <PartnerCard key={index} {...partner} />
           ))}

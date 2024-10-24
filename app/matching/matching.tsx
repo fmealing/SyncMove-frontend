@@ -6,12 +6,21 @@ import Link from "next/link";
 import { jwtDecode } from "jwt-decode";
 import LoadingScreen from "../components/LoadingScreen";
 
+// Calculate age from date of birth
+const calculateAge = (dob: string) => {
+  if (!dob) return null;
+  const birthDate = new Date(dob);
+  const ageDifMs = Date.now() - birthDate.getTime();
+  const ageDate = new Date(ageDifMs);
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+};
+
 const Matching = () => {
   const [partners, setPartners] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [userProfile, setUserProfile] = useState(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
 
   // Function to fetch user profile based on token
   const fetchUserProfile = async () => {
@@ -28,8 +37,11 @@ const Matching = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setUserProfile(response.data);
-      return response.data;
+
+      const profile = response.data;
+      const age = calculateAge(profile.dob); // Calculate age from DOB
+      setUserProfile({ ...profile, age }); // Store age in userProfile
+      return { ...profile, age };
     } catch (error) {
       console.error("Failed to fetch user profile", error);
     }
@@ -44,11 +56,11 @@ const Matching = () => {
           userProfile.activityType,
           userProfile.fitnessGoals,
           userProfile.experienceLevel,
+          userProfile.age, // Ensure the age is passed correctly
         ],
         includeAI: false,
       });
 
-      // console.log("Match API response: ", response.data.matches);
       return response.data.matches; // Returns the matches with scores and user IDs
     } catch (error) {
       console.error("Error calculating match score: ", error);
@@ -72,6 +84,7 @@ const Matching = () => {
             userProfile.activityType,
             userProfile.fitnessGoals,
             userProfile.experienceLevel,
+            userProfile.age,
           ],
           includeAI: false,
         },
@@ -91,7 +104,7 @@ const Matching = () => {
           );
           return {
             ...partner,
-            matchScore: match ? `${(match.score * 100).toFixed(0)}%` : "N/A",
+            matchScore: match ? `${match.score.toFixed(1)}%` : "N/A",
           };
         }
       );
