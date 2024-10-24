@@ -1,5 +1,3 @@
-// This still needs some work
-
 "use client";
 import React from "react";
 import { FaCheck, FaTimes, FaStar } from "react-icons/fa";
