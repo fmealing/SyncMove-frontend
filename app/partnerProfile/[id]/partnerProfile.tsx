@@ -8,6 +8,15 @@ import LoadingScreen from "@/app/components/LoadingScreen";
 import { calculateAgeFromDob } from "@/app/utils/calculateAgeFromDob";
 import toast from "react-hot-toast";
 
+// Calculate age from date of birth
+const calculateAge = (dob: string) => {
+  if (!dob) return null;
+  const birthDate = new Date(dob);
+  const ageDifMs = Date.now() - birthDate.getTime();
+  const ageDate = new Date(ageDifMs);
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+};
+
 const PartnerProfile = ({ params }: { params: { id: string } }) => {
   const [partner, setPartner] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -15,6 +24,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
   const [matchStatus, setMatchStatus] = useState<string | null>(null);
   const [loggedInUser, setLoggedInUser] = useState<any>(null);
   const [matchScore, setMatchScore] = useState<number | null>(null);
+  const [age, setAge] = useState<number | null>(null); // Add age state
 
   useEffect(() => {
     const fetchLoggedInUserProfile = async () => {
@@ -42,6 +52,10 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
           `http://localhost:5001/api/users/${params.id}`
         );
         setPartner(response.data);
+
+        // Calculate and set the age based on the partner's DOB
+        const calculatedAge = calculateAge(response.data.dob);
+        setAge(calculatedAge); // Set age in state
       } catch (error) {
         console.error("Failed to fetch partner details", error);
         setError("Failed to load partner details. Please try again later.");
@@ -55,9 +69,9 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
     fetchPartner();
   }, [params.id]);
 
-  // Function to calculate match score between logged-in user and the partner
+  // Fetch match score based on partner and logged-in user
   const fetchMatchScore = async () => {
-    if (!loggedInUser || !partner) return null;
+    if (!loggedInUser || !partner || !age) return null; // Ensure age is available
 
     try {
       const response = await axios.post("http://127.0.0.1:5001/match", {
@@ -66,22 +80,20 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
           loggedInUser.activityType,
           loggedInUser.fitnessGoals,
           loggedInUser.experienceLevel,
+          age, // Use age here
         ],
         includeAI: false,
       });
 
-      console.log("Match API response: ", response.data.matches);
-
-      // Find the score that matches params.id (partner ID)
       const match = response.data.matches.find(
         (m: any) => m.user_id === params.id
       );
 
       if (match) {
         setMatchScore(match.score);
-        return match.score; // Return the score here
+        return match.score;
       } else {
-        setMatchScore(null); // No match found
+        setMatchScore(null);
         return null;
       }
     } catch (error) {
@@ -90,26 +102,23 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  // Fetch the match score once both profiles are loaded
   useEffect(() => {
-    if (loggedInUser && partner) {
+    if (loggedInUser && partner && age !== null) {
+      // Wait for age to be defined
       fetchMatchScore();
     }
-  }, [loggedInUser, partner]);
+  }, [loggedInUser, partner, age]);
 
-  // Function to start a match
   const startMatch = async () => {
-    const user2Id = params.id; // Partner's ID
-    const score = await fetchMatchScore(); // Calculate match score
-    console.log("Match score: ", score);
+    const user2Id = params.id;
+    const score = await fetchMatchScore();
     const token = localStorage.getItem("token");
     if (!token) return;
 
     const decoded = jwtDecode<{ id: string }>(token);
-    const senderId = decoded.id; // Get the logged-in user ID
+    const senderId = decoded.id;
 
     try {
-      // 1. Call the match creation API
       const matchResponse = await axios.post(
         "http://localhost:5001/api/match/create",
         { user2Id, score },
@@ -121,13 +130,12 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
       );
 
       if (matchResponse.status === 201) {
-        // 2. After creating the match, call the notification API
         try {
           const notificationResponse = await axios.post(
             "http://localhost:5001/api/notifications",
             {
-              userId: user2Id, // The user receiving the notification
-              senderId: senderId, // The logged-in user sending the request
+              userId: user2Id,
+              senderId: senderId,
               matchId: matchResponse.data.match._id,
               type: "match_request",
               content: `${loggedInUser.fullName} wants to Workout with you.`,
@@ -140,19 +148,15 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
           );
 
           if (notificationResponse.status === 201) {
-            console.log("Notification sent successfully.");
             toast.success("Match and notification created successfully!");
           }
         } catch (notificationError) {
-          console.error("Failed to send notification:", notificationError);
           toast.error("Match created, but notification failed.");
         }
       } else {
-        console.error("Failed to create match.");
         toast.error("Failed to create match.");
       }
     } catch (error) {
-      console.error("Failed to create match or send notification:", error);
       setMatchStatus("Failed to create match or send notification.");
     }
   };
@@ -166,7 +170,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
       <div className="flex justify-center items-center">
         <p className="text-red-500">{error}</p>
         <button
-          onClick={() => window.location.reload()} // Retry on error
+          onClick={() => window.location.reload()}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
         >
           Retry
@@ -203,7 +207,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
             </p>
           </div>
 
-          {/* Button to start connection */}
+          {/* Connect Button */}
           <button
             onClick={startMatch}
             className="px-4 py-2 border-textPrimary rounded-full bg-primary text-h3 font-primary flex gap-2 justify-center items-center"
@@ -212,8 +216,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
             Connect Now!
           </button>
 
-          {/* Button to jump straight to schedule workout */}
-          {/* TODO: Give another user the option to block another user and go private. this is to be implemented close to the end */}
+          {/* Schedule Workout Button */}
           <button
             onClick={() =>
               (window.location.href = `/schedule-workout/${partner._id}`)
@@ -237,14 +240,6 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
             </p>
           </div>
 
-          {/* Debugging button */}
-          {/* <button
-            onClick={() => console.log("Partner: ", partner)}
-            className="px-4 py-2 rounded-full text-white bg-primary text-h3 font-primary"
-          >
-            Keep for debugging
-          </button> */}
-
           {/* Fitness Goal */}
           <div>
             <h3 className="text-h3 font-semibold text-textPrimary font-primary">
@@ -263,13 +258,11 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
             </h3>
             <div className="divider"></div>
             <div className="grid grid-cols-2 gap-8 justify-items-center">
-              {/* Activity Type Button */}
               <button className="flex items-center justify-center w-[300px] h-[80px] rounded-full border-4 border-gradient-to-r from-blue-400 to-blue-600 text-primary text-h3 font-primary gap-3 shadow-lg hover:shadow-2xl transform hover:scale-105 transition">
                 <FaHeartbeat className="text-blue-500 text-2xl" />
                 <span>{partner.activityType || "Unknown Activity"}</span>
               </button>
 
-              {/* Experience Level Button */}
               <button className="flex items-center justify-center w-[300px] h-[80px] rounded-full border-4 border-gradient-to-r from-yellow-400 to-yellow-600 text-primary text-h3 font-primary gap-3 shadow-lg hover:shadow-2xl transform hover:scale-105 transition">
                 <FaAward className="text-yellow-500 text-2xl" />
                 <span>
