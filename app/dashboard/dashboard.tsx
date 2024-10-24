@@ -31,7 +31,17 @@ interface UserProfile {
   activityType: string;
   fitnessGoals: string;
   experienceLevel: number;
+  dob: string; // Add dob to UserProfile interface
 }
+
+// Calculate age from date of birth
+const calculateAge = (dob: string) => {
+  if (!dob) return null;
+  const birthDate = new Date(dob);
+  const ageDifMs = Date.now() - birthDate.getTime();
+  const ageDate = new Date(ageDifMs);
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+};
 
 const Dashboard = () => {
   const [suggestedPartners, setSuggestedPartners] = useState<Partner[]>([]);
@@ -49,27 +59,26 @@ const Dashboard = () => {
 
       // If no token found, redirect to the login page
       if (!token) {
-        window.location.href = "/login"; // Redirect to the login page
+        window.location.href = "/login";
         return;
       }
 
       try {
-        // Decode the token to check expiration
         const decodedToken = jwtDecode<{ exp: number }>(token);
         const currentTime = Math.floor(Date.now() / 1000);
 
         // If token is expired, redirect to the login page
         if (decodedToken.exp < currentTime) {
-          localStorage.removeItem("token"); // Clear invalid token
-          window.location.href = "/login"; // Redirect to the login page
+          localStorage.removeItem("token");
+          window.location.href = "/login";
           return;
         }
 
-        // Fetch user profile and proceed
+        // Fetch user profile
         await fetchUserProfile(token);
       } catch (error) {
         console.error("Token validation failed:", error);
-        window.location.href = "/login"; // Redirect to the login page
+        window.location.href = "/login";
       }
     };
 
@@ -91,6 +100,9 @@ const Dashboard = () => {
         setUserProfile(userProfile);
         setUsername(userProfile.fullName);
 
+        // Calculate the user's age from their DOB
+        const age = calculateAge(userProfile.dob);
+
         // Fetch the city from the coordinates
         const city = await fetchCityFromCoordinates(
           userProfile.location.coordinates[1],
@@ -99,10 +111,10 @@ const Dashboard = () => {
         setUserCity(city || "Unknown");
 
         // Fetch suggested, pending, and matched partners after user data is available
-        await fetchSuggestedPartners(userProfile);
+        await fetchSuggestedPartners(userProfile, age);
         await fetchPendingPartners(id, token);
         await fetchMatchedPartners(id, token);
-        setLoading(false); // Done loading once all data is fetched
+        setLoading(false);
       } catch (error) {
         console.error("Failed to fetch user profile: ", error);
         setLoading(false);
@@ -110,7 +122,10 @@ const Dashboard = () => {
     };
 
     // Fetch suggested partners
-    const fetchSuggestedPartners = async (userProfile: UserProfile) => {
+    const fetchSuggestedPartners = async (
+      userProfile: UserProfile,
+      age: number | null
+    ) => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
@@ -123,6 +138,7 @@ const Dashboard = () => {
               userProfile.activityType,
               userProfile.fitnessGoals,
               userProfile.experienceLevel,
+              age,
             ],
             includeAI: false,
           },
@@ -133,6 +149,7 @@ const Dashboard = () => {
           }
         );
         setSuggestedPartners(response.data);
+        console.log("Suggested Partners: ", response.data); // score is 72
       } catch (error) {
         console.error("Failed to fetch suggested partners: ", error);
       }
@@ -160,7 +177,7 @@ const Dashboard = () => {
     const fetchMatchedPartners = async (userId: string, token: string) => {
       try {
         const response = await axios.post(
-          "http://localhost:5001/api/users/matched-partners", // Assuming this is a valid endpoint
+          "http://localhost:5001/api/users/matched-partners",
           { userId },
           {
             headers: {
@@ -187,6 +204,13 @@ const Dashboard = () => {
       <h1 className="text-textPrimary font-primary text-h2 font-semibold">
         Welcome back, {username}!
       </h1>
+
+      <button
+        onClick={() => console.log("User Profile:", userProfile)}
+        className="text-xl font-primary px-4 py-2 text-white bg-primary rounded-full  "
+      >
+        For Debugging. Delete later
+      </button>
 
       {/* Navigation Buttons */}
       <div className="flex flex-col gap-4 max-w-56 pb-10">
