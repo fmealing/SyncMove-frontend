@@ -19,6 +19,12 @@ interface Partner {
   };
 }
 
+interface statusError {
+  response: {
+    status: number;
+  };
+}
+
 const ScheduleWorkoutPage = () => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -110,7 +116,15 @@ const ScheduleWorkoutPage = () => {
       }
     } catch (error) {
       console.error("Error scheduling activity:", error);
-      toast.error("An error occurred while scheduling the workout.");
+      // If error status is 400 it means that users haven't matched (other user hasn't accepted it)
+      const err = error as statusError;
+      if (err.response.status === 400) {
+        toast.error(
+          "Users haven't matched yet. Wait for the other person to accept the match"
+        );
+      } else {
+        toast.error("An error occurred while scheduling the workout.");
+      }
     } finally {
       setLoading(false);
     }

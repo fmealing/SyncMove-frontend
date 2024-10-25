@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchCityFromCoordinates } from "@/app/utils/geoCoding";
+import Link from "next/link";
 
 interface PartnerCardProps {
   fullName: string;
@@ -10,6 +11,7 @@ interface PartnerCardProps {
   profilePicture: string;
   bio: string;
   matchScore?: number; // Optional
+  _id: string;
 }
 
 const PartnerCard: React.FC<PartnerCardProps> = ({
@@ -18,6 +20,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
   profilePicture,
   bio,
   matchScore,
+  _id,
 }) => {
   const [city, setCity] = useState<string>("");
 
@@ -50,11 +53,20 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
   return (
     <div className="card bg-base-100 shadow-lg border border-gray-200 rounded-lg overflow-hidden">
       <figure>
-        <img
-          src={profilePicture}
-          alt={fullName}
-          className="w-full h-48 object-cover"
-        />
+        <Link
+          onClick={() =>
+            console.log(`/partnerProfile/${_id}/?matchScore=${matchScore}%`)
+          }
+          // href="/dashboard"
+          href={`/partnerProfile/${_id}/?matchScore=${matchScore}%`} // why is there a 25 at the end
+          className="w-full"
+        >
+          <img
+            src={profilePicture}
+            alt={fullName}
+            className="w-full h-48 object-cover"
+          />
+        </Link>
       </figure>
       <div className="card-body p-6">
         <h3 className="card-title text-2xl font-semibold text-textPrimary">

@@ -20,7 +20,8 @@ interface Partner {
     type: string;
     coordinates: [number, number];
   };
-  matchScore: number; // Ensure matchScore is part of the Partner interface
+  matchScore: number;
+  _id: string;
 }
 
 interface UserProfile {
@@ -225,13 +226,11 @@ const Dashboard = () => {
 
       {/* Suggested Partners */}
       {suggestedPartners.length > 0 ? (
-        <Link href="/matching">
-          <Section title="Top 3 Suggested Partners">
-            {suggestedPartners.map((partner, index) => (
-              <PartnerCard key={index} {...partner} />
-            ))}
-          </Section>
-        </Link>
+        <Section title="Top 3 Suggested Partners">
+          {suggestedPartners.map((partner, index) => (
+            <PartnerCard key={index} {...partner} />
+          ))}
+        </Section>
       ) : (
         <div className="flex flex-col items-center justify-center text-center space-y-4 p-10">
           <img
@@ -244,6 +243,14 @@ const Dashboard = () => {
           </p>
         </div>
       )}
+
+      {/* Debugging button */}
+      <button
+        onClick={() => console.log(suggestedPartners)}
+        className="text-lg font-primary px-4 py-2 text-white bg-primary rounded-full"
+      >
+        Debugging button. Delete later.
+      </button>
 
       {/* This is where the activities go */}
       <ActivityCard />
@@ -258,6 +265,7 @@ const Dashboard = () => {
               profilePicture={partner.profilePicture}
               bio={partner.bio}
               location={partner.location}
+              _id={partner._id}
             />
           ))}
         </Section>
@@ -273,6 +281,7 @@ const Dashboard = () => {
               profilePicture={partner.profilePicture}
               bio={partner.bio}
               location={partner.location}
+              _id={partner._id}
             />
           ))}
         </Section>
