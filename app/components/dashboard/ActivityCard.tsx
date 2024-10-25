@@ -97,11 +97,13 @@ const ActivityCard: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">Your Activities</h2>
+      {activities.length !== 0 && (
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">
+          Your Activities
+        </h2>
+      )}
 
-      {activities.length === 0 ? (
-        <p className="text-gray-600">No activities found.</p>
-      ) : (
+      {activities.length !== 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {activities.map((activity) => (
             <div

@@ -224,42 +224,59 @@ const Dashboard = () => {
       </div>
 
       {/* Suggested Partners */}
-      <Link href="/matching">
-        <Section title="Top 3 Suggested Partners">
-          {suggestedPartners.map((partner, index) => (
-            <PartnerCard key={index} {...partner} />
-          ))}
-        </Section>
-      </Link>
+      {suggestedPartners.length > 0 ? (
+        <Link href="/matching">
+          <Section title="Top 3 Suggested Partners">
+            {suggestedPartners.map((partner, index) => (
+              <PartnerCard key={index} {...partner} />
+            ))}
+          </Section>
+        </Link>
+      ) : (
+        <div className="flex flex-col items-center justify-center text-center space-y-4 p-10">
+          <img
+            src="/svg/chatting-illustration.svg"
+            alt="No Suggested Partners"
+            className="w-1/3 md:w-1/4"
+          />
+          <p className="text-lg text-textPrimary font-primary">
+            No Suggested Partners. Complete onboarding in Settings
+          </p>
+        </div>
+      )}
 
       {/* This is where the activities go */}
       <ActivityCard />
 
       {/* Matched Partners */}
-      <Section title="Matched Partners">
-        {matchedPartners.map((partner, index) => (
-          <PartnerCard
-            key={index}
-            fullName={partner.fullName}
-            profilePicture={partner.profilePicture}
-            bio={partner.bio}
-            location={partner.location}
-          />
-        ))}
-      </Section>
+      {matchedPartners.length > 0 && (
+        <Section title="Matched Partners">
+          {matchedPartners.map((partner, index) => (
+            <PartnerCard
+              key={index}
+              fullName={partner.fullName}
+              profilePicture={partner.profilePicture}
+              bio={partner.bio}
+              location={partner.location}
+            />
+          ))}
+        </Section>
+      )}
 
       {/* Pending Partners */}
-      <Section title="Pending Partners">
-        {pendingPartners.map((partner, index) => (
-          <PartnerCard
-            key={index}
-            fullName={partner.fullName}
-            profilePicture={partner.profilePicture}
-            bio={partner.bio}
-            location={partner.location}
-          />
-        ))}
-      </Section>
+      {pendingPartners.length > 0 && (
+        <Section title="Pending Partners">
+          {pendingPartners.map((partner, index) => (
+            <PartnerCard
+              key={index}
+              fullName={partner.fullName}
+              profilePicture={partner.profilePicture}
+              bio={partner.bio}
+              location={partner.location}
+            />
+          ))}
+        </Section>
+      )}
     </div>
   );
 };
