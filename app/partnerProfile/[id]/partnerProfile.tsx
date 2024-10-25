@@ -198,7 +198,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
               {partner.fullName || "Unknown Partner"}
             </h2>
             <p className="text-textSecondary font-primary">
-              Match: {(Number(matchScore) * 100).toFixed(1)}%
+              Match: {matchScore}%
             </p>
             <p className="text-textSecondary font-primary">
               {partner.dob

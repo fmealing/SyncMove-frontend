@@ -43,7 +43,7 @@ const Navbar: React.FC = () => {
           </Link>
         </button>
         <button>
-          <Link href="/contact">
+          <Link href="/FAQ">
             <div className="h-9 px-4 py-2 rounded-full border-2 border-secondary justify-center items-center gap-2 inline-flex hover:border-secondaryDark transition">
               <div className="text-center text-secondary text-lg font-semibold font-primary leading-[17.50px] hover:text-secondaryDark transition">
                 Contact
