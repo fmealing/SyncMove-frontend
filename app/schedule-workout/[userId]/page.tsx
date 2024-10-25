@@ -7,6 +7,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import toast from "react-hot-toast";
+import LoadingScreen from "@/app/components/LoadingScreen";
 
 interface Partner {
   fullName: string;
@@ -16,7 +17,6 @@ interface Partner {
     type: string;
     coordinates: [number, number];
   };
-  description: string;
 }
 
 const ScheduleWorkoutPage = () => {
@@ -25,6 +25,7 @@ const ScheduleWorkoutPage = () => {
   const [partner, setPartner] = useState<Partner | null>(null);
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState<string>(""); // For manually inputted location
+  const [customMessage, setCustomMessage] = useState<string>(""); // For custom description
   const router = useRouter();
   const params = useParams();
   const userId = params?.userId;
@@ -62,8 +63,8 @@ const ScheduleWorkoutPage = () => {
   }, [userId]);
 
   const handleConfirmActivity = async () => {
-    if (!selectedDate || !selectedTime || !location) {
-      toast.error("Please select a date, time, and location.");
+    if (!selectedDate || !selectedTime || !location || !customMessage) {
+      toast.error("Please select a date, time, location, and enter a message.");
       return;
     }
 
@@ -88,7 +89,7 @@ const ScheduleWorkoutPage = () => {
         "http://localhost:5001/api/activities",
         {
           activityType: "Workout",
-          description: `Scheduled ${selectedTime} workout with ${partner.fullName} at ${location}`,
+          description: `${customMessage} - Scheduled ${selectedTime} workout with ${partner.fullName} at ${location}`,
           dateString: selectedDate,
           timeOfDay: selectedTime,
           participants: [userId, myUserId],
@@ -114,6 +115,10 @@ const ScheduleWorkoutPage = () => {
       setLoading(false);
     }
   };
+
+  if (!partner) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="scheduling-background min-h-screen">
@@ -164,6 +169,19 @@ const ScheduleWorkoutPage = () => {
             onChange={(e) => setLocation(e.target.value)}
             className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
             placeholder="Enter location (e.g., Gym Group, Selly Oak)"
+          />
+        </div>
+
+        {/* Input Field For Custom Message */}
+        <div className="flex-1 mt-4">
+          <label className="text-lg text-gray-700 font-semibold">
+            Enter a Message to Your Partner:
+          </label>
+          <textarea
+            value={customMessage}
+            onChange={(e) => setCustomMessage(e.target.value)}
+            className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
+            placeholder="Enter a custom message..."
           />
         </div>
 

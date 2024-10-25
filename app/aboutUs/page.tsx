@@ -56,7 +56,7 @@ const AboutUsPage: React.FC = () => {
               <FaLinkedin size={32} />
             </a>
             <a
-              href="https://twitter.com"
+              href="https://www.linkedin.com/in/florian-mealing"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:text-primaryDark transition"
