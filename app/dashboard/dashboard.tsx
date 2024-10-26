@@ -1,3 +1,6 @@
+// TODO: Add the ability to filter by gender. Some people may not want to be matched with the opposite
+// - user has a field called "gender" which can be either "male", "female", "non-binary", or "prefer not to say"
+
 "use client";
 import React, { useEffect, useState } from "react";
 import { FaBell, FaEnvelope, FaUser, FaUserAstronaut } from "react-icons/fa";
