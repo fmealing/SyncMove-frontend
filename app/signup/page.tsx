@@ -1,13 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
-import {
-  FaUser,
-  FaEnvelope,
-  FaLock,
-  FaUserPlus,
-  FaCalendar,
-} from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -18,9 +12,13 @@ const SignupPage = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    dob: "", // Add dob field to the formdata
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+    general: "",
+  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,36 +29,47 @@ const SignupPage = () => {
     setShowPassword((prev) => !prev);
   };
 
+  const validateInputs = () => {
+    const newErrors = { email: "", password: "", general: "" };
+    if (!formdata.email.includes("@")) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+    if (formdata.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters long.";
+    }
+    if (formdata.password !== formdata.confirmPassword) {
+      newErrors.password = "Passwords do not match.";
+    }
+    setErrors(newErrors);
+    return Object.values(newErrors).every((error) => error === "");
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // Check if password and confirm password match
-    if (formdata.password !== formdata.confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
+    if (!validateInputs()) return;
 
     try {
-      // Make POST request to register endpoint
       const response = await axios.post(
         "http://localhost:5001/api/auth/register",
         {
           fullName: formdata.fullName,
           email: formdata.email,
           password: formdata.password,
-          dob: formdata.dob, // Ensure dob is passed here
         }
       );
 
-      // Set token in local storage
       const token = response.data.token;
       localStorage.setItem("token", token);
-
-      // Redirect to onboarding or login page after successful registration
       window.location.href = "/onboarding";
     } catch (error) {
-      console.error("Registration failed:", error);
-      toast.error("Failed to register. Please try again.");
+      if (axios.isAxiosError(error) && error.response) {
+        const backendError = error.response.data.error;
+        setErrors((prev) => ({ ...prev, general: backendError }));
+        toast.error(backendError || "Failed to register. Please try again.");
+      } else {
+        console.error("Registration error:", error);
+        toast.error("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
@@ -73,6 +82,10 @@ const SignupPage = () => {
         <p className="text-center text-textSecondary font-primary">
           Create your account to get started
         </p>
+
+        {errors.general && (
+          <p className="text-red-500 text-center">{errors.general}</p>
+        )}
 
         <form
           onSubmit={handleSubmit}
@@ -93,52 +106,48 @@ const SignupPage = () => {
           </div>
 
           {/* Email Field */}
-          <div className="w-full flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:border-primary">
-            <FaEnvelope className="text-gray-400 mr-3" />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              className="w-full focus:outline-none text-textPrimary font-primary"
-              value={formdata.email}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-
-          {/* DOB Field */}
-          <div className="w-full flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:border-primary">
-            <FaCalendar className="text-gray-400 mr-3" />
-            <input
-              type="date" // Use date input type for DOB
-              name="dob"
-              placeholder="Date of Birth"
-              className="w-full focus:outline-none text-textPrimary font-primary"
-              value={formdata.dob}
-              onChange={handleInputChange}
-              required
-            />
+          <div className="w-full flex flex-col">
+            <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:border-primary">
+              <FaEnvelope className="text-gray-400 mr-3" />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                className="w-full focus:outline-none text-textPrimary font-primary"
+                value={formdata.email}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email}</p>
+            )}
           </div>
 
           {/* Password Field */}
-          <div className="w-full flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:border-primary">
-            <FaLock className="text-gray-400 mr-3" />
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Password"
-              className="w-full focus:outline-none text-textPrimary font-primary"
-              value={formdata.password}
-              onChange={handleInputChange}
-              required
-            />
-            <button
-              type="button"
-              onClick={togglePasswordVisibility}
-              className="focus:outline-none text-gray-400 ml-2"
-            >
-              {showPassword ? <HiEyeOff /> : <HiEye />}
-            </button>
+          <div className="w-full flex flex-col">
+            <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:border-primary">
+              <FaLock className="text-gray-400 mr-3" />
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password"
+                className="w-full focus:outline-none text-textPrimary font-primary"
+                value={formdata.password}
+                onChange={handleInputChange}
+                required
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="focus:outline-none text-gray-400 ml-2"
+              >
+                {showPassword ? <HiEyeOff /> : <HiEye />}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password}</p>
+            )}
           </div>
 
           {/* Confirm Password Field */}

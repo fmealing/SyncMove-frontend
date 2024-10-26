@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import DatePicker from "@/app/components/onboarding/DatePicker";
-import TimeSelector from "@/app/components/onboarding/TimeSelector";
+// import DatePicker from "@/app/components/onboarding/DatePicker";
+// import TimeSelector from "@/app/components/onboarding/TimeSelector";
 import { FaCheckCircle } from "react-icons/fa";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -151,7 +151,7 @@ const ScheduleWorkoutPage = () => {
             <label className="text-lg text-gray-700 font-semibold">
               Choose a Date:
             </label>
-            <DatePicker setDate={handleDateChange} />
+            {/* <DatePicker setDate={handleDateChange} /> */}
             {selectedDate && (
               <p className="text-gray-700 mt-2">
                 Selected Date: {selectedDate}
@@ -163,7 +163,7 @@ const ScheduleWorkoutPage = () => {
             <label className="text-lg font-primary text-gray-700 font-semibold mb-6">
               Choose a Time:
             </label>
-            <TimeSelector setTime={handleTimeChange} />
+            {/* <TimeSelector setTime={handleTimeChange} /> */}
             {selectedTime && (
               <p className="text-gray-700 mt-2">
                 Selected Time: {selectedTime}
