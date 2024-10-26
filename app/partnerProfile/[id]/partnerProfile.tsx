@@ -205,6 +205,9 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
                 ? `${calculateAgeFromDob(partner.dob)} years old`
                 : "Age not available"}
             </p>
+            <p className="text-textSecondary font-primary">
+              {partner.gender.charAt(0).toUpperCase() + partner.gender.slice(1)}
+            </p>
           </div>
 
           {/* Connect Button */}

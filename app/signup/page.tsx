@@ -30,15 +30,21 @@ const SignupPage = () => {
 
   const validateInputs = () => {
     const newErrors = { email: "", password: "", general: "" };
-    if (!formdata.email.includes("@")) {
+
+    // Basic regex to check for a valid email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formdata.email)) {
       newErrors.email = "Please enter a valid email address.";
     }
+
     if (formdata.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters long.";
     }
+
     if (formdata.password !== formdata.confirmPassword) {
       newErrors.password = "Passwords do not match.";
     }
+
     setErrors(newErrors);
     return Object.values(newErrors).every((error) => error === "");
   };
