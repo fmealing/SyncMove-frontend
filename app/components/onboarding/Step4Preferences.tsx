@@ -65,25 +65,28 @@ const Step4Preferences: React.FC<{ onComplete: () => void }> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-md mx-auto">
-      <h2 className="text-3xl font-bold font-primary text-center text-primary mb-4">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-8 max-w-md mx-auto p-8 rounded-xl"
+    >
+      <h2 className="text-3xl font-bold font-textPrimary text-center text-textPrimary mb-4">
         Privacy & Notifications
       </h2>
 
       {/* Privacy Settings */}
-      <div className="space-y-4 p-4 rounded-lg shadow-md border border-gray-200 bg-white">
-        <h3 className="text-lg font-semibold text-primary mb-2 font-primary">
+      <div className="space-y-4 p-6 rounded-lg shadow-md border border-gray-200 bg-lightGray">
+        <h3 className="text-lg font-semibold text-textPrimary mb-3">
           Privacy Settings
         </h3>
 
         <div className="flex flex-col space-y-2">
-          <label className="font-medium text-textPrimary font-primary">
+          <label className="font-medium text-textPrimary">
             Profile Visibility:
             <select
               name="visibility"
               value={privacyPreferences.visibility}
               onChange={handlePrivacyChange}
-              className="block w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-primary font-primary"
+              className="block w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-textPrimary hover:shadow-sm transition-all duration-150"
             >
               <option value="public">Public</option>
               <option value="friends">Friends Only</option>
@@ -91,24 +94,24 @@ const Step4Preferences: React.FC<{ onComplete: () => void }> = ({
             </select>
           </label>
 
-          <label className="flex items-center gap-2 font-medium font-primary text-textPrimary">
+          <label className="flex items-center gap-2 font-medium text-textPrimary">
             <input
               type="checkbox"
               name="shareLocation"
               checked={privacyPreferences.shareLocation}
               onChange={handlePrivacyChange}
-              className="form-checkbox h-4 w-4 text-primary"
+              className="form-checkbox h-5 w-5 text-textPrimary focus:ring-textPrimary"
             />
             Share Location
           </label>
 
-          <label className="flex items-center gap-2 font-medium font-primary text-textPrimary">
+          <label className="flex items-center gap-2 font-medium text-textPrimary">
             <input
               type="checkbox"
               name="shareActivity"
               checked={privacyPreferences.shareActivity}
               onChange={handlePrivacyChange}
-              className="form-checkbox h-4 w-4 text-primary"
+              className="form-checkbox h-5 w-5 text-textPrimary focus:ring-textPrimary"
             />
             Share Activity
           </label>
@@ -116,51 +119,51 @@ const Step4Preferences: React.FC<{ onComplete: () => void }> = ({
       </div>
 
       {/* Notification Settings */}
-      <div className="space-y-4 p-4 rounded-lg shadow-md border border-gray-200 bg-white">
-        <h3 className="text-lg font-semibold font-primary text-primary mb-2">
+      <div className="space-y-4 p-6 rounded-lg shadow-md border border-gray-200 bg-lightGray">
+        <h3 className="text-lg font-semibold text-textPrimary mb-3">
           Notification Settings
         </h3>
 
-        <label className="flex items-center gap-2 font-medium font-primary text-textPrimary">
+        <label className="flex items-center gap-2 font-medium text-textPrimary">
           <input
             type="checkbox"
             name="notifications"
             checked={notificationPreferences.notifications}
             onChange={handleNotificationChange}
-            className="form-checkbox h-4 w-4 text-primary"
+            className="form-checkbox h-5 w-5 text-textPrimary focus:ring-textPrimary"
           />
           Enable Notifications
         </label>
 
-        <label className="flex items-center gap-2 font-medium font-primary text-textPrimary">
+        <label className="flex items-center gap-2 font-medium text-textPrimary">
           <input
             type="checkbox"
             name="messages"
             checked={notificationPreferences.messages}
             onChange={handleNotificationChange}
-            className="form-checkbox h-4 w-4 text-primary"
+            className="form-checkbox h-5 w-5 text-textPrimary focus:ring-textPrimary"
           />
           Message Notifications
         </label>
 
-        <label className="flex items-center gap-2 font-medium font-primary text-textPrimary pb-4">
+        <label className="flex items-center gap-2 font-medium text-textPrimary pb-4">
           <input
             type="checkbox"
             name="activityReminders"
             checked={notificationPreferences.activityReminders}
             onChange={handleNotificationChange}
-            className="form-checkbox h-4 w-4 text-primary"
+            className="form-checkbox h-5 w-5 text-textPrimary focus:ring-textPrimary"
           />
           Activity Reminders
         </label>
 
-        <label className="font-medium font-primary text-textPrimary">
+        <label className="font-medium text-textPrimary">
           Notification Type:
           <select
             name="notificationType"
             value={notificationPreferences.notificationType}
             onChange={handleNotificationChange}
-            className="block w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+            className="block w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-textPrimary hover:shadow-sm transition-all duration-150"
           >
             <option value="email">Email</option>
             <option value="push">Push</option>
@@ -171,7 +174,7 @@ const Step4Preferences: React.FC<{ onComplete: () => void }> = ({
       {/* Submit Button */}
       <button
         type="submit"
-        className="w-full bg-primary hover:bg-primaryDark text-white rounded-full py-3 font-semibold transition-all duration-200 ease-in-out font-primary"
+        className="w-full bg-primary hover:bg-primaryDark text-white rounded-full py-3 font-semibold transition-all duration-200 ease-in-out shadow-lg hover:shadow-xl"
       >
         Finish Onboarding
       </button>

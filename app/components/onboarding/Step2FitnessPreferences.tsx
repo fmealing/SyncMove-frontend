@@ -10,7 +10,7 @@ const Step2FitnessPreferences: React.FC<{ onComplete: () => void }> = ({
     activityType: "running",
     fitnessGoals: "General Fitness",
     experienceLevel: 1,
-    preferredTime: ["Morning"], // Include time preferences if applicable
+    preferredTime: ["Morning"],
   });
 
   const handleInputChange = (
@@ -24,7 +24,10 @@ const Step2FitnessPreferences: React.FC<{ onComplete: () => void }> = ({
     e.preventDefault();
 
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!token) {
+      toast.error("Authentication token is missing. Please log in.");
+      return;
+    }
 
     try {
       await axios.put(
@@ -51,8 +54,11 @@ const Step2FitnessPreferences: React.FC<{ onComplete: () => void }> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-md mx-auto">
-      <h2 className="text-2xl font-semibold text-center font-primary text-textPrimary">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-8 max-w-md mx-auto p-8 rounded-xl transition-all duration-300 hover:shadow-xl"
+    >
+      <h2 className="text-h2 font-semibold text-center font-primary text-textPrimary mb-8">
         Fitness Preferences
       </h2>
 
@@ -63,7 +69,7 @@ const Step2FitnessPreferences: React.FC<{ onComplete: () => void }> = ({
           name="activityType"
           value={preferences.activityType}
           onChange={handleInputChange}
-          className="border border-textSecondary rounded px-4 py-2 font-primary text-textPrimary"
+          className="border border-gray-300 rounded-lg px-4 py-3 font-primary text-textPrimary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 transition-shadow duration-200 hover:shadow-md"
         >
           <option value="running">Running</option>
           <option value="cycling">Cycling</option>
@@ -79,7 +85,7 @@ const Step2FitnessPreferences: React.FC<{ onComplete: () => void }> = ({
           name="fitnessGoals"
           value={preferences.fitnessGoals}
           onChange={handleInputChange}
-          className="border border-textSecondary rounded px-4 py-2 text-textSecondary"
+          className="border border-gray-300 rounded-lg px-4 py-3 text-textPrimary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 transition-shadow duration-200 hover:shadow-md"
         >
           <option value="Weight Loss">Weight Loss</option>
           <option value="Endurance">Endurance</option>
@@ -100,7 +106,7 @@ const Step2FitnessPreferences: React.FC<{ onComplete: () => void }> = ({
           onChange={handleInputChange}
           min="1"
           max="5"
-          className="border border-textSecondary rounded px-4 py-2 text-textSecondary"
+          className="border border-gray-300 rounded-lg px-4 py-3 text-textPrimary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 transition-shadow duration-200 hover:shadow-md"
         />
       </div>
 
@@ -116,7 +122,7 @@ const Step2FitnessPreferences: React.FC<{ onComplete: () => void }> = ({
               preferredTime: [e.target.value],
             })
           }
-          className="border border-textSecondary rounded px-4 py-2 text-textSecondary"
+          className="border border-gray-300 rounded-lg px-4 py-3 text-textPrimary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 transition-shadow duration-200 hover:shadow-md"
         >
           <option value="Morning">Morning</option>
           <option value="Afternoon">Afternoon</option>
@@ -127,7 +133,7 @@ const Step2FitnessPreferences: React.FC<{ onComplete: () => void }> = ({
       {/* Submit Button */}
       <button
         type="submit"
-        className="w-full bg-primary text-white rounded-full py-2 mt-4 font-semibold"
+        className="w-full bg-primary text-white rounded-full py-3 font-semibold hover:bg-primaryDark transition duration-150 shadow-lg hover:shadow-xl"
       >
         Continue
       </button>

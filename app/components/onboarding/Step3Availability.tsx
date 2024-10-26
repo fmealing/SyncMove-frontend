@@ -45,7 +45,7 @@ const Step3Availability: React.FC<{ onComplete: () => void }> = ({
         }
       );
       toast.success("Availability saved!");
-      onComplete(); // Move to the next step
+      onComplete();
     } catch (error) {
       console.error("Failed to save availability:", error);
       toast.error("Failed to save availability. Please try again.");
@@ -53,8 +53,11 @@ const Step3Availability: React.FC<{ onComplete: () => void }> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-md mx-auto">
-      <h2 className="text-2xl font-semibold text-center font-primary text-textPrimary">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-8 max-w-md mx-auto p-8 rounded-xl transition-all duration-300 hover:shadow-xl"
+    >
+      <h2 className="text-h2 font-semibold text-center font-primary text-textPrimary mb-6">
         Set Your Availability
       </h2>
 
@@ -67,7 +70,7 @@ const Step3Availability: React.FC<{ onComplete: () => void }> = ({
           type="date"
           value={availability.date}
           onChange={handleDateChange}
-          className="border border-textSecondary rounded px-4 py-2 text-textPrimary"
+          className="border border-gray-300 rounded-lg px-4 py-3 text-textPrimary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 transition-shadow duration-200 hover:shadow-md"
         />
       </div>
 
@@ -76,16 +79,16 @@ const Step3Availability: React.FC<{ onComplete: () => void }> = ({
         <label className="font-primary text-textPrimary">
           Preferred Time of Day
         </label>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           {["morning", "afternoon", "evening"].map((time) => (
             <button
               type="button"
               key={time}
               onClick={() => handleTimeToggle(time)}
-              className={`px-4 py-2 rounded-full ${
+              className={`px-4 py-2 rounded-full font-medium transition-shadow duration-200 shadow-sm hover:shadow-md ${
                 availability.timeOfDay.includes(time)
                   ? "bg-primary text-white"
-                  : "border border-textSecondary text-textPrimary"
+                  : "border border-gray-300 text-textPrimary"
               }`}
             >
               {time.charAt(0).toUpperCase() + time.slice(1)}
@@ -97,7 +100,7 @@ const Step3Availability: React.FC<{ onComplete: () => void }> = ({
       {/* Submit Button */}
       <button
         type="submit"
-        className="w-full bg-primary text-white rounded-full py-2 mt-4 font-semibold"
+        className="w-full bg-primary text-white rounded-full py-3 font-semibold hover:bg-primaryDark transition duration-150 shadow-lg hover:shadow-xl"
       >
         Continue
       </button>

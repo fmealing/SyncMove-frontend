@@ -8,7 +8,6 @@ import toast from "react-hot-toast";
 
 const SignupPage = () => {
   const [formdata, setFormdata] = useState({
-    fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -52,7 +51,6 @@ const SignupPage = () => {
       const response = await axios.post(
         "http://localhost:5001/api/auth/register",
         {
-          fullName: formdata.fullName,
           email: formdata.email,
           password: formdata.password,
         }
@@ -91,20 +89,6 @@ const SignupPage = () => {
           onSubmit={handleSubmit}
           className="space-y-4 flex flex-col items-center justify-center"
         >
-          {/* Full Name Field */}
-          <div className="w-full flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:border-primary">
-            <FaUser className="text-gray-400 mr-3" />
-            <input
-              type="text"
-              name="fullName"
-              placeholder="Full Name"
-              className="w-full focus:outline-none text-textPrimary font-primary"
-              value={formdata.fullName}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-
           {/* Email Field */}
           <div className="w-full flex flex-col">
             <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:border-primary">

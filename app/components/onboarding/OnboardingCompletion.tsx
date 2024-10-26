@@ -35,11 +35,15 @@ const OnboardingCompletion: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-center p-6">
-      <h2 className="text-3xl font-bold">Welcome to SyncMove!</h2>
-      <p className="text-lg mt-4">
+      <h2 className="text-3xl font-bold font-primary text-textPrimary">
+        Welcome to SyncMove!
+      </h2>
+      <p className="text-lg mt-4 font-primary text-textPrimary">
         You’re all set and ready to explore the platform.
       </p>
-      <p className="text-lg mt-4">Redirecting to your dashboard...</p>
+      <p className="text-lg mt-4 font-primary text-textPrimary">
+        Redirecting to your dashboard...
+      </p>
     </div>
   );
 };
