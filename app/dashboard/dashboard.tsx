@@ -262,12 +262,12 @@ const Dashboard = () => {
       )}
 
       {/* Debugging button */}
-      {/* <button
-        onClick={() => console.log(suggestedPartners)}
+      <button
+        onClick={() => console.log(userProfile)}
         className="text-lg font-primary px-4 py-2 text-white bg-primary rounded-full"
       >
         Debugging button. Delete later.
-      </button> */}
+      </button>
 
       {/* This is where the activities go */}
       <ActivityCard />

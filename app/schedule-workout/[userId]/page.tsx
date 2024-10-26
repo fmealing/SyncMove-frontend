@@ -1,8 +1,8 @@
+// TODO: Implement the DatePicker and TimeSelector components
+
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-// import DatePicker from "@/app/components/onboarding/DatePicker";
-// import TimeSelector from "@/app/components/onboarding/TimeSelector";
 import { FaCheckCircle } from "react-icons/fa";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";

@@ -1,3 +1,7 @@
+// TODO: Incorporate all of the pricing plans here
+// - Updates the connection Limit
+// - Updates the plan (free, growth, pro)
+
 "use client";
 import React from "react";
 import { FaCheck, FaTimes, FaStar } from "react-icons/fa";

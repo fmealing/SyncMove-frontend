@@ -1,12 +1,19 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaAward, FaCalendarAlt, FaClock, FaHeartbeat } from "react-icons/fa";
-import { FaMessage } from "react-icons/fa6";
+import {
+  FaAward,
+  FaCalendarAlt,
+  FaClock,
+  FaHeartbeat,
+  FaRocket,
+} from "react-icons/fa";
+import { FaMessage, FaRegCircleXmark } from "react-icons/fa6";
 import { jwtDecode } from "jwt-decode";
 import LoadingScreen from "@/app/components/LoadingScreen";
 import { calculateAgeFromDob } from "@/app/utils/calculateAgeFromDob";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 // Calculate age from date of birth
 const calculateAge = (dob: string) => {
@@ -25,6 +32,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
   const [loggedInUser, setLoggedInUser] = useState<any>(null);
   const [matchScore, setMatchScore] = useState<number | null>(null);
   const [age, setAge] = useState<number | null>(null); // Add age state
+  const [showLimitModal, setShowLimitModal] = useState(false);
 
   useEffect(() => {
     const fetchLoggedInUserProfile = async () => {
@@ -68,6 +76,15 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
     fetchLoggedInUserProfile();
     fetchPartner();
   }, [params.id]);
+
+  const checkConnectionLimitAndMatch = async () => {
+    // if (loggedInUser.connections.length >= loggedInUser.connectionLimit) {
+    if (loggedInUser.connections.length >= 1) {
+      setShowLimitModal(true);
+    } else {
+      startMatch();
+    }
+  };
 
   // Fetch match score based on partner and logged-in user
   const fetchMatchScore = async () => {
@@ -184,147 +201,146 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <div className="p-6 space-y-8 min-h-screen">
-      {/* Bio Section */}
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="md:w-1/3 flex flex-col items-center space-y-4">
+    <div className="p-6 space-y-8 min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-100">
+      {/* Header Section */}
+      <div className="relative">
+        <div className="relative z-10 flex flex-col items-center py-8 space-y-6">
           <img
             src={partner.profilePicture || "/default-avatar.png"}
             alt="Profile"
-            className="w-80 h-80 rounded-full object-cover border-2 border-textPrimary"
+            className="w-80 h-80 rounded-full object-cover shadow-xl border-4 border-white transition-transform duration-300 hover:scale-105"
           />
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-textPrimary font-primary">
-              {partner.fullName || "Unknown Partner"}
-            </h2>
-            <p className="text-textSecondary font-primary">
-              Match: {matchScore && ((matchScore * 90) / 72).toFixed(0)}%
-            </p>
-            <p className="text-textSecondary font-primary">
-              {partner.dob
-                ? `${calculateAgeFromDob(partner.dob)} years old`
-                : "Age not available"}
-            </p>
-            <p className="text-textSecondary font-primary">
-              {partner.gender.charAt(0).toUpperCase() + partner.gender.slice(1)}
-            </p>
-          </div>
-
-          {/* Connect Button */}
-          <button
-            onClick={startMatch}
-            className="px-4 py-2 border-textPrimary rounded-full bg-primary text-h3 font-primary flex gap-2 justify-center items-center"
-          >
-            <FaMessage />
-            Connect Now!
-          </button>
-
-          {/* Schedule Workout Button */}
-          <button
-            onClick={() =>
-              (window.location.href = `/schedule-workout/${partner._id}`)
-            }
-            className="px-6 py-3 mt-4 border border-primary text-primary rounded-full flex gap-2 items-center justify-center hover:bg-primary hover:text-white transition-colors duration-300"
-          >
-            <FaCalendarAlt />
-            Schedule Workout
-          </button>
-        </div>
-
-        <div className="md:w-2/3 space-y-6 px-10">
-          {/* Bio */}
-          <div>
-            <h3 className="text-h3 font-semibold text-textPrimary font-primary">
-              Bio
-            </h3>
-            <div className="divider"></div>
-            <p className="text-textPrimary font-primary text-lg mb-6">
-              {partner.bio || "No bio available."}
-            </p>
-          </div>
-
-          {/* Fitness Goal */}
-          <div>
-            <h3 className="text-h3 font-semibold text-textPrimary font-primary">
-              Fitness Goal
-            </h3>
-            <div className="divider"></div>
-            <p className="text-textPrimary font-primary text-lg">
-              {partner.fitnessGoals || "No fitness goal provided."}
-            </p>
-          </div>
-
-          {/* Activity Preference Section */}
-          <div className="space-y-6 p-8 bg-gray-50 rounded-lg shadow-lg">
-            <h3 className="text-h2 font-semibold text-textPrimary font-primary text-center">
-              Activity Preference
-            </h3>
-            <div className="divider"></div>
-            <div className="grid grid-cols-2 gap-8 justify-items-center">
-              <button className="flex items-center justify-center w-[300px] h-[80px] rounded-full border-4 border-gradient-to-r from-blue-400 to-blue-600 text-primary text-h3 font-primary gap-3 shadow-lg hover:shadow-2xl transform hover:scale-105 transition">
-                <FaHeartbeat className="text-blue-500 text-2xl" />
-                <span>{partner.activityType || "Unknown Activity"}</span>
-              </button>
-
-              <button className="flex items-center justify-center w-[300px] h-[80px] rounded-full border-4 border-gradient-to-r from-yellow-400 to-yellow-600 text-primary text-h3 font-primary gap-3 shadow-lg hover:shadow-2xl transform hover:scale-105 transition">
-                <FaAward className="text-yellow-500 text-2xl" />
-                <span>
-                  {partner.experienceLevel
-                    ? partner.experienceLevel >= 4
-                      ? "Advanced"
-                      : partner.experienceLevel >= 2
-                      ? "Intermediate"
-                      : "Beginner"
-                    : "No Experience Level"}
-                </span>
-              </button>
-            </div>
-          </div>
-
-          {/* Availability Section */}
-          <div className="space-y-6 flex flex-col items-center p-8 bg-gray-50 rounded-lg shadow-lg">
-            <h3 className="text-3xl font-semibold text-gray-800 font-primary text-center">
-              Availability
-            </h3>
-            <div className="divider w-full"></div>
-            <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-              {partner.availability?.timeOfDay?.map(
-                (time: string, index: number) => (
-                  <div
-                    key={index}
-                    className={`flex items-center justify-start gap-4 w-[280px] h-[120px] rounded-lg shadow-lg p-4 transition transform hover:scale-105 ${
-                      time === "Morning"
-                        ? "bg-gradient-to-r from-blue-400 to-blue-600 text-white"
-                        : time === "Evening"
-                        ? "bg-gradient-to-r from-purple-500 to-purple-700 text-white"
-                        : "bg-gray-400 text-white"
-                    }`}
-                  >
-                    <div className="bg-white rounded-full p-3 flex items-center justify-center">
-                      <FaClock
-                        className={
-                          time === "Morning"
-                            ? "text-blue-600"
-                            : "text-purple-600"
-                        }
-                        size={24}
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-2xl font-bold font-primary">
-                        {time}
-                      </span>
-                      <span className="text-lg text-gray-200 font-primary">
-                        {partner.activityType || "Unknown Activity"}
-                      </span>
-                    </div>
-                  </div>
-                )
-              )}
-            </div>
+          <h2 className="text-5xl font-extrabold text-textPrimary font-primary tracking-wide">
+            {partner.fullName || "Unknown Partner"}
+          </h2>
+          <div className="flex space-x-6 text-base text-gray-200 font-medium">
+            <span className="bg-gray-800 bg-opacity-75 px-4 py-1 rounded-full text-lg">
+              {age} years
+            </span>
+            <span className="bg-gray-800 bg-opacity-75 px-4 py-1 rounded-full capitalize text-lg">
+              {partner.gender}
+            </span>
           </div>
         </div>
       </div>
+
+      {/* Bio Section */}
+      <div className="bg-white shadow-2xl rounded-3xl p-10 mx-8 space-y-6 border-t-4 border-primary">
+        <h3 className="text-2xl font-semibold text-textPrimary flex items-center gap-3">
+          <FaMessage className="text-actionAmber text-xl" /> Bio
+        </h3>
+        <p className="text-lg text-gray-600 font-light leading-relaxed tracking-wide">
+          {partner.bio || "No bio available."}
+        </p>
+      </div>
+
+      {/* Fitness Goals & Activity Preferences */}
+      <div className="grid md:grid-cols-2 gap-8 px-8 mt-10">
+        {/* Fitness Goal */}
+        <div className="bg-white rounded-2xl shadow-lg p-10 transition duration-300 hover:scale-105 border border-textPrimary">
+          <h3 className="text-2xl font-bold text-textPrimary flex items-center gap-3">
+            <FaHeartbeat className="text-actionAmber text-3xl" /> Fitness Goal
+          </h3>
+          <p className="text-xl text-textSecondary mt-3">
+            {partner.fitnessGoals || "No fitness goal provided."}
+          </p>
+        </div>
+
+        {/* Activity Preference */}
+        <div className="bg-white rounded-2xl shadow-lg p-10 transition duration-300 hover:scale-105 border border-textPrimary">
+          <h3 className="text-2xl font-bold text-textPrimary flex items-center gap-3">
+            <FaAward className="text-blue-400 text-3xl" /> Activity Preference
+          </h3>
+          <p className="text-xl text-textSecondary mt-3">
+            {partner.activityType || "Unknown Activity"}
+          </p>
+        </div>
+      </div>
+
+      {/* Availability Section */}
+      <div className="px-8 py-14">
+        <h3 className="text-h2 font-bold font-primary text-textPrimary text-center mb-6">
+          Availability
+        </h3>
+        <div className="flex items-center justify-center">
+          {partner.availability?.timeOfDay?.map((time, index) => (
+            <div
+              key={index}
+              className={`flex flex-col w-1/2 items-center p-8 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 ${
+                time === "morning"
+                  ? "bg-gradient-to-r from-yellow-300 to-yellow-500 text-yellow-900"
+                  : time === "evening"
+                  ? "bg-gradient-to-r from-purple-500 to-purple-700 text-purple-100"
+                  : "bg-gradient-to-r from-blue-400 to-blue-600 text-blue-100"
+              }`}
+            >
+              <FaClock className="text-3xl mb-4" />
+              <p className="text-xl font-semibold capitalize tracking-wide">
+                {time}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex flex-col md:flex-row justify-center gap-6 mt-8">
+        <button
+          onClick={checkConnectionLimitAndMatch}
+          className="flex justify-center items-center gap-2 bg-primary text-white font-semibold px-8 py-4 rounded-full hover:bg-primaryDark transition-shadow duration-300 text-xl"
+        >
+          <FaMessage /> Connect Now
+        </button>
+        <Link
+          href={`/schedule-workout/${partner._id}`}
+          className="flex items-center justify-center gap-2 border border-secondary text-secondary font-semibold px-8 py-4 rounded-full hover:bg-lightGray hover:text-secondaryDark transition duration-300 text-xl bg-white"
+        >
+          <FaCalendarAlt /> Schedule Workout
+        </Link>
+      </div>
+      {/* Modal for Connection Limit */}
+      {showLimitModal && (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center">
+          <div className="bg-white p-8 rounded-2xl shadow-xl text-center space-y-6 transform transition-all duration-300 ease-in-out">
+            <p className="text-2xl font-bold text-gray-800 font-primary">
+              Max Connections Reached!
+            </p>
+            <p className="text-lg text-gray-600 font-primary">
+              Unlock unlimited connections and join our community of premium
+              members!
+            </p>
+            <p className="text-sm text-gray-500 font-primary italic">
+              Many users are prepared to unlock extra features. Don’t miss out
+              on the perks that come with upgrading!
+            </p>
+
+            {/* Call-to-action Buttons */}
+            <div className="flex items-center justify-center gap-4 mt-4">
+              {/* Close Button */}
+              <button
+                onClick={() => setShowLimitModal(false)}
+                className="px-4 py-2 text-lg border border-gray-400 text-gray-500 rounded-full flex items-center justify-center gap-2"
+              >
+                <FaRegCircleXmark /> Not Now
+              </button>
+
+              {/* Upgrade Button */}
+              <Link
+                href="/pricing"
+                className="px-5 py-3 text-lg font-bold text-white bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full shadow-lg hover:shadow-2xl transform hover:scale-105 flex items-center justify-center gap-2 transition-all duration-200 ease-in-out"
+              >
+                <FaRocket className="animate-bounce" />
+                Unlock Premium Access
+              </Link>
+            </div>
+
+            {/* Limited Time Offer */}
+            <p className="text-sm text-red-600 font-primary">
+              <strong>Limited Time Offer:</strong> Get 20% off your first year!
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
