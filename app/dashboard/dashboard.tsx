@@ -54,6 +54,13 @@ const Dashboard = () => {
   const [username, setUsername] = useState("");
   const [userCity, setUserCity] = useState("");
 
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     const response = await axios.get("http://localhost:5001/api/users");
+  //     console.log(response.data);
+  //   };
+  // }, []);
+
   useEffect(() => {
     const checkAuthAndRedirect = async () => {
       const token = localStorage.getItem("token");

@@ -104,7 +104,9 @@ const Matching = () => {
           );
           return {
             ...partner,
-            matchScore: match ? `${match.score.toFixed(1)}%` : "N/A",
+            matchScore: match
+              ? `${(match.score * (90 / 72)).toFixed(1)}%`
+              : "N/A",
           };
         }
       );
