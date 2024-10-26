@@ -1,6 +1,3 @@
-// TODO: Add the ability to filter by gender. Some people may not want to be matched with the opposite
-// - user has a field called "gender" which can be either "male", "female", "non-binary", or "prefer not to say"
-
 "use client";
 import React, { useEffect, useState } from "react";
 import { FaBell, FaEnvelope, FaUser, FaUserAstronaut } from "react-icons/fa";
@@ -25,6 +22,7 @@ interface Partner {
   };
   matchScore: number;
   _id: string;
+  gender: string;
 }
 
 interface UserProfile {
@@ -37,6 +35,7 @@ interface UserProfile {
   fitnessGoals: string;
   experienceLevel: number;
   dob: string;
+  gender: string;
 }
 
 // Calculate age from date of birth
@@ -56,13 +55,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
   const [userCity, setUserCity] = useState("");
-
-  // useEffect(() => {
-  //   const fetchUsers = async () => {
-  //     const response = await axios.get("http://localhost:5001/api/users");
-  //     console.log(response.data);
-  //   };
-  // }, []);
 
   useEffect(() => {
     const checkAuthAndRedirect = async () => {
@@ -236,11 +228,26 @@ const Dashboard = () => {
 
       {/* Suggested Partners */}
       {suggestedPartners.length > 0 ? (
-        <Section title="Top 3 Suggested Partners">
-          {suggestedPartners.map((partner, index) => (
-            <PartnerCard key={index} {...partner} />
-          ))}
-        </Section>
+        <div>
+          <Section title="Top 3 Suggested Partners">
+            {suggestedPartners.map((partner, index) => (
+              <PartnerCard key={index} {...partner} />
+            ))}
+          </Section>
+          {/* Callout to explore more partners */}
+          <div className="mt-4 text-center">
+            <p className="text-base text-gray-600 font-primary">
+              Looking for more options? Visit the{" "}
+              <Link href="/matching">
+                <div className="text-primary font-semibold hover:underline">
+                  Matching page
+                </div>
+              </Link>{" "}
+              to filter by gender and find partners who best meet your
+              preferences!
+            </p>
+          </div>
+        </div>
       ) : (
         <div className="flex flex-col items-center justify-center text-center space-y-4 p-10">
           <img
@@ -255,12 +262,12 @@ const Dashboard = () => {
       )}
 
       {/* Debugging button */}
-      <button
+      {/* <button
         onClick={() => console.log(suggestedPartners)}
         className="text-lg font-primary px-4 py-2 text-white bg-primary rounded-full"
       >
         Debugging button. Delete later.
-      </button>
+      </button> */}
 
       {/* This is where the activities go */}
       <ActivityCard />
@@ -276,6 +283,7 @@ const Dashboard = () => {
               bio={partner.bio}
               location={partner.location}
               _id={partner._id}
+              gender={partner.gender}
             />
           ))}
         </Section>
@@ -292,6 +300,7 @@ const Dashboard = () => {
               bio={partner.bio}
               location={partner.location}
               _id={partner._id}
+              gender={partner.gender}
             />
           ))}
         </Section>

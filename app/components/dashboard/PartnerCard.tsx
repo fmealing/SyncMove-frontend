@@ -12,6 +12,7 @@ interface PartnerCardProps {
   bio: string;
   matchScore?: number; // Optional
   _id: string;
+  gender: string;
 }
 
 const PartnerCard: React.FC<PartnerCardProps> = ({
@@ -21,6 +22,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
   bio,
   matchScore,
   _id,
+  gender,
 }) => {
   const [city, setCity] = useState<string>("");
 
@@ -78,6 +80,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
             Location: {city}
           </p>
         )}
+        <p className="text-textPrimary font-primary">Gender: {gender}</p>
         <p className="text-textPrimary font-primary mb-4">{bio}</p>
 
         {/* Match score with visual bar */}
