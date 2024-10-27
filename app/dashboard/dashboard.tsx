@@ -10,6 +10,7 @@ import { fetchCityFromCoordinates } from "../utils/geoCoding";
 import Link from "next/link";
 import LoadingScreen from "../components/LoadingScreen";
 import ActivityCard from "../components/dashboard/ActivityCard";
+import SEO from "../components/SEO";
 
 // Define types
 interface Partner {
@@ -197,115 +198,122 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="p-6 space-y-8 min-h-screen">
-      <h1 className="text-textPrimary font-primary text-h2 font-semibold">
-        Welcome back, {username}!
-      </h1>
+    <>
+      <SEO
+        title="SyncMove Dashboard | Manage Your Fitness Connections"
+        description="Access your personalized dashboard on SyncMove to view matched partners, connect with fitness enthusiasts, and track activities."
+        keywords="SyncMove, dashboard, fitness connections, workout partners"
+      />
+      <div className="p-6 space-y-8 min-h-screen">
+        <h1 className="text-textPrimary font-primary text-h2 font-semibold">
+          Welcome back, {username}!
+        </h1>
 
-      {/* Navigation Buttons */}
-      <div className="flex flex-col gap-4 max-w-56 pb-10">
-        <NavigationButton
-          label="Notifications"
-          Icon={FaBell}
-          href="/notifications"
-        />
-        <NavigationButton
-          label="Messages"
-          Icon={FaEnvelope}
-          href="/messaging"
-        />
-        <NavigationButton
-          label="Profile Settings"
-          Icon={FaUser}
-          href="/settings"
-        />
-        <NavigationButton
-          label="matching"
-          Icon={FaUserAstronaut}
-          href="/matching"
-        />
-      </div>
+        {/* Navigation Buttons */}
+        <div className="flex flex-col gap-4 max-w-56 pb-10">
+          <NavigationButton
+            label="Notifications"
+            Icon={FaBell}
+            href="/notifications"
+          />
+          <NavigationButton
+            label="Messages"
+            Icon={FaEnvelope}
+            href="/messaging"
+          />
+          <NavigationButton
+            label="Profile Settings"
+            Icon={FaUser}
+            href="/settings"
+          />
+          <NavigationButton
+            label="matching"
+            Icon={FaUserAstronaut}
+            href="/matching"
+          />
+        </div>
 
-      {/* Suggested Partners */}
-      {suggestedPartners.length > 0 ? (
-        <div>
-          <Section title="Top 3 Suggested Partners">
-            {suggestedPartners.map((partner, index) => (
-              <PartnerCard key={index} {...partner} />
-            ))}
-          </Section>
-          {/* Callout to explore more partners */}
-          <div className="mt-4 text-center">
-            <p className="text-base text-gray-600 font-primary">
-              Looking for more options? Visit the{" "}
-              <Link href="/matching">
-                <div className="text-primary font-semibold hover:underline">
-                  Matching page
-                </div>
-              </Link>{" "}
-              to filter by gender and find partners who best meet your
-              preferences!
+        {/* Suggested Partners */}
+        {suggestedPartners.length > 0 ? (
+          <div>
+            <Section title="Top 3 Suggested Partners">
+              {suggestedPartners.map((partner, index) => (
+                <PartnerCard key={index} {...partner} />
+              ))}
+            </Section>
+            {/* Callout to explore more partners */}
+            <div className="mt-4 text-center">
+              <p className="text-base text-gray-600 font-primary">
+                Looking for more options? Visit the{" "}
+                <Link href="/matching">
+                  <div className="text-primary font-semibold hover:underline">
+                    Matching page
+                  </div>
+                </Link>{" "}
+                to filter by gender and find partners who best meet your
+                preferences!
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center text-center space-y-4 p-10">
+            <img
+              src="/svg/chatting-illustration.svg"
+              alt="No Suggested Partners"
+              className="w-1/3 md:w-1/4"
+            />
+            <p className="text-lg text-textPrimary font-primary">
+              No Suggested Partners. Complete onboarding in Settings
             </p>
           </div>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center text-center space-y-4 p-10">
-          <img
-            src="/svg/chatting-illustration.svg"
-            alt="No Suggested Partners"
-            className="w-1/3 md:w-1/4"
-          />
-          <p className="text-lg text-textPrimary font-primary">
-            No Suggested Partners. Complete onboarding in Settings
-          </p>
-        </div>
-      )}
+        )}
 
-      {/* Debugging button */}
-      {/* <button
+        {/* Debugging button */}
+        {/* <button
         onClick={() => console.log(userProfile)}
         className="text-lg font-primary px-4 py-2 text-white bg-primary rounded-full"
-      >
+        >
         Debugging button. Delete later.
       </button> */}
 
-      {/* This is where the activities go */}
-      <ActivityCard />
+        {/* This is where the activities go */}
+        <ActivityCard />
 
-      {/* Matched Partners */}
-      {matchedPartners.length > 0 && (
-        <Section title="Matched Partners">
-          {matchedPartners.map((partner, index) => (
-            <PartnerCard
-              key={index}
-              fullName={partner.fullName}
-              profilePicture={partner.profilePicture}
-              bio={partner.bio}
-              location={partner.location}
-              _id={partner._id}
-              gender={partner.gender}
-            />
-          ))}
-        </Section>
-      )}
+        {/* Matched Partners */}
+        {matchedPartners.length > 0 && (
+          <Section title="Matched Partners">
+            {matchedPartners.map((partner, index) => (
+              <PartnerCard
+                key={index}
+                fullName={partner.fullName}
+                profilePicture={partner.profilePicture}
+                bio={partner.bio}
+                location={partner.location}
+                _id={partner._id}
+                gender={partner.gender}
+              />
+            ))}
+          </Section>
+        )}
 
-      {/* Pending Partners */}
-      {pendingPartners.length > 0 && (
-        <Section title="Pending Partners">
-          {pendingPartners.map((partner, index) => (
-            <PartnerCard
-              key={index}
-              fullName={partner.fullName}
-              profilePicture={partner.profilePicture}
-              bio={partner.bio}
-              location={partner.location}
-              _id={partner._id}
-              gender={partner.gender}
-            />
-          ))}
-        </Section>
-      )}
-    </div>
+        {/* Pending Partners */}
+        {pendingPartners.length > 0 && (
+          <Section title="Pending Partners">
+            {pendingPartners.map((partner, index) => (
+              <PartnerCard
+                key={index}
+                fullName={partner.fullName}
+                profilePicture={partner.profilePicture}
+                bio={partner.bio}
+                location={partner.location}
+                _id={partner._id}
+                gender={partner.gender}
+              />
+            ))}
+          </Section>
+        )}
+      </div>
+    </>
   );
 };
 
