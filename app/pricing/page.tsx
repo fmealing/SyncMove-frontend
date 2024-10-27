@@ -1,14 +1,24 @@
-// TODO: Incorporate all of the pricing plans here
-// - Updates the connection Limit
-// - Updates the plan (free, growth, pro)
-
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { FaCheck, FaTimes, FaStar } from "react-icons/fa";
 import Link from "next/link";
 import upgradePlan from "../utils/planUpgrade";
+import PaymentModal from "../components/PaymentModal";
 
 const PricingPage: React.FC = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<string>("");
+
+  const handleUpgradeClick = (planType: string) => {
+    setSelectedPlan(planType);
+    setShowModal(true); // Show modal to prompt user for payment
+  };
+
+  const handleConfirmPayment = async () => {
+    setShowModal(false); // Hide modal
+    await upgradePlan(selectedPlan); // Call upgrade function with selected plan
+  };
+
   const freeFeatures = [
     "Connect with up to 10 people",
     "Message and connect with partners",
@@ -94,10 +104,7 @@ const PricingPage: React.FC = () => {
           </ul>
 
           <Link href="/signup">
-            <button
-              onClick={() => upgradePlan("growth")}
-              className="bg-primary text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-primaryDark transition mt-6"
-            >
+            <button className="bg-primary text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-primaryDark transition mt-6">
               Get Started for Free
             </button>
           </Link>
@@ -115,7 +122,6 @@ const PricingPage: React.FC = () => {
             <span className="line-through text-gray-400">£30</span> £25 -
             One-Time
           </p>
-
           <p className="text-gray-500">Perfect for active users</p>
 
           {/* Growth Features */}
@@ -130,14 +136,12 @@ const PricingPage: React.FC = () => {
               </li>
             ))}
           </ul>
-          <Link href="/dashboard">
-            <button
-              onClick={() => upgradePlan("growth")}
-              className="bg-actionAmber text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-yellow-500 transition mt-6"
-            >
-              Unlock Full Potential
-            </button>
-          </Link>
+          <button
+            onClick={() => handleUpgradeClick("growth")}
+            className="bg-actionAmber text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-yellow-500 transition mt-6"
+          >
+            Unlock Full Potential
+          </button>
           {/* Floating Badge */}
           <div className="absolute -top-5 -right-5 bg-actionRed text-white py-1 px-2 rounded-full text-xs font-bold font-['Roboto']">
             Best Value!
@@ -156,7 +160,6 @@ const PricingPage: React.FC = () => {
             <span className="line-through text-gray-400">£60</span> £50 -
             One-Time
           </p>
-
           <p className="text-gray-500">Ideal for power users</p>
 
           {/* Pro Features */}
@@ -171,14 +174,12 @@ const PricingPage: React.FC = () => {
               </li>
             ))}
           </ul>
-          <Link href="/dashboard">
-            <button
-              onClick={() => upgradePlan("pro")}
-              className="bg-primary text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-primaryDark transition mt-6"
-            >
-              Go Pro
-            </button>
-          </Link>
+          <button
+            onClick={() => handleUpgradeClick("pro")}
+            className="bg-primary text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-primaryDark transition mt-6"
+          >
+            Go Pro
+          </button>
         </div>
       </div>
 
@@ -196,6 +197,14 @@ const PricingPage: React.FC = () => {
           No hidden fees, no recurring charges. You pay once, enjoy forever.
         </p>
       </section>
+
+      {/* Payment Modal */}
+      <PaymentModal
+        showModal={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={handleConfirmPayment}
+        planName={selectedPlan === "growth" ? "Growth Plan" : "Pro Plan"}
+      />
     </div>
   );
 };
