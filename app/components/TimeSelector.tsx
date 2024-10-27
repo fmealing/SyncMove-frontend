@@ -10,33 +10,24 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
   handleTimeSelect,
 }) => {
   return (
-    <div className="flex flex-col items-start gap-2">
-      <label className="text-lg font-semibold">Select a Time</label>
+    <div className="flex flex-col items-start gap-2 bg-white p-4 rounded-lg shadow-md border border-textPrimary">
+      <label className="text-xl font-bold text-textPrimary font-primary">
+        Select a Time
+      </label>
       <div className="flex gap-4">
-        <button
-          onClick={() => handleTimeSelect("morning")}
-          className={`btn ${
-            selectedTime === "morning" ? "btn-primary" : "btn-outline"
-          }`}
-        >
-          Morning
-        </button>
-        <button
-          onClick={() => handleTimeSelect("afternoon")}
-          className={`btn ${
-            selectedTime === "afternoon" ? "btn-primary" : "btn-outline"
-          }`}
-        >
-          Afternoon
-        </button>
-        <button
-          onClick={() => handleTimeSelect("evening")}
-          className={`btn ${
-            selectedTime === "evening" ? "btn-primary" : "btn-outline"
-          }`}
-        >
-          Evening
-        </button>
+        {["morning", "afternoon", "evening"].map((time) => (
+          <button
+            key={time}
+            onClick={() => handleTimeSelect(time)}
+            className={`px-4 py-2 rounded-lg font-primary transition duration-200 ${
+              selectedTime === time
+                ? "bg-secondary text-white shadow-lg transform scale-105"
+                : "bg-white text-textPrimary border border-primary hover:bg-primary hover:text-white"
+            }`}
+          >
+            {time.charAt(0).toUpperCase() + time.slice(1)}
+          </button>
+        ))}
       </div>
     </div>
   );

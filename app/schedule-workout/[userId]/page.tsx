@@ -123,7 +123,7 @@ const ScheduleWorkoutPage = () => {
         <h1 className="text-textPrimary text-h2 font-primary font-semibold p-4">
           Schedule a Workout
         </h1>
-        <p className="text-center font-secondary text-gray-600 text-lg mb-6">
+        <p className="text-center font-secondary text-textSecondary text-lg mb-6">
           Welcome! Here you can schedule a workout with your partner. Please
           remember to be respectful, arrive on time, and communicate any changes
           to your partner.
@@ -135,11 +135,6 @@ const ScheduleWorkoutPage = () => {
               selectedDate={selectedDate}
               handleDateChange={setSelectedDate}
             />
-            {selectedDate && (
-              <p className="text-gray-700 mt-2">
-                Selected Date: {selectedDate}
-              </p>
-            )}
           </div>
 
           <div className="flex-1">
@@ -147,37 +142,32 @@ const ScheduleWorkoutPage = () => {
               selectedTime={selectedTime || ""}
               handleTimeSelect={setSelectedTime}
             />
-            {selectedTime && (
-              <p className="text-gray-700 mt-2">
-                Selected Time: {selectedTime}
-              </p>
-            )}
           </div>
         </div>
 
         {/* Input Field For Location String */}
         <div className="flex-1 mt-4">
-          <label className="text-lg text-gray-700 font-semibold">
+          <label className="text-lg text-textPrimary font-semibold font-primary">
             Enter Location:
           </label>
           <input
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
+            className="w-full mt-2 px-4 py-2 font-primary border border-textSecondary rounded-md focus:outline-none focus:border-primary"
             placeholder="Enter location (e.g., Gym Group, Selly Oak)"
           />
         </div>
 
         {/* Input Field For Custom Message */}
         <div className="flex-1 mt-4">
-          <label className="text-lg text-gray-700 font-semibold">
+          <label className="text-lg text-textPrimary font-semibold font-primary">
             Enter a Message to Your Partner:
           </label>
           <textarea
             value={customMessage}
             onChange={(e) => setCustomMessage(e.target.value)}
-            className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
+            className="w-full mt-2 px-4 py-2 font-primary border border-textSecondary rounded-md focus:outline-none focus:border-primary"
             placeholder="Enter a custom message..."
           />
         </div>

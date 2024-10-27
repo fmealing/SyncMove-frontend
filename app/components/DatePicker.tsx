@@ -11,6 +11,19 @@ const DatePicker: React.FC<DatePickerProps> = ({
 }) => {
   const [internalDate, setInternalDate] = useState<string | null>(selectedDate);
 
+  // Get today's date in YYYY-MM-DD format
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  };
+
+  // Get the date 30 days from today in YYYY-MM-DD format
+  const getMaxDate = () => {
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 30);
+    return maxDate.toISOString().split("T")[0];
+  };
+
   // Convert a Date object to DD/MM/YYYY
   const formatDateToDDMMYYYY = (date: Date) => {
     const day = String(date.getDate()).padStart(2, "0");
@@ -25,7 +38,6 @@ const DatePicker: React.FC<DatePickerProps> = ({
     return `${year}-${month}-${day}`;
   };
 
-  // Handle date change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const dateValue = e.target.value;
     const dateObject = new Date(dateValue);
@@ -41,17 +53,18 @@ const DatePicker: React.FC<DatePickerProps> = ({
   }, [selectedDate]);
 
   return (
-    <div className="flex flex-col items-start gap-2">
-      <label className="text-lg font-semibold">Select a Date</label>
+    <div className="flex flex-col items-start gap-2 bg-white border border-text p-4 rounded-lg shadow-md">
+      <label className="text-xl font-bold text-textPrimary font-primary">
+        Select a Date
+      </label>
       <input
         type="date"
         value={internalDate ? convertToYYYYMMDD(internalDate) : ""}
         onChange={handleInputChange}
-        className="input input-bordered w-full max-w-xs"
+        className="input w-full max-w-xs px-4 py-2 font-primary bg-lightGray text-textPrimary font-medium rounded-lg border-textSecondary focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none"
+        min={getTodayDate()} // Restrict to no earlier than today
+        max={getMaxDate()} // Restrict to no more than 30 days from today
       />
-      {internalDate && (
-        <p className="text-gray-700 mt-2">Selected Date: {internalDate}</p>
-      )}
     </div>
   );
 };
