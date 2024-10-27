@@ -9,18 +9,15 @@ interface UserData {
   email: string;
   profilePicture: string;
   bio: string;
-  dob: string; // Add DOB field to UserData interface
+  dob: string;
 }
 
 const ProfileSection: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [uploadStatus, setUploadStatus] = useState<string>("");
-  const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [bio, setBio] = useState<string>(""); // State to handle bio input
-  const [dob, setDob] = useState<string>(""); // State to handle DOB input
-  const [isSavingProfile, setIsSavingProfile] = useState<boolean>(false); // Loading state for saving the entire profile
-  const [profileSaveStatus, setProfileSaveStatus] = useState<string>(""); // Status message for profile save
+  const [isSavingProfile, setIsSavingProfile] = useState<boolean>(false);
+  const [bio, setBio] = useState<string>("");
+  const [dob, setDob] = useState<string>("");
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -37,15 +34,9 @@ const ProfileSection: React.FC = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        setUserData({
-          fullName: response.data.fullName,
-          email: response.data.email,
-          profilePicture: response.data.profilePicture,
-          bio: response.data.bio,
-          dob: response.data.dob, // Fetch DOB from backend
-        });
-        setBio(response.data.bio); // Set bio from user data
-        setDob(response.data.dob); // Set DOB from user data
+        setUserData(response.data);
+        setBio(response.data.bio);
+        setDob(response.data.dob);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
@@ -58,12 +49,12 @@ const ProfileSection: React.FC = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     setSelectedImage(file);
+    toast.success("Image selected successfully!");
   };
 
   // Handle profile update (bio, dob, image, etc.)
   const handleSaveProfile = async () => {
-    setIsSavingProfile(true); // Set loading state
-
+    setIsSavingProfile(true);
     const token = localStorage.getItem("token");
     if (!token) return;
 
@@ -88,16 +79,17 @@ const ProfileSection: React.FC = () => {
         );
 
         imageUrl = uploadResponse.data.imageUrl;
+        toast.success("Image uploaded successfully!"); // Toast for image upload success
       }
 
-      // Update the user's profile in the backend (bio, dob, profile picture)
+      // Update the user's profile in the backend
       await axios.put(
         `http://localhost:5001/api/users/${decoded.id}`,
         {
           fullName: userData?.fullName,
           email: userData?.email,
           bio,
-          dob, // Save updated DOB
+          dob,
           profilePicture: imageUrl,
         },
         {
@@ -108,14 +100,13 @@ const ProfileSection: React.FC = () => {
         }
       );
 
-      setProfileSaveStatus("Profile updated successfully!");
-      toast.success("Profile updated successfully!");
+      toast.success("Profile updated  successfully!");
+      window.location.reload(); // Reload the page to refresh data
     } catch (error) {
       console.error("Failed to update profile:", error);
-      setProfileSaveStatus("Failed to update profile.");
       toast.error("Failed to update profile.");
     } finally {
-      setIsSavingProfile(false); // Reset loading state
+      setIsSavingProfile(false);
     }
   };
 
@@ -196,8 +187,8 @@ const ProfileSection: React.FC = () => {
               </label>
               <input
                 type="date"
-                value={dob} // Bind DOB state
-                onChange={(e) => setDob(e.target.value)} // Update DOB state on change
+                value={dob}
+                onChange={(e) => setDob(e.target.value)}
                 className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary font-primary text-textPrimary"
               />
             </div>
@@ -210,9 +201,6 @@ const ProfileSection: React.FC = () => {
             >
               {isSavingProfile ? "Saving..." : "Save Profile"}
             </button>
-            {profileSaveStatus && (
-              <p className="text-success">{profileSaveStatus}</p>
-            )}
           </>
         )}
       </div>

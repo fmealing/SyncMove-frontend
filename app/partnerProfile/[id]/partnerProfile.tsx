@@ -89,8 +89,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
   }, [params.id]);
 
   const checkConnectionLimitAndMatch = async () => {
-    // if (loggedInUser.connections.length >= loggedInUser.connectionLimit) {
-    if (loggedInUser.connections.length >= 10) {
+    if (loggedInUser.connections.length >= loggedInUser.connectionLimit) {
       setShowLimitModal(true);
     } else {
       startMatch();
@@ -289,23 +288,25 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
           Availability
         </h3>
         <div className="flex items-center justify-center">
-          {partner.availability?.timeOfDay?.map((time, index) => (
-            <div
-              key={index}
-              className={`flex flex-col w-1/2 items-center p-8 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 ${
-                time === "morning"
-                  ? "bg-gradient-to-r from-yellow-300 to-yellow-500 text-yellow-900"
-                  : time === "evening"
-                  ? "bg-gradient-to-r from-purple-500 to-purple-700 text-purple-100"
-                  : "bg-gradient-to-r from-blue-400 to-blue-600 text-blue-100"
-              }`}
-            >
-              <FaClock className="text-3xl mb-4" />
-              <p className="text-xl font-semibold capitalize tracking-wide">
-                {time}
-              </p>
-            </div>
-          ))}
+          {partner.availability?.timeOfDay?.map(
+            (time: string, index: number) => (
+              <div
+                key={index}
+                className={`flex flex-col w-1/2 items-center p-8 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 ${
+                  time === "morning"
+                    ? "bg-gradient-to-r from-yellow-300 to-yellow-500 text-yellow-900"
+                    : time === "evening"
+                    ? "bg-gradient-to-r from-purple-500 to-purple-700 text-purple-100"
+                    : "bg-gradient-to-r from-blue-400 to-blue-600 text-blue-100"
+                }`}
+              >
+                <FaClock className="text-3xl mb-4" />
+                <p className="text-xl font-semibold capitalize tracking-wide">
+                  {time}
+                </p>
+              </div>
+            )
+          )}
         </div>
       </div>
 
