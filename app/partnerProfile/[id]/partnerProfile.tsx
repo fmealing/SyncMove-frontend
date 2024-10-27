@@ -14,6 +14,7 @@ import LoadingScreen from "@/app/components/LoadingScreen";
 import { calculateAgeFromDob } from "@/app/utils/calculateAgeFromDob";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { deleteMatch, getMatchId } from "@/app/utils/match";
 
 // Calculate age from date of birth
 const calculateAge = (dob: string) => {
@@ -33,6 +34,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
   const [matchScore, setMatchScore] = useState<number | null>(null);
   const [age, setAge] = useState<number | null>(null); // Add age state
   const [showLimitModal, setShowLimitModal] = useState(false);
+  const [matchId, setMatchId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchLoggedInUserProfile = async () => {
@@ -72,14 +74,23 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
       }
     };
 
+    const fetchMatchId = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const foundMatchId = await getMatchId(params.id, token);
+        setMatchId(foundMatchId);
+      }
+    };
+
     // Fetch both logged-in user profile and partner's details
     fetchLoggedInUserProfile();
     fetchPartner();
+    fetchMatchId();
   }, [params.id]);
 
   const checkConnectionLimitAndMatch = async () => {
     // if (loggedInUser.connections.length >= loggedInUser.connectionLimit) {
-    if (loggedInUser.connections.length >= 1) {
+    if (loggedInUser.connections.length >= 10) {
       setShowLimitModal(true);
     } else {
       startMatch();
@@ -146,6 +157,9 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
         }
       );
 
+      console.log("Match response: ", matchResponse.data.match._id);
+      setMatchId(matchResponse.data.match._id);
+
       if (matchResponse.status === 201) {
         try {
           const notificationResponse = await axios.post(
@@ -175,6 +189,18 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
       }
     } catch (error) {
       setMatchStatus("Failed to create match or send notification.");
+    }
+  };
+
+  const handleDeleteMatch = async () => {
+    if (partner && matchId) {
+      // Ensure partner and matchId exist
+      try {
+        await deleteMatch(matchId);
+        setMatchStatus(null); // Update match status or any other state as needed
+      } catch (error) {
+        toast.error("Failed to delete match.");
+      }
     }
   };
 
@@ -297,6 +323,15 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
         >
           <FaCalendarAlt /> Schedule Workout
         </Link>
+        {partner && matchId && (
+          <button
+            onClick={handleDeleteMatch}
+            // onClick={() => console.log("Delete match")}
+            className="flex justify-center items-center gap-2 bg-red-600 text-white font-semibold px-4 py-2 rounded-full hover:bg-red-700 transition-shadow duration-300 text-xl"
+          >
+            <FaRegCircleXmark /> Delete Match
+          </button>
+        )}
       </div>
       {/* Modal for Connection Limit */}
       {showLimitModal && (

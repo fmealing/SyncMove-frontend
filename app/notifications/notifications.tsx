@@ -79,7 +79,7 @@ const Notifications = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      // deleteNotification(notificationId); // Delete the notification after accepting
+      deleteNotification(notificationId); // Delete the notification after accepting
       toast.success("Match request accepted!");
       window.location.href = `/dashboard`;
     } catch (error) {

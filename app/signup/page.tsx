@@ -18,6 +18,7 @@ const SignupPage = () => {
     password: "",
     general: "",
   });
+  const [termsAccepted, setTermsAccepted] = useState(false); // New state for checkbox
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -161,10 +162,33 @@ const SignupPage = () => {
             </button>
           </div>
 
+          {/* Terms and Conditions Checkbox */}
+          <div className="flex items-start space-x-2">
+            <input
+              type="checkbox"
+              checked={termsAccepted}
+              onChange={() => setTermsAccepted((prev) => !prev)}
+              className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-primary"
+            />
+            <p className="text-sm text-gray-700">
+              I agree to the{" "}
+              <Link href="/termsAndConditions">
+                <span className="text-primary hover:underline font-semibold">
+                  Terms and Conditions
+                </span>
+              </Link>
+            </p>
+          </div>
+
           {/* Sign Up Button */}
           <button
             type="submit"
-            className="w-1/2 flex items-center justify-center gap-2 text-white bg-primary rounded-full px-4 py-2 hover:bg-primaryDark transition"
+            className={`w-1/2 flex items-center justify-center gap-2 text-white bg-primary rounded-full px-4 py-2 transition ${
+              termsAccepted
+                ? "hover:bg-primaryDark"
+                : "opacity-50 cursor-not-allowed"
+            }`}
+            disabled={!termsAccepted}
           >
             <FaUserPlus />
             Sign Up
