@@ -6,6 +6,7 @@
 import React from "react";
 import { FaCheck, FaTimes, FaStar } from "react-icons/fa";
 import Link from "next/link";
+import upgradePlan from "../utils/planUpgrade";
 
 const PricingPage: React.FC = () => {
   const freeFeatures = [
@@ -93,7 +94,10 @@ const PricingPage: React.FC = () => {
           </ul>
 
           <Link href="/signup">
-            <button className="bg-primary text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-primaryDark transition mt-6">
+            <button
+              onClick={() => upgradePlan("growth")}
+              className="bg-primary text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-primaryDark transition mt-6"
+            >
               Get Started for Free
             </button>
           </Link>
@@ -126,8 +130,11 @@ const PricingPage: React.FC = () => {
               </li>
             ))}
           </ul>
-          <Link href="/signup">
-            <button className="bg-actionAmber text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-yellow-500 transition mt-6">
+          <Link href="/dashboard">
+            <button
+              onClick={() => upgradePlan("growth")}
+              className="bg-actionAmber text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-yellow-500 transition mt-6"
+            >
               Unlock Full Potential
             </button>
           </Link>
@@ -164,8 +171,11 @@ const PricingPage: React.FC = () => {
               </li>
             ))}
           </ul>
-          <Link href="/signup">
-            <button className="bg-primary text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-primaryDark transition mt-6">
+          <Link href="/dashboard">
+            <button
+              onClick={() => upgradePlan("pro")}
+              className="bg-primary text-white font-primary text-lg px-8 py-3 rounded-full hover:bg-primaryDark transition mt-6"
+            >
               Go Pro
             </button>
           </Link>
