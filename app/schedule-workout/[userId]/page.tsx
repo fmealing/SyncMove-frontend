@@ -1,5 +1,3 @@
-// TODO: Implement the DatePicker and TimeSelector components
-
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
@@ -8,6 +6,8 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import toast from "react-hot-toast";
 import LoadingScreen from "@/app/components/LoadingScreen";
+import DatePicker from "@/app/components/DatePicker";
+import TimeSelector from "@/app/components/TimeSelector";
 
 interface Partner {
   fullName: string;
@@ -41,33 +41,23 @@ const ScheduleWorkoutPage = () => {
     return null;
   }
 
-  const handleDateChange = (date: string) => {
-    setSelectedDate(date);
-  };
-
-  const handleTimeChange = (time: string) => {
-    setSelectedTime(time);
-  };
-
-  // Async function to fetch partner data
-  const fetchPartnerData = async () => {
-    try {
-      console.log("partnerResponse called. User ID: ", userId);
-      const response = await axios.get(
-        `http://localhost:5001/api/users/${userId}`
-      );
-      setPartner(response.data);
-    } catch (error) {
-      console.error("Error fetching partner data:", error);
-      toast.error("Failed to fetch partner data. Please try again.");
-    }
-  };
-
-  // UseEffect to load partner data on page load
+  // Fetch partner data on mount
   useEffect(() => {
+    const fetchPartnerData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5001/api/users/${userId}`
+        );
+        setPartner(response.data);
+      } catch (error) {
+        console.error("Error fetching partner data:", error);
+        toast.error("Failed to fetch partner data. Please try again.");
+      }
+    };
     fetchPartnerData();
   }, [userId]);
 
+  // Confirm activity submission
   const handleConfirmActivity = async () => {
     if (!selectedDate || !selectedTime || !location || !customMessage) {
       toast.error("Please select a date, time, location, and enter a message.");
@@ -75,16 +65,11 @@ const ScheduleWorkoutPage = () => {
     }
 
     try {
-      if (!partner) {
-        toast.error("Partner data not found. Please try again.");
-        return;
-      }
-
       setLoading(true);
       const token = localStorage.getItem("token");
 
       if (!token) {
-        toast.error("You must be logged in to schedule a workout.");
+        toast.error("User not authenticated. Please log in and try again.");
         return;
       }
 
@@ -95,11 +80,11 @@ const ScheduleWorkoutPage = () => {
         "http://localhost:5001/api/activities",
         {
           activityType: "Workout",
-          description: `${customMessage} - Scheduled ${selectedTime} workout with ${partner.fullName} at ${location}`,
+          description: `${customMessage} - Scheduled ${selectedTime} workout with ${partner?.fullName} at ${location}`,
           dateString: selectedDate,
           timeOfDay: selectedTime,
           participants: [userId, myUserId],
-          location, // Send the location string
+          location,
         },
         {
           headers: {
@@ -115,8 +100,6 @@ const ScheduleWorkoutPage = () => {
         toast.error("Failed to schedule the workout. Please try again.");
       }
     } catch (error) {
-      console.error("Error scheduling activity:", error);
-      // If error status is 400 it means that users haven't matched (other user hasn't accepted it)
       const err = error as statusError;
       if (err.response.status === 400) {
         toast.error(
@@ -147,11 +130,11 @@ const ScheduleWorkoutPage = () => {
         </p>
 
         <div className="flex flex-col md:flex-row md:items-start md:space-x-8 space-y-6 md:space-y-0 w-full">
-          <div className="flex-1">
-            <label className="text-lg text-gray-700 font-semibold">
-              Choose a Date:
-            </label>
-            {/* <DatePicker setDate={handleDateChange} /> */}
+          <div className="flex-1 pb-4">
+            <DatePicker
+              selectedDate={selectedDate}
+              handleDateChange={setSelectedDate}
+            />
             {selectedDate && (
               <p className="text-gray-700 mt-2">
                 Selected Date: {selectedDate}
@@ -160,10 +143,10 @@ const ScheduleWorkoutPage = () => {
           </div>
 
           <div className="flex-1">
-            <label className="text-lg font-primary text-gray-700 font-semibold mb-6">
-              Choose a Time:
-            </label>
-            {/* <TimeSelector setTime={handleTimeChange} /> */}
+            <TimeSelector
+              selectedTime={selectedTime || ""}
+              handleTimeSelect={setSelectedTime}
+            />
             {selectedTime && (
               <p className="text-gray-700 mt-2">
                 Selected Time: {selectedTime}
@@ -173,7 +156,7 @@ const ScheduleWorkoutPage = () => {
         </div>
 
         {/* Input Field For Location String */}
-        <div className="flex-1">
+        <div className="flex-1 mt-4">
           <label className="text-lg text-gray-700 font-semibold">
             Enter Location:
           </label>

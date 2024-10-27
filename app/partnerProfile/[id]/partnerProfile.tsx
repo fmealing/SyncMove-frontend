@@ -327,7 +327,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
               {/* Upgrade Button */}
               <Link
                 href="/pricing"
-                className="px-5 py-3 text-lg font-bold text-white bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full shadow-lg hover:shadow-2xl transform hover:scale-105 flex items-center justify-center gap-2 transition-all duration-200 ease-in-out"
+                className="px-5 py-3 text-lg font-bold text-white bg-gradient -to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full shadow-lg hover:shadow-2xl transform hover:scale-105 flex items-center justify-center gap-2 transition-all duration-200 ease-in-out"
               >
                 <FaRocket className="animate-bounce" />
                 Unlock Premium Access
