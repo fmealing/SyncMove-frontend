@@ -4,51 +4,21 @@ import { FaBell, FaEnvelope, FaUser, FaUserAstronaut } from "react-icons/fa";
 import NavigationButton from "../components/dashboard/NavigationButton";
 import PartnerCard from "../components/dashboard/PartnerCard";
 import Section from "../components/dashboard/Section";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
-import { fetchCityFromCoordinates } from "../utils/geoCoding";
-import Link from "next/link";
+import SEO from "../components/SEO";
 import LoadingScreen from "../components/LoadingScreen";
 import ActivityCard from "../components/dashboard/ActivityCard";
-import SEO from "../components/SEO";
+import { jwtDecode } from "jwt-decode";
+import { Partner, UserProfile } from "@/types/types";
+import { fetchCityFromCoordinates } from "../utils/geoCoding";
+import {
+  fetchUserProfile,
+  fetchSuggestedPartners,
+  fetchPendingPartners,
+  fetchMatchedPartners,
+} from "../services/userService";
+import Link from "next/link";
 
-// Define types
-interface Partner {
-  fullName: string;
-  profilePicture: string;
-  bio: string;
-  location?: {
-    type: string;
-    coordinates: [number, number];
-  };
-  matchScore: number;
-  _id: string;
-  gender: string;
-}
-
-interface UserProfile {
-  fullName: string;
-  location: {
-    type: string;
-    coordinates: [number, number];
-  };
-  activityType: string;
-  fitnessGoals: string;
-  experienceLevel: number;
-  dob: string;
-  gender: string;
-}
-
-// Calculate age from date of birth
-const calculateAge = (dob: string) => {
-  if (!dob) return null;
-  const birthDate = new Date(dob);
-  const ageDifMs = Date.now() - birthDate.getTime();
-  const ageDate = new Date(ageDifMs);
-  return Math.abs(ageDate.getUTCFullYear() - 1970);
-};
-
-const Dashboard = () => {
+const Dashboard: React.FC = () => {
   const [suggestedPartners, setSuggestedPartners] = useState<Partner[]>([]);
   const [pendingPartners, setPendingPartners] = useState<Partner[]>([]);
   const [matchedPartners, setMatchedPartners] = useState<Partner[]>([]);
@@ -58,144 +28,46 @@ const Dashboard = () => {
   const [userCity, setUserCity] = useState("");
 
   useEffect(() => {
-    const checkAuthAndRedirect = async () => {
+    const checkAuthAndLoadData = async () => {
       const token = localStorage.getItem("token");
-
       if (!token) {
         window.location.href = "/login";
         return;
       }
 
       try {
-        const decodedToken = jwtDecode<{ exp: number }>(token);
-        const currentTime = Math.floor(Date.now() / 1000);
-
-        if (decodedToken.exp < currentTime) {
+        const decoded = jwtDecode<{ id: string; exp: number }>(token);
+        if (decoded.exp < Math.floor(Date.now() / 1000)) {
           localStorage.removeItem("token");
           window.location.href = "/login";
           return;
         }
 
-        await fetchUserProfile(token);
-      } catch (error) {
-        console.error("Token validation failed:", error);
-        window.location.href = "/login";
-      }
-    };
-
-    const fetchUserProfile = async (token: string) => {
-      const decoded = jwtDecode<{ id: string }>(token);
-      const id = decoded.id;
-
-      try {
-        const response = await axios.get(
-          `http://localhost:5001/api/users/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const userProfile: UserProfile = response.data;
-        setUserProfile(userProfile);
-        setUsername(userProfile.fullName);
-
-        const age = calculateAge(userProfile.dob);
+        const profile = await fetchUserProfile(decoded.id, token);
+        setUserProfile(profile);
+        setUsername(profile.fullName);
 
         const city = await fetchCityFromCoordinates(
-          userProfile.location.coordinates[1],
-          userProfile.location.coordinates[0]
+          profile.location.coordinates[1],
+          profile.location.coordinates[0]
         );
         setUserCity(city || "Unknown");
 
-        await fetchSuggestedPartners(userProfile, age);
-        await fetchPendingPartners(id, token);
-        await fetchMatchedPartners(id, token);
+        setSuggestedPartners(await fetchSuggestedPartners(profile, token));
+        setPendingPartners(await fetchPendingPartners(decoded.id, token));
+        setMatchedPartners(await fetchMatchedPartners(decoded.id, token));
+
         setLoading(false);
       } catch (error) {
-        console.error("Failed to fetch user profile: ", error);
+        console.error("Error loading dashboard data:", error);
         setLoading(false);
       }
     };
 
-    const fetchSuggestedPartners = async (
-      userProfile: UserProfile,
-      age: number | null
-    ) => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
-      try {
-        const response = await axios.post(
-          "http://localhost:5001/api/users/suggested-partners",
-          {
-            location: userProfile.location.coordinates,
-            preferences: [
-              userProfile.activityType,
-              userProfile.fitnessGoals,
-              userProfile.experienceLevel,
-              age,
-            ],
-            includeAI: false,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        // Sort the suggested partners by match score and select the top 3
-        const sortedPartners = response.data
-          .sort((a: Partner, b: Partner) => b.matchScore - a.matchScore)
-          .slice(0, 3);
-
-        setSuggestedPartners(sortedPartners);
-      } catch (error) {
-        console.error("Failed to fetch suggested partners: ", error);
-      }
-    };
-
-    const fetchPendingPartners = async (userId: string, token: string) => {
-      try {
-        const response = await axios.post(
-          "http://localhost:5001/api/users/pending-partners",
-          { userId },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setPendingPartners(response.data);
-      } catch (error) {
-        console.error("Failed to fetch pending partners: ", error);
-      }
-    };
-
-    const fetchMatchedPartners = async (userId: string, token: string) => {
-      try {
-        const response = await axios.post(
-          "http://localhost:5001/api/users/matched-partners",
-          { userId },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setMatchedPartners(response.data);
-      } catch (error) {
-        console.error("Failed to fetch matched partners: ", error);
-      }
-    };
-
-    checkAuthAndRedirect();
+    checkAuthAndLoadData();
   }, []);
 
-  if (loading) {
-    return <LoadingScreen />;
-  }
+  if (loading) return <LoadingScreen />;
 
   return (
     <>
@@ -208,8 +80,6 @@ const Dashboard = () => {
         <h1 className="text-textPrimary font-primary text-h2 font-semibold">
           Welcome back, {username}!
         </h1>
-
-        {/* Navigation Buttons */}
         <div className="flex flex-col gap-4 max-w-56 pb-10">
           <NavigationButton
             label="Notifications"
@@ -227,88 +97,33 @@ const Dashboard = () => {
             href="/settings"
           />
           <NavigationButton
-            label="matching"
+            label="Matching"
             Icon={FaUserAstronaut}
             href="/matching"
           />
         </div>
-
-        {/* Suggested Partners */}
-        {suggestedPartners.length > 0 ? (
-          <div>
-            <Section title="Top 3 Suggested Partners">
-              {suggestedPartners.map((partner, index) => (
-                <PartnerCard key={index} {...partner} />
-              ))}
-            </Section>
-            {/* Callout to explore more partners */}
-            <div className="mt-4 text-center">
-              <p className="text-base text-gray-600 font-primary">
-                Looking for more options? Visit the{" "}
-                <Link href="/matching">
-                  <div className="text-primary font-semibold hover:underline">
-                    Matching page
-                  </div>
-                </Link>{" "}
-                to filter by gender and find partners who best meet your
-                preferences!
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center text-center space-y-4 p-10">
-            <img
-              src="/svg/chatting-illustration.svg"
-              alt="No Suggested Partners"
-              className="w-1/3 md:w-1/4"
-            />
-            <p className="text-lg text-textPrimary font-primary">
-              No Suggested Partners. Complete onboarding in Settings
-            </p>
-          </div>
-        )}
-
-        {/* Debugging button */}
-        {/* <button
-        onClick={() => console.log(userProfile)}
-        className="text-lg font-primary px-4 py-2 text-white bg-primary rounded-full"
-        >
-        Debugging button. Delete later.
-      </button> */}
-
-        {/* This is where the activities go */}
+        <Section title="Top 3 Suggested Partners">
+          {suggestedPartners.map((partner, index) => (
+            <PartnerCard key={index} {...partner} />
+          ))}
+        </Section>
+        <Link href="/matching" className="mt-4 text-center">
+          <p className="text-base text-gray-600 font-primary">
+            Explore more on the Matching page!
+          </p>
+        </Link>
         <ActivityCard />
-
-        {/* Matched Partners */}
         {matchedPartners.length > 0 && (
           <Section title="Matched Partners">
             {matchedPartners.map((partner, index) => (
-              <PartnerCard
-                key={index}
-                fullName={partner.fullName}
-                profilePicture={partner.profilePicture}
-                bio={partner.bio}
-                location={partner.location}
-                _id={partner._id}
-                gender={partner.gender}
-              />
+              <PartnerCard key={index} {...partner} />
             ))}
           </Section>
         )}
-
-        {/* Pending Partners */}
         {pendingPartners.length > 0 && (
           <Section title="Pending Partners">
             {pendingPartners.map((partner, index) => (
-              <PartnerCard
-                key={index}
-                fullName={partner.fullName}
-                profilePicture={partner.profilePicture}
-                bio={partner.bio}
-                location={partner.location}
-                _id={partner._id}
-                gender={partner.gender}
-              />
+              <PartnerCard key={index} {...partner} />
             ))}
           </Section>
         )}
