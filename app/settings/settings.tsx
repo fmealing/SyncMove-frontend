@@ -1,29 +1,11 @@
 "use client";
-import Link from "next/link";
-import React, { useState } from "react";
-import {
-  FaCog,
-  FaEdit,
-  FaTrashAlt,
-  FaSave,
-  FaUpload,
-  FaEnvelope,
-  FaBell,
-} from "react-icons/fa";
+import React from "react";
+import { FaCog } from "react-icons/fa";
 import ProfileSection from "../components/Settings/ProfileSection";
 import FitnessPreferences from "../components/Settings/FitnessPreferences";
 import NotificationPreferences from "../components/Settings/NotificationPreferences";
 import PrivacyPreferences from "../components/Settings/PrivacyPreferences";
 import SEO from "../components/SEO";
-
-// Types declaration
-type NotificationSettings = {
-  notifications: boolean;
-  messages: boolean;
-  reminders: boolean;
-};
-
-type NotificationSettingKey = "notifications" | "messages" | "reminders";
 
 const Settings: React.FC = () => {
   return (

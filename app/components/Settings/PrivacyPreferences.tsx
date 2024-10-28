@@ -30,7 +30,7 @@ const PrivacyPreferences: React.FC = () => {
 
         const data = response.data.privacyPreferences;
         setVisibility(data.visibility || "Public");
-        setShareLocation(data.shareLocation);
+        setShareLocation(data.visibility !== "Private" && data.shareLocation);
         setShareActivity(data.shareActivity);
       } catch (error) {
         console.error("Failed to fetch privacy preferences:", error);
@@ -66,11 +66,18 @@ const PrivacyPreferences: React.FC = () => {
         }
       );
 
-      console.log("Privacy preferences saved successfully");
       toast.success("Privacy preferences saved successfully");
     } catch (error) {
       console.error("Failed to save privacy preferences:", error);
       toast.error("Failed to save privacy preferences");
+    }
+  };
+
+  // Update visibility and adjust shareLocation if Private is selected
+  const handleVisibilityChange = (value: string) => {
+    setVisibility(value);
+    if (value === "Private") {
+      setShareLocation(false);
     }
   };
 
@@ -88,7 +95,7 @@ const PrivacyPreferences: React.FC = () => {
         <select
           className="w-full py-2 px-4 rounded-full border border-gray-300 focus:outline-none focus:border-primary text-textPrimary font-primary"
           value={visibility}
-          onChange={(e) => setVisibility(e.target.value)}
+          onChange={(e) => handleVisibilityChange(e.target.value)}
         >
           <option value="Public">Public</option>
           <option value="Friends">Friends</option>
@@ -104,6 +111,7 @@ const PrivacyPreferences: React.FC = () => {
             className="checkbox checkbox-primary rounded-full"
             checked={shareLocation}
             onChange={(e) => setShareLocation(e.target.checked)}
+            disabled={visibility === "Private"} // Disable if Private
           />
           Share Location
         </label>

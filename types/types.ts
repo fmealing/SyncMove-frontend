@@ -22,4 +22,9 @@ export interface UserProfile {
   experienceLevel: number;
   dob: string;
   gender: string;
+  privacyPreferences: {
+    shareLocation: boolean;
+    shareActivityType: boolean;
+    visibility: string;
+  };
 }

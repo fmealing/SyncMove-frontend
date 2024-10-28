@@ -21,10 +21,15 @@ export const fetchSuggestedPartners = async (
   token: string
 ) => {
   const age = calculateAge(userProfile.dob);
+
+  const location = userProfile.privacyPreferences.shareLocation
+    ? userProfile.location.coordinates
+    : null;
+
   const response = await axios.post(
     `${API_URL}/suggested-partners`,
     {
-      location: userProfile.location.coordinates,
+      location,
       preferences: [
         userProfile.activityType,
         userProfile.fitnessGoals,

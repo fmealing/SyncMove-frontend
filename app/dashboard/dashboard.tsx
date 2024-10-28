@@ -81,19 +81,12 @@ const Dashboard: React.FC = () => {
           Welcome back, {username}!
         </h1>
         {/* Debugging button */}
-        {/* <button
-          onClick={() =>
-            console.log(
-              "User Profile",
-              userProfile,
-              "Suggested Partners",
-              suggestedPartners
-            )
-          }
+        <button
+          onClick={() => console.log("User Profile", userProfile)}
           className="text-lg px-4 py-2 text-white bg-secondary rounded-full"
         >
           Debugging Button
-        </button> */}
+        </button>
         <div className="flex flex-col gap-4 max-w-56 pb-10">
           <NavigationButton
             label="Notifications"
