@@ -6,6 +6,7 @@ import LoadingScreen from "../components/LoadingScreen";
 import PartnerCard from "../components/matching/PartnerCard";
 import Pagination from "../components/matching/Pagination";
 import { calculateAge } from "../utils/helpers";
+import SEO from "../components/SEO";
 
 const Matching: React.FC = () => {
   const [partners, setPartners] = useState<any[]>([]);
@@ -80,40 +81,47 @@ const Matching: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-8 min-h-screen">
-      <h2 className="text-3xl font-bold mb-4 text-textPrimary">
-        Find Your Workout Partner
-      </h2>
-      <label className="text-lg font-semibold text-textPrimary">
-        Filter by Gender:
-      </label>
-      <select
-        value={selectedGender}
-        onChange={(e) => setSelectedGender(e.target.value)}
-        className="border border-textSecondary rounded-lg px-4 py-2 text-textPrimary"
-      >
-        <option value="any">Any</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-        <option value="non-binary">Non-binary</option>
-      </select>
-
-      {loading ? (
-        <LoadingScreen />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {partners.map((partner) => (
-            <PartnerCard key={partner._id} partner={partner} />
-          ))}
-        </div>
-      )}
-
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
+    <>
+      <SEO
+        title="Find Your Workout Partner | SyncMove Matching"
+        description="Connect with workout partners near you through SyncMove's Matching page. Filter by gender, interests, and availability to find the ideal fitness buddy."
+        keywords="workout partner, fitness buddy, SyncMove, matching, fitness partner, gender filter"
       />
-    </div>
+      <div className="p-6 space-y-8 min-h-screen">
+        <h2 className="text-3xl font-bold mb-4 text-textPrimary">
+          Find Your Workout Partner
+        </h2>
+        <label className="text-lg font-semibold text-textPrimary">
+          Filter by Gender:
+        </label>
+        <select
+          value={selectedGender}
+          onChange={(e) => setSelectedGender(e.target.value)}
+          className="border border-textSecondary rounded-lg px-4 py-2 text-textPrimary"
+        >
+          <option value="any">Any</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="non-binary">Non-binary</option>
+        </select>
+
+        {loading ? (
+          <LoadingScreen />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {partners.map((partner) => (
+              <PartnerCard key={partner._id} partner={partner} />
+            ))}
+          </div>
+        )}
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      </div>
+    </>
   );
 };
 

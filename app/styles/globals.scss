@@ -261,15 +261,28 @@ button {
   }
 }
 
-.highlight {
-  animation: glow 2s infinite alternate;
+.highlight-1 {
+  animation: glow1 2s infinite alternate;
 }
 
-@keyframes glow {
+.highlight-2 {
+  animation: glow2 2s infinite alternate;
+}
+
+@keyframes glow1 {
   0% {
-    box-shadow: 0 0 10px rgba(255, 183, 0, 0.5);
+    box-shadow: 0 0 10px rgba(255, 183, 0, 0.2);
   }
   100% {
     box-shadow: 0 0 20px rgba(255, 183, 0, 1);
+  }
+}
+
+@keyframes glow2 {
+  0% {
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(0, 123, 255, 1);
   }
 }

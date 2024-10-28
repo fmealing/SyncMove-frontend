@@ -111,7 +111,7 @@ const PricingPage: React.FC = () => {
         </div>
 
         {/* Growth Plan - Most Popular */}
-        <div className="relative bg-white rounded-lg shadow-lg p-8 text-center space-y-6 border border-actionAmber transform scale-105 hover:scale-110 transition-transform highlight">
+        <div className="relative bg-white rounded-lg shadow-lg p-8 text-center space-y-6 border border-actionAmber transform scale-105 hover:scale-110 transition-transform highlight-1">
           <div className="bg-actionAmber text-white py-1 px-4 rounded-full text-sm uppercase font-bold font-['Roboto']">
             Most Popular
           </div>
@@ -119,7 +119,7 @@ const PricingPage: React.FC = () => {
             Growth Plan
           </h2>
           <p className="text-xl font-bold text-gray-900">
-            <span className="line-through text-gray-400">£30</span> £25 -
+            <span className="line-through text-gray-400">£35</span> £25 -
             One-Time
           </p>
           <p className="text-gray-500">Perfect for active users</p>
@@ -149,7 +149,7 @@ const PricingPage: React.FC = () => {
         </div>
 
         {/* Pro Plan */}
-        <div className="bg-white rounded-lg shadow-lg p-8 text-center space-y-6 border border-gray-200 transition-transform transform hover:scale-105">
+        <div className="bg-white rounded-lg shadow-lg p-8 text-center space-y-6 border border-primary transition-transform transform hover:scale-105 highlight-2">
           <div className="border-2 border-blue-500 text-blue-500 py-1 px-4 rounded-full text-sm uppercase font-bold">
             Pro Plan
           </div>
@@ -157,7 +157,7 @@ const PricingPage: React.FC = () => {
             Pro Plan
           </h2>
           <p className="text-xl font-bold text-gray-900">
-            <span className="line-through text-gray-400">£60</span> £50 -
+            <span className="line-through text-gray-400">£70</span> £50 -
             One-Time
           </p>
           <p className="text-gray-500">Ideal for power users</p>

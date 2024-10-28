@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import LoadingScreen from "@/app/components/LoadingScreen";
 import DatePicker from "@/app/components/DatePicker";
 import TimeSelector from "@/app/components/TimeSelector";
+import SEO from "@/app/components/SEO";
 
 interface Partner {
   fullName: string;
@@ -118,71 +119,78 @@ const ScheduleWorkoutPage = () => {
   }
 
   return (
-    <div className="scheduling-background min-h-screen">
-      <div className="scheduling-content">
-        <h1 className="text-textPrimary text-h2 font-primary font-semibold p-4">
-          Schedule a Workout
-        </h1>
-        <p className="text-center font-secondary text-textSecondary text-lg mb-6">
-          Welcome! Here you can schedule a workout with your partner. Please
-          remember to be respectful, arrive on time, and communicate any changes
-          to your partner.
-        </p>
+    <>
+      <SEO
+        title="Schedule Workout | SyncMove"
+        description="Schedule a workout session with your chosen partner. Choose a date, time, location, and send a custom message to coordinate effectively."
+        keywords="schedule workout, workout partner, fitness activities, SyncMove"
+      />
+      <div className="scheduling-background min-h-screen">
+        <div className="scheduling-content">
+          <h1 className="text-textPrimary text-h2 font-primary font-semibold p-4">
+            Schedule a Workout
+          </h1>
+          <p className="text-center font-secondary text-textSecondary text-lg mb-6">
+            Welcome! Here you can schedule a workout with your partner. Please
+            remember to be respectful, arrive on time, and communicate any
+            changes to your partner.
+          </p>
 
-        <div className="flex flex-col md:flex-row md:items-start md:space-x-8 space-y-6 md:space-y-0 w-full">
-          <div className="flex-1 pb-4">
-            <DatePicker
-              selectedDate={selectedDate}
-              handleDateChange={setSelectedDate}
+          <div className="flex flex-col md:flex-row md:items-start md:space-x-8 space-y-6 md:space-y-0 w-full">
+            <div className="flex-1 pb-4">
+              <DatePicker
+                selectedDate={selectedDate}
+                handleDateChange={setSelectedDate}
+              />
+            </div>
+
+            <div className="flex-1">
+              <TimeSelector
+                selectedTime={selectedTime || ""}
+                handleTimeSelect={setSelectedTime}
+              />
+            </div>
+          </div>
+
+          {/* Input Field For Location String */}
+          <div className="flex-1 mt-4">
+            <label className="text-lg text-textPrimary font-semibold font-primary">
+              Enter Location:
+            </label>
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="w-full mt-2 px-4 py-2 font-primary border border-textSecondary rounded-md focus:outline-none focus:border-primary"
+              placeholder="Enter location (e.g., Gym Group, Selly Oak)"
             />
           </div>
 
-          <div className="flex-1">
-            <TimeSelector
-              selectedTime={selectedTime || ""}
-              handleTimeSelect={setSelectedTime}
+          {/* Input Field For Custom Message */}
+          <div className="flex-1 mt-4">
+            <label className="text-lg text-textPrimary font-semibold font-primary">
+              Enter a Message to Your Partner:
+            </label>
+            <textarea
+              value={customMessage}
+              onChange={(e) => setCustomMessage(e.target.value)}
+              className="w-full mt-2 px-4 py-2 font-primary border border-textSecondary rounded-md focus:outline-none focus:border-primary"
+              placeholder="Enter a custom message..."
             />
           </div>
-        </div>
 
-        {/* Input Field For Location String */}
-        <div className="flex-1 mt-4">
-          <label className="text-lg text-textPrimary font-semibold font-primary">
-            Enter Location:
-          </label>
-          <input
-            type="text"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="w-full mt-2 px-4 py-2 font-primary border border-textSecondary rounded-md focus:outline-none focus:border-primary"
-            placeholder="Enter location (e.g., Gym Group, Selly Oak)"
-          />
+          <button
+            className={`flex gap-2 items-center justify-center bg-primary text-white text-xl font-primary px-6 py-3 rounded-full mt-6 ${
+              loading ? "opacity-50" : ""
+            }`}
+            onClick={handleConfirmActivity}
+            disabled={loading}
+          >
+            <FaCheckCircle /> {loading ? "Scheduling..." : "Confirm Activity"}
+          </button>
         </div>
-
-        {/* Input Field For Custom Message */}
-        <div className="flex-1 mt-4">
-          <label className="text-lg text-textPrimary font-semibold font-primary">
-            Enter a Message to Your Partner:
-          </label>
-          <textarea
-            value={customMessage}
-            onChange={(e) => setCustomMessage(e.target.value)}
-            className="w-full mt-2 px-4 py-2 font-primary border border-textSecondary rounded-md focus:outline-none focus:border-primary"
-            placeholder="Enter a custom message..."
-          />
-        </div>
-
-        <button
-          className={`flex gap-2 items-center justify-center bg-primary text-white text-xl font-primary px-6 py-3 rounded-full mt-6 ${
-            loading ? "opacity-50" : ""
-          }`}
-          onClick={handleConfirmActivity}
-          disabled={loading}
-        >
-          <FaCheckCircle /> {loading ? "Scheduling..." : "Confirm Activity"}
-        </button>
       </div>
-    </div>
+    </>
   );
 };
 
