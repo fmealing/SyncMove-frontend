@@ -80,6 +80,20 @@ const Dashboard: React.FC = () => {
         <h1 className="text-textPrimary font-primary text-h2 font-semibold">
           Welcome back, {username}!
         </h1>
+        {/* Debugging button */}
+        <button
+          onClick={() =>
+            console.log(
+              "User Profile",
+              userProfile,
+              "Suggested Partners",
+              suggestedPartners
+            )
+          }
+          className="text-lg px-4 py-2 text-white bg-secondary rounded-full"
+        >
+          Debugging Button
+        </button>
         <div className="flex flex-col gap-4 max-w-56 pb-10">
           <NavigationButton
             label="Notifications"
@@ -109,9 +123,13 @@ const Dashboard: React.FC = () => {
         </Section>
         <Link href="/matching" className="mt-4 text-center">
           <p className="text-base text-gray-600 font-primary">
-            Explore more on the Matching page!
+            Looking for more options? Visit the{" "}
+            <span className="text-primary font-semibold">Matching page</span> to
+            find partners who best meet your preferences, <br /> including
+            gender filters for a comfortable workout experience.
           </p>
         </Link>
+
         <ActivityCard />
         {matchedPartners.length > 0 && (
           <Section title="Matched Partners">

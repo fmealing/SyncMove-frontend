@@ -1,3 +1,5 @@
+// This has to be changed as well
+
 import axios from "axios";
 import { UserProfile, Partner } from "@/types/types";
 import { calculateAge } from "../utils/helpers";
@@ -36,9 +38,14 @@ export const fetchSuggestedPartners = async (
     }
   );
 
-  return response.data
+  const suggestedPartners = response.data
+    .filter(
+      (partner: Partner) => !userProfile.connections.includes(partner._id)
+    )
     .sort((a: Partner, b: Partner) => b.matchScore - a.matchScore)
     .slice(0, 3);
+
+  return suggestedPartners;
 };
 
 export const fetchPendingPartners = async (userId: string, token: string) => {

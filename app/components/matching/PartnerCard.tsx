@@ -20,7 +20,7 @@ const PartnerCard: React.FC<{ partner: any }> = ({ partner }) => (
         Activity: {partner.activityType}
       </p>
       <p className="text-base text-textPrimary font-primary">
-        Match Score: {partner.matchScore}
+        Match Score: {(partner.matchScore * (100 / 72)).toFixed(1)}%
       </p>
       <Link
         href={`/partnerProfile/${partner._id}?matchScore=${partner.matchScore}`}

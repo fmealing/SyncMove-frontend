@@ -41,7 +41,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
 
   // Handle undefined matchScore
   const matchPercentage =
-    matchScore !== undefined ? (matchScore * (90 / 72)).toFixed(1) : "0";
+    matchScore !== undefined ? (matchScore * (100 / 72)).toFixed(1) : "0";
 
   // Determine color based on match percentage
   const matchColor =

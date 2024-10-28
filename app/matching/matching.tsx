@@ -23,6 +23,7 @@ const Matching: React.FC = () => {
     fetchData();
   }, [currentPage, selectedGender]);
 
+  // Step 1: Update fetchUserProfile to include connections array
   const fetchUserProfile = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -43,6 +44,7 @@ const Matching: React.FC = () => {
     }
   };
 
+  // Step 2: Filter out partners who are already connected before setting state
   const fetchPartners = async (page: number, profile: any) => {
     setLoading(true);
     try {
@@ -62,7 +64,13 @@ const Matching: React.FC = () => {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setPartners(response.data.partners);
+
+      // Filter out partners whose IDs are in the user's connections array
+      const filteredPartners = response.data.partners.filter(
+        (partner: any) => !profile.connections.includes(partner._id)
+      );
+
+      setPartners(filteredPartners);
       setTotalPages(response.data.totalPages);
       setLoading(false);
     } catch (error) {
