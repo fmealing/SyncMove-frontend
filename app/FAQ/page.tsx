@@ -22,12 +22,6 @@ const FeedbackAndFAQPage: React.FC = () => {
     setFeedback((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Feedback submitted", feedback);
-    // TODO: Implement API call to submit feedback
-  };
-
   return (
     <>
       <SEO
@@ -36,11 +30,7 @@ const FeedbackAndFAQPage: React.FC = () => {
         keywords="FAQ, feedback, SyncMove support, help, frequently asked questions, contact"
       />
       <div className="flex flex-col items-center w-full min-h-screen p-8 bg-lightGray faq-background">
-        <FeedbackForm
-          feedback={feedback}
-          onChange={handleInputChange}
-          onSubmit={handleSubmit}
-        />
+        <FeedbackForm feedback={feedback} onChange={handleInputChange} />
         <FAQAccordion />
       </div>
     </>
