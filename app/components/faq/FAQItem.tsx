@@ -8,11 +8,11 @@ interface FAQItemProps {
 const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => (
   <div className="collapse collapse-plus border border-gray-300 rounded-lg">
     <input type="checkbox" />
-    <div className="collapse-title text-lg font-primary text-textPrimary">
+    <div className="collapse-title text-lg font-['Roboto'] text-textPrimary">
       {question}
     </div>
     <div className="collapse-content">
-      <p className="text-textSecondary font-primary">{answer}</p>
+      <p className="text-textSecondary font-['Roboto']">{answer}</p>
     </div>
   </div>
 );

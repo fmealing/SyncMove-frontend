@@ -19,6 +19,7 @@ const SignupPage = () => {
     general: "",
   });
   const [termsAccepted, setTermsAccepted] = useState(false); // New state for checkbox
+  const [showModal, setShowModal] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -63,9 +64,11 @@ const SignupPage = () => {
         }
       );
 
-      const token = response.data.token;
-      localStorage.setItem("token", token);
-      window.location.href = "/onboarding";
+      // const token = response.data.token;
+      // localStorage.setItem("token", token);
+
+      // Show the modal to prompt email verification
+      setShowModal(true);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const backendError = error.response.data.error;
@@ -84,6 +87,26 @@ const SignupPage = () => {
         <h1 className="text-h2 font-primary text-textPrimary text-center font-semibold">
           Sign Up
         </h1>
+
+        {showModal && (
+          <div className="modal-background">
+            <div className="modal-content">
+              <h2 className="text-textPrimary text-lg font-primary">
+                Check Your Email
+              </h2>
+              <p className="text-textPrimary font-primary">
+                Please check your email to verify your account.
+              </p>
+              <button
+                className="modal-button"
+                onClick={() => setShowModal(false)}
+              >
+                Okay
+              </button>
+            </div>
+          </div>
+        )}
+
         <p className="text-center text-textSecondary font-primary">
           Create your account to get started
         </p>
