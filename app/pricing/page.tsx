@@ -1,22 +1,39 @@
+// This will have to be worked on in the future. Right now, it is just a placeholder since this is just the MVP
+
 "use client";
 import React, { useState } from "react";
 import { FaCheck, FaTimes, FaStar } from "react-icons/fa";
 import Link from "next/link";
-import upgradePlan from "../utils/planUpgrade";
-import PaymentModal from "../components/PaymentModal";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const PricingPage: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string>("");
 
-  const handleUpgradeClick = (planType: string) => {
-    setSelectedPlan(planType);
-    setShowModal(true); // Show modal to prompt user for payment
-  };
+  const handleUpgradeClick = async (planType: string) => {
+    try {
+      // Call backend API to upgrade user’s plan immediately
+      await axios.post(
+        "http://localhost:5001/api/users/upgrade-plan",
+        { planType },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure user is authenticated
+          },
+        }
+      );
 
-  const handleConfirmPayment = async () => {
-    setShowModal(false); // Hide modal
-    await upgradePlan(selectedPlan); // Call upgrade function with selected plan
+      // After upgrading, redirect to Stripe checkout
+      if (planType === "growth") {
+        window.location.href = "https://buy.stripe.com/5kAdUD92K2Gc2EUdQR";
+      } else if (planType === "pro") {
+        window.location.href = "https://buy.stripe.com/dR62bVdj094A4N2eUW";
+      }
+    } catch (error) {
+      console.error("Failed to upgrade plan:", error);
+      toast.error("Failed to upgrade plan. Please try again.");
+    }
   };
 
   const freeFeatures = [
@@ -197,14 +214,6 @@ const PricingPage: React.FC = () => {
           No hidden fees, no recurring charges. You pay once, enjoy forever.
         </p>
       </section>
-
-      {/* Payment Modal */}
-      <PaymentModal
-        showModal={showModal}
-        onClose={() => setShowModal(false)}
-        onConfirm={handleConfirmPayment}
-        planName={selectedPlan === "growth" ? "Growth Plan" : "Pro Plan"}
-      />
     </div>
   );
 };
