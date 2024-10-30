@@ -64,16 +64,26 @@ const SignupPage = () => {
         }
       );
 
-      // const token = response.data.token;
-      // localStorage.setItem("token", token);
+      console.log("Response data:", response.data);
 
-      // Show the modal to prompt email verification
+      const token = response.data.token;
+      if (token) {
+        localStorage.setItem("token", token); // Store token in localStorage if it exists
+      } else {
+        console.error("Token is missing from the response");
+      }
+
       setShowModal(true);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const backendError = error.response.data.error;
-        setErrors((prev) => ({ ...prev, general: backendError }));
-        toast.error(backendError || "Failed to register. Please try again.");
+        setErrors((prev) => ({
+          ...prev,
+          general: backendError ? String(backendError) : "An error occurred.",
+        })); // Ensure error is a string
+        toast.error(
+          String(backendError) || "Failed to register. Please try again."
+        );
       } else {
         console.error("Registration error:", error);
         toast.error("An unexpected error occurred. Please try again.");
@@ -112,7 +122,7 @@ const SignupPage = () => {
         </p>
 
         {errors.general && (
-          <p className="text-red-500 text-center">{errors.general}</p>
+          <p className="text-red-500 text-center">{String(errors.general)}</p>
         )}
 
         <form

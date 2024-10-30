@@ -1,28 +1,37 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
 const Verify = () => {
   const router = useRouter();
+  const params = useParams();
+  const email = decodeURIComponent(
+    Array.isArray(params.email) ? params.email[0] : params.email
+  );
   const [status, setStatus] = useState("Verifying...");
-  const email = "florian@syncmove.co.uk"; // TODO: Get email from query params
 
   useEffect(() => {
-    console.log("Fetching verification...");
+    if (!email) {
+      setStatus("No email found. Please check the verification link.");
+      return;
+    }
 
     const verifyEmail = async () => {
+      console.log("Email:", email);
       try {
-        console.log("Sending verification request...");
-        await axios.get(
+        const response = await axios.get(
           `http://localhost:5001/api/email/verify?email=${email}`
         );
-        console.log("Verification successful!");
+
+        // const token = response.data.token;
+        // localStorage.setItem("token", token); // Store token in localStorage
+
         setStatus("Verification successful! Redirecting to onboarding...");
         toast.success("Your account has been verified!");
+
         setTimeout(() => {
-          console.log("Redirecting to onboarding...");
           router.push("/onboarding");
         }, 3000);
       } catch (error) {
