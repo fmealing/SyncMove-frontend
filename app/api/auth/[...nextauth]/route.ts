@@ -1,13 +1,16 @@
 import NextAuth from "next-auth";
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import dotenv from "dotenv";
+
+// Load environment variables
+dotenv.config();
 
 const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId:
-        "833634892989-g24qq8bogit62gsjjoqbdllb5mfsp2mg.apps.googleusercontent.com",
-      clientSecret: "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",
+      clientId: process.env.GOOGLE_OAUTH_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET as string,
       authorization: {
         params: {
           scope: "openid email profile",
