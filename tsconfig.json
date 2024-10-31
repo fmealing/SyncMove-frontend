@@ -27,7 +27,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/messaging/messaging.jsx",
-    "app/schedule-workout/[userId]"
+    "app/schedule-workout/[userId]",
+    "lib/mongodb.js",
+    "app/api/getData.js"
   ],
   "exclude": ["node_modules"]
 }

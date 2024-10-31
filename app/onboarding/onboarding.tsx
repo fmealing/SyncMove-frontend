@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Step1BasicInfo from "../components/onboarding/Step1BasicInfo";
 import Step2FitnessPreferences from "../components/onboarding/Step2FitnessPreferences";
 import Step3Availability from "../components/onboarding/Step3Availability";
@@ -7,9 +7,26 @@ import Step4ProfileCustomization from "../components/onboarding/Step4ProfileCust
 import Step4Preferences from "../components/onboarding/Step4Preferences";
 import OnboardingCompletion from "../components/onboarding/OnboardingCompletion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Onboarding = () => {
   const [currentStep, setCurrentStep] = useState(1);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    // Check if a token is present in the URL query parameters
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if (token) {
+      // Store the token in localStorage for future use
+      localStorage.setItem("token", token);
+
+      // Optionally, redirect to remove the token from the URL
+      router.push("/onboarding");
+    }
+  }, [router]);
 
   // Progress to the next step
   const goToNextStep = () => setCurrentStep((prevStep) => prevStep + 1);
