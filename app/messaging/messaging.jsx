@@ -24,13 +24,16 @@ const Messaging = () => {
 
       // Fetch the user's fullName from the API or local storage
       axios
-        .get(`http://localhost:5001/api/users/${decodedToken.id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
+        .get(
+          `https://syncmove-backend.onrender.com/api/users/${decodedToken.id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
         .then((response) => setUserFullName(response.data.fullName));
 
       // Initialize Socket.io client
-      const newSocket = io("http://localhost:5001", {
+      const newSocket = io("https://syncmove-backend.onrender.com", {
         auth: { token },
       });
       setSocket(newSocket);
@@ -46,7 +49,7 @@ const Messaging = () => {
   const fetchConversations = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5001/api/conversations",
+        "https://syncmove-backend.onrender.com/api/conversations",
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -62,7 +65,7 @@ const Messaging = () => {
   const fetchMessages = async (conversationId) => {
     try {
       const response = await axios.get(
-        `http://localhost:5001/api/messages/${conversationId}`,
+        `https://syncmove-backend.onrender.com/api/messages/${conversationId}`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }

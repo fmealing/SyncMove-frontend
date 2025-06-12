@@ -22,7 +22,7 @@ const PrivacyPreferences: React.FC = () => {
         const userId = decodedToken.id;
 
         const response = await axios.get(
-          `http://localhost:5001/api/users/${userId}`,
+          `https://syncmove-backend.onrender.com/api/users/${userId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -53,7 +53,7 @@ const PrivacyPreferences: React.FC = () => {
       const userId = decodedToken.id;
 
       await axios.put(
-        `http://localhost:5001/api/users/${userId}`,
+        `https://syncmove-backend.onrender.com/api/users/${userId}`,
         {
           privacyPreferences: {
             visibility,

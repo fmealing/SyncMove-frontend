@@ -31,7 +31,7 @@ const Matching: React.FC = () => {
     try {
       const decoded = jwtDecode<{ id: string }>(token);
       const response = await axios.get(
-        `http://localhost:5001/api/users/${decoded.id}`,
+        `https://syncmove-backend.onrender.com/api/users/${decoded.id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -51,7 +51,7 @@ const Matching: React.FC = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `http://localhost:5001/api/users/suggested-partners-pagination?page=${page}&limit=6`,
+        `https://syncmove-backend.onrender.com/api/users/suggested-partners-pagination?page=${page}&limit=6`,
         {
           location: profile.location.coordinates,
           preferences: [
@@ -71,6 +71,7 @@ const Matching: React.FC = () => {
         (partner: any) => !profile.connections.includes(partner._id)
       );
 
+      console.log("Fetched partners:", filteredPartners);
       setPartners(filteredPartners);
       setTotalPages(response.data.totalPages);
       setLoading(false);

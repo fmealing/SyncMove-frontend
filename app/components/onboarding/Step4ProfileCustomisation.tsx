@@ -34,7 +34,7 @@ const Step4ProfileCustomization: React.FC<{ onComplete: () => void }> = ({
         formData.append("file", selectedImage);
 
         const uploadResponse = await axios.post(
-          "http://localhost:5001/api/images/upload",
+          "https://syncmove-backend.onrender.com/api/images/upload",
           formData,
           {
             headers: {
@@ -48,7 +48,7 @@ const Step4ProfileCustomization: React.FC<{ onComplete: () => void }> = ({
 
       // Save bio, profile picture URL, etc.
       await axios.post(
-        "http://localhost:5001/api/users/onboarding/profile",
+        "https://syncmove-backend.onrender.com/api/users/onboarding/profile",
         { bio, profilePicture: profilePictureUrl },
         { headers: { Authorization: `Bearer ${token}` } }
       );

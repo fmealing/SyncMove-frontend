@@ -57,7 +57,7 @@ const SignupPage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5001/api/auth/register",
+        "https://syncmove-backend.onrender.com/api/auth/register",
         {
           email: formdata.email,
           password: formdata.password,

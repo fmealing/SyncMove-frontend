@@ -1,7 +1,7 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const BASE_URL = "http://localhost:5001/api/match";
+const BASE_URL = "https://syncmove-backend.onrender.com/api/match";
 
 export const deleteMatch = async (matchId: string) => {
   console.log("matchId", matchId);

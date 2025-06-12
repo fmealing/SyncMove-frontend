@@ -31,7 +31,7 @@ const Step2FitnessPreferences: React.FC<{ onComplete: () => void }> = ({
 
     try {
       await axios.put(
-        "http://localhost:5001/api/users/onboarding/fitness-preferences",
+        "https://syncmove-backend.onrender.com/api/users/onboarding/fitness-preferences",
         {
           activityType: preferences.activityType,
           experienceLevel: preferences.experienceLevel,

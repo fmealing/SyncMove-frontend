@@ -14,7 +14,7 @@ const OnboardingCompletion: React.FC = () => {
 
       try {
         await axios.post(
-          "http://localhost:5001/api/users/onboarding/complete",
+          "https://syncmove-backend.onrender.com/api/users/onboarding/complete",
           {},
           {
             headers: {

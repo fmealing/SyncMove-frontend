@@ -47,7 +47,7 @@ const ScheduleWorkoutPage = () => {
     const fetchPartnerData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5001/api/users/${userId}`
+          `https://syncmove-backend.onrender.com/api/users/${userId}`
         );
         setPartner(response.data);
       } catch (error) {
@@ -78,7 +78,7 @@ const ScheduleWorkoutPage = () => {
       const myUserId = decoded.id;
 
       const response = await axios.post(
-        "http://localhost:5001/api/activities",
+        "https://syncmove-backend.onrender.com/api/activities",
         {
           activityType: "Workout",
           description: `${customMessage} - Scheduled ${selectedTime} workout with ${partner?.fullName} at ${location}`,

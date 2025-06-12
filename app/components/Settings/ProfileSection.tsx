@@ -29,7 +29,7 @@ const ProfileSection: React.FC = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:5001/api/users/${decoded.id}`,
+          `https://syncmove-backend.onrender.com/api/users/${decoded.id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -68,7 +68,7 @@ const ProfileSection: React.FC = () => {
         formData.append("file", selectedImage);
 
         const uploadResponse = await axios.post(
-          "http://localhost:5001/api/images/upload",
+          "https://syncmove-backend.onrender.com/api/images/upload",
           formData,
           {
             headers: {
@@ -84,7 +84,7 @@ const ProfileSection: React.FC = () => {
 
       // Update the user's profile in the backend
       await axios.put(
-        `http://localhost:5001/api/users/${decoded.id}`,
+        `https://syncmove-backend.onrender.com/api/users/${decoded.id}`,
         {
           fullName: userData?.fullName,
           email: userData?.email,

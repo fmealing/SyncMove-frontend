@@ -44,7 +44,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
           const decoded = jwtDecode<{ id: string }>(token);
           const userId = decoded.id;
           const response = await axios.get(
-            `http://localhost:5001/api/users/${userId}`,
+            `https://syncmove-backend.onrender.com/api/users/${userId}`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -59,7 +59,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
     const fetchPartner = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5001/api/users/${params.id}`
+          `https://syncmove-backend.onrender.com/api/users/${params.id}`
         );
         setPartner(response.data);
 
@@ -147,7 +147,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
 
     try {
       const matchResponse = await axios.post(
-        "http://localhost:5001/api/match/create",
+        "https://syncmove-backend.onrender.com/api/match/create",
         { user2Id, score },
         {
           headers: {
@@ -162,7 +162,7 @@ const PartnerProfile = ({ params }: { params: { id: string } }) => {
       if (matchResponse.status === 201) {
         try {
           const notificationResponse = await axios.post(
-            "http://localhost:5001/api/notifications",
+            "https://syncmove-backend.onrender.com/api/notifications",
             {
               userId: user2Id,
               senderId: senderId,

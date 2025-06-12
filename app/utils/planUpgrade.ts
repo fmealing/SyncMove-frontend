@@ -7,7 +7,7 @@ const upgradePlan = async (planType: string) => {
     if (!token) return;
 
     await axios.post(
-      "http://localhost:5001/api/users/upgrade-plan",
+      "https://syncmove-backend.onrender.com/api/users/upgrade-plan",
       { planType },
       {
         headers: {

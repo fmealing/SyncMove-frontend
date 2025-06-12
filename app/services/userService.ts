@@ -4,7 +4,8 @@ import axios from "axios";
 import { UserProfile, Partner } from "@/types/types";
 import { calculateAge } from "../utils/helpers";
 
-const API_URL = "http://localhost:5001/api/users";
+// const API_URL = "http://localhost:5001/api/users";
+const API_URL = "https://syncmove-backend.onrender.com/api/users";
 
 export const fetchUserProfile = async (
   id: string,

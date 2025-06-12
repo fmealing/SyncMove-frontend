@@ -36,7 +36,7 @@ const Step3Availability: React.FC<{ onComplete: () => void }> = ({
 
     try {
       await axios.post(
-        "http://localhost:5001/api/users/onboarding/availability",
+        "https://syncmove-backend.onrender.com/api/users/onboarding/availability",
         availability,
         {
           headers: {

@@ -25,7 +25,7 @@ const Login: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5001/api/auth/login",
+        "https://syncmove-backend.onrender.com/api/auth/login",
         {
           email: formdata.email,
           password: formdata.password,

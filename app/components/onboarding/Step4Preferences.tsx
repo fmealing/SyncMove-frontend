@@ -47,7 +47,7 @@ const Step4Preferences: React.FC<{ onComplete: () => void }> = ({
 
     try {
       await axios.post(
-        "http://localhost:5001/api/users/onboarding/preferences",
+        "https://syncmove-backend.onrender.com/api/users/onboarding/preferences",
         { privacyPreferences, notificationPreferences },
         {
           headers: {

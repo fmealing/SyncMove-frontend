@@ -34,7 +34,7 @@ const UploadImage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5001/api/images/upload",
+        "https://syncmove-backend.onrender.com/api/images/upload",
         formData,
         {
           headers: {

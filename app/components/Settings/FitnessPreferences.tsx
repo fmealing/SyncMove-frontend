@@ -32,7 +32,7 @@ const FitnessPreferences: React.FC = () => {
         const userId = decodedToken.id;
 
         const response = await axios.get(
-          `http://localhost:5001/api/users/${userId}`,
+          `https://syncmove-backend.onrender.com/api/users/${userId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -66,7 +66,7 @@ const FitnessPreferences: React.FC = () => {
       const userId = decodedToken.id;
 
       await axios.put(
-        `http://localhost:5001/api/users/${userId}`,
+        `https://syncmove-backend.onrender.com/api/users/${userId}`,
         {
           activityType: preferredActivities[0],
           experienceLevel: activityLevels[preferredActivities[0]] || 1,

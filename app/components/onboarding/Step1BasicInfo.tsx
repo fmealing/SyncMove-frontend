@@ -68,7 +68,7 @@ const Step1BasicInfo: React.FC<{ onComplete: () => void }> = ({
 
     try {
       await axios.post(
-        "http://localhost:5001/api/users/onboarding/basic-info",
+        "https://syncmove-backend.onrender.com/api/users/onboarding/basic-info",
         formData,
         {
           headers: {

@@ -15,7 +15,7 @@ const PricingPage: React.FC = () => {
     try {
       // Call backend API to upgrade user’s plan immediately
       await axios.post(
-        "http://localhost:5001/api/users/upgrade-plan",
+        "https://syncmove-backend.onrender.com/api/users/upgrade-plan",
         { planType },
         {
           headers: {

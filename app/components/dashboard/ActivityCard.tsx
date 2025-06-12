@@ -74,7 +74,7 @@ const ActivityCard: React.FC = () => {
       }
 
       await axios.put(
-        `http://localhost:5001/api/activities/${activityToCancel}`,
+        `https://syncmove-backend.onrender.com/api/activities/${activityToCancel}`,
         { status: "cancelled" },
         {
           headers: { Authorization: `Bearer ${token}` },
